@@ -1,0 +1,256 @@
+﻿@page
+@model CamposRepresentacoes.Pages.Pedidos.IndexModel
+@{
+    ViewData["Title"] = "Emissão de Pedido";
+}
+
+<div class="container mt-5">
+    @if (!string.IsNullOrEmpty(Model.Confirmacao))
+    {
+        <div id="mensagemConfirmacao" class="alert alert-info">
+            <strong>@Model.Confirmacao</strong>
+            <button id="btnConfirmar" class="btn btn-primary">Confirmar</button>
+            <a asp-page="/Pedidos/Index" class="btn btn-secondary">Cancelar</a>
+        </div>
+    }
+
+    <form method="post" id="confirmarForm">
+        <div class="form-group">
+            <label for="fornecedorSelect">Selecione o Fornecedor:</label>
+            <select class="form-control" id="fornecedorSelect" asp-for="Pedido.IdFornecedor">
+                <option value="">Selecione...</option>
+                @if (Model.Fornecedores != null)
+                {
+                    @foreach (var fornecedor in Model.Fornecedores)
+                    {
+                        <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
+                    }
+                }
+            </select>            
+        </div>
+
+        <div class="form-group">
+            <label for="clienteSelect">Selecione o Cliente:</label>
+            <select class="form-control" id="clienteSelect" asp-for="Pedido.IdCliente" disabled>
+                <option value="">Selecione...</option>
+                @if (Model.Clientes != null)
+                {
+                    @foreach (var cliente in Model.Clientes)
+                    {
+                        <option value="@cliente.Id">@cliente.RazaoSocial</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="transportadoraSelect">Selecione a Transportadora:</label>
+            <select class="form-control" id="transportadoraSelect" asp-for="Pedido.IdTransportadora" disabled>
+                <option value="">Selecione...</option>
+                @if (Model.Transportadoras != null)
+                {
+                    @foreach (var transportadora in Model.Transportadoras)
+                    {
+                        <option value="@transportadora.Id">@transportadora.RazaoSocial</option>
+                    }
+                }
+            </select>
+        </div>
+        <button id="btnPesquisarProdutos" type="button" class="btn btn-primary mt-2">Pesquisar Produtos</button>
+    </form>
+
+    <!-- Tabela de Produtos -->
+    <div id="tabelaProdutos" style="display: none;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyProdutos">
+                @* @foreach (var produto in Model.Produtos)
+                {
+                    <tr>
+                        <th>@produto.Id</th>
+                        <th>@produto.Nome</th>
+                        <th>@produto.Descricao</th>
+                        <th>@produto.Preco.ToString("C")</th>
+                    </tr>
+                } *@                
+            </tbody>
+        </table>
+
+        <!-- Botão para confirmar o pedido após adicionar produtos -->
+        <button id="btnConfirmarPedido" class="btn btn-primary">Confirmar Pedido</button>
+    </div>
+
+    <!-- Modal de Produtos -->
+    <div class="modal fade" id="produtoModal" tabindex="-1" role="dialog" aria-labelledby="produtoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalProdutosLabel">Selecione um Produto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @* @foreach(var produto in Model.Produtos)
+                    {
+                        <tr>
+                            <th>@produto.Id</th>
+                            <th>@produto.Nome</th>
+                            <th>@produto.Descricao</th>
+                            <th>@produto.Preco.ToString("C")</th>
+                        </tr>
+                    } *@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary">Salvar Produto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function exibirMensagemConfirmacao(mensagem) {
+            $('#mensagemConfirmacao strong').text(mensagem);
+            $('#mensagemConfirmacao').show();
+        }
+
+        $('#produtoModal .btn-primary').click(function () {
+            exibirMensagemConfirmacao("Produto salvo com sucesso!");
+            $('#produtoModal').modal('hide');
+        });
+
+        $('#btnConfirmar').click(function () {
+            $('#mensagemConfirmacao').hide();
+        });
+
+        // Lógica para avançar após selecionar fornecedor
+        $('#btnAvancar').click(function () {
+            var fornecedorSelecionado = $('#fornecedorSelect').val();
+
+            if (fornecedorSelecionado) {
+                // Desabilitar selects anteriores
+                $('#clienteSelect').prop('disabled', false);
+                $('#transportadoraSelect').prop('disabled', false);
+
+                // Esconder formulário atual
+                $('form').hide();
+
+                // Exibir tabela de produtos
+                $('#tabelaProdutos').show();
+            }
+        });
+
+        // Lógica para adicionar produto
+        $('#tbodyProdutos').on('click', '.btnAddProduto', function () {
+            var nomeProduto = $(this).data('nome');
+            var descricaoProduto = $(this).data('descricao');
+            var precoProduto = $(this).data('preco');
+            var quantidadeProduto = $(this).closest('tr').find('.quantidadeProduto').val();
+
+            // Adicionar a lógica para enviar esses dados ao backend
+            // Exemplo: $.post("/Pedidos/AdicionarProdutoAoPedido", { nome: nomeProduto, descricao: descricaoProduto, preco: precoProduto, quantidade: quantidadeProduto }, function (data) {
+            //     // Atualizar a interface conforme necessário
+            // });
+
+            // Apenas um exemplo: exibir um alerta
+            alert('Produto adicionado ao pedido!');
+        });
+
+        // Lógica para carregar a lista de produtos quando selecionar a transportadora
+        $('#transportadoraSelect').change(function () {
+            var transportadoraSelecionada = $(this).val();
+
+            if (transportadoraSelecionada) {
+                // Chamar método no backend para carregar a lista de produtos
+                // Exemplo: $.get("/Pedidos/CarregarProdutos?IdTransportadora=" + transportadoraSelecionada, function (data) {
+                //     // Atualizar a interface com a lista de produtos
+                // });
+
+                // Exemplo: Adicionar algumas linhas de produtos de exemplo para ilustrar
+                $('#tbodyProdutos').html('');
+                for (var i = 1; i <= 5; i++) {
+                    var produto = {
+                        Nome: 'Produto ' + i,
+                        Descricao: 'Descrição do Produto ' + i,
+                        Preco: 10.50 * i
+                    };
+                    adicionarLinhaProduto(produto);
+                }
+            }
+        });
+
+        // Função auxiliar para adicionar uma linha na tabela de produtos
+        function adicionarLinhaProduto(produto) {
+            var linha = '<tr>' +
+                '<td>' + produto.Nome + '</td>' +
+                '<td>' + produto.Descricao + '</td>' +
+                '<td>' + produto.Preco.toFixed(2) + '</td>' +
+                '<td><input type="number" class="form-control quantidadeProduto" value="1" /></td>' +
+                '<td><button class="btn btn-primary btnAddProduto" data-nome="' + produto.Nome + '" data-descricao="' + produto.Descricao + '" data-preco="' + produto.Preco + '">Add</button></td>' +
+                '</tr>';
+            $('#tbodyProdutos').append(linha);
+        }
+
+        // Lógica para confirmar e enviar o pedido
+        $('#btnConfirmarPedido').click(function (event) {
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/Pedidos/Index?handler=Confirmar',
+                data: $('#confirmarForm').serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        exibirMensagemConfirmacao("Pedido criado com sucesso!");
+                    } else {
+                        alert('Erro ao criar o pedido: ' + result.error);
+                    }
+                },
+                error: function () {
+                    alert('Erro ao criar o pedido.');
+                }
+            });
+        });
+        // Lógica para ativar/desativar os selects e o botão conforme a seleção do usuário
+        $('#fornecedorSelect').change(function () {
+            // Habilitar o select de Cliente e desabilitar os outros
+            $('#clienteSelect').prop('disabled', false);
+            $('#transportadoraSelect').prop('disabled', true);
+            $('#produtoModalBtn').prop('disabled', true);
+
+            // Desabilitar o botão "Salvar"
+            $('#btnSalvar').prop('disabled', true);
+        });
+
+        $('#clienteSelect').change(function () {
+            // Habilitar o select de Transportadora
+            $('#transportadoraSelect').prop('disabled', false);
+
+            // Desabilitar o botão "Salvar"
+            $('#btnSalvar').prop('disabled', true);
+        });
+
+        $('#transportadoraSelect').change(function () {
+            // Habilitar o botão "Salvar" apenas se todos os selects tiverem valores
+            var fornecedorSelecionado = $('#fornecedorSelect').val();
+            var clienteSelecionado = $('#clienteSelect').val();
+            var transportadoraSelecionada = $('#transportadoraSelect').val();
+
+            if (fornecedorSelecionado && clienteSelecionado && transportadoraSelecionada) {
+                $('#btnSalvar').prop('disabled', false);
+            } else {
+                $('#btnSalvar').prop('disabled', true);
+            }
+        });
+    </script>
+}

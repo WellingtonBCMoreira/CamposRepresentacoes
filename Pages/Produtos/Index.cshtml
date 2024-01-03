@@ -1,0 +1,209 @@
+﻿@page
+@model CamposRepresentacoes.Pages.Produtos.IndexModel
+@{
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h2>Lista de Produtos</h2>
+
+        @if (Model.Produtos.Any())
+        {
+            <!-- Formulário para Desativar Produtos -->
+            <form method="post" asp-page-handler="DesativarProduto" onsubmit="return prepararIdsProdutos()">
+                <div class="card-body">
+                    <table id="example2" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Preço</th>
+                                <th>Data Cadastro</th>
+                                <th>Ação</th>
+                                <th>Editar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var produto in Model.Produtos)
+                            {
+                                <tr>
+                                    <td>@produto.Nome</td>
+                                    <td>@produto.Descricao</td>
+                                    <td>@produto.Preco.ToString("C")</td>
+                                    <td>@produto.DataCadastro</td>
+                                    <td>
+                                        <input type="checkbox" name="produtosParaDesativar" value="@produto.Id">
+                                    </td>
+                                    <td>
+                                        <a href="/Produtos/EditarProduto?id=@produto.Id" class="btn btn-primary">Editar</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Adicionamos um campo oculto para armazenar os IDs dos produtos selecionados -->
+                <input type="hidden" name="idsProdutosSelecionados" id="idsProdutosSelecionados">
+
+                <button type="submit" class="btn btn-success">Salvar Alterações</button>
+            </form>
+        }
+        else
+        {
+            <p>Nenhum produto encontrado!</p>
+        }
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-sm-12">
+        <form method="post" enctype="multipart/form-data">
+            <div class="mt-3">
+                <label for="fornecedorId">Selecione um fornecedor para importar os produtos:</label>
+                <select id="fornecedorId" name="fornecedorId" class="form-control">
+                    <option value="">Selecione...</option>
+                    @if(Model.Fornecedores != null)
+                    {
+                        @foreach (var fornecedor in Model.Fornecedores)
+                        {
+                            <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
+                        }
+                    }                    
+                </select>
+            </div>
+            <div class="input-group mt-3">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="fileInput" name="ArquivoUpload" onchange="updateFileName()">
+                    <label class="custom-file-label" for="fileInput" id="fileInputLabel">Escolher arquivo</label>
+                </div>
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary" onclick="return validarFornecedor()">Upload Planilha</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row mt-4">
+        <a href="/Produtos/CadastrarProdutos" class="btn btn-primary ml-2">Cadastrar Produto</a>
+    </div>
+</div>
+
+@if (ViewData.ContainsKey("ProdutosComErro") && ViewData["ProdutosComErro"] != null && ((List<dynamic>)ViewData["ProdutosComErro"]).Any())
+{
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <h3>Produtos com Erro</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var produtoErro in ViewData["ProdutosComErro"] as List<dynamic>)
+                    {
+                        <tr>
+                            <td>@produtoErro.Status</td>
+                            <td>@produtoErro.Nome</td>
+                            <td>@produtoErro.Descricao</td>
+                            <td>@produtoErro.Preco</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else if (ViewData.ContainsKey("ProdutosImportados") && ViewData["ProdutosImportados"] != null && ((List<dynamic>)ViewData["ProdutosImportados"]).Any())
+{
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <h3>Todos os produtos foram importados com sucesso!</h3>
+        </div>
+    </div>
+}
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+@section scripts {
+    <script>
+        // Adicionando um evento de clique do botão
+        function updateFileName() {
+            var fileName = document.getElementById("fileInput").files[0].name;
+            document.getElementById("fileInputLabel").innerText = fileName;
+        }
+
+        function validarFornecedor() {
+            var fornecedorDropdown = document.getElementById("fornecedorId");
+            var fornecedorId = fornecedorDropdown.value;
+
+            var arquivoInput = document.getElementById('fileInput');
+            if (fornecedorId === '') {
+                alert('Selecione um fornecedor antes de fazer o upload!');
+                return false;
+            }
+            if (arquivoInput.files.length === 0) {
+                alert('Selecione uma planilha antes de fazer o upload!');
+                return false;
+            }
+            return true;
+        }
+        var sortable = new Sortable(document.getElementById('sortableTable').getElementsByTagName('tbody')[0], {
+            animation: 150,
+            onStart: function (evt) {
+                // Código executado quando a ordenação começa
+            },
+            onEnd: function (evt) {
+                // Código executado quando a ordenação termina
+                var sortedIds = Array.from(evt.from.children).map(function (tr) {
+                    return tr.getAttribute('data-id');
+                });
+
+                // Agora você pode usar 'sortedIds' para determinar a ordem após o arrastar
+                console.log(sortedIds);
+            }
+        });
+
+        function prepararIdsProdutos() {
+        var idsProdutos = $('input[name="produtosParaDesativar"]:checked').map(function() {
+            return $(this).val();
+            }).get();
+
+            if (idsProdutos.length === 0) {
+                alert('Selecione pelo menos um produto para desativar!');
+                return false;
+            }
+            
+            sessionStorage.setItem('MensagemSucesso', '@TempData["MensagemSucesso"]');
+            $('#idsProdutosSelecionados').val(idsProdutos.join(''));
+            return true;
+            
+            $('#idsProdutosSelecionados').val(idsProdutos.join(','));
+            return true;
+        }
+
+        $(document).ready(function() {
+            // Adicione uma função de manipulação do evento submit do formulário
+            $('form').submit(function() {
+                return prepararIdsProdutos();
+            });
+        });        
+        document.querySelector('button[type="submit"]').addEventListener('click', prepararIdsProdutos);
+
+        $(document).ready(function () {
+            var mensagemSucesso = sessionStorage.getItem('MensagemSucesso');
+            if (mensagemSucesso !== null && mensagemSucesso !== '') {
+                alert(mensagemSucesso);
+                // Limpe a mensagem após exibir o alert
+                sessionStorage.removeItem('MensagemSucesso');
+                // Recarregue a página
+                location.reload();
+            }
+        });
+
+    </script>    
+}

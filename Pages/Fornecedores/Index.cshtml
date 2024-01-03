@@ -1,0 +1,113 @@
+﻿@page
+@model CamposRepresentacoes.Pages.Fornecedores.IndexModel
+@{
+}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Lista de Fornecedores</h2>
+
+        <form method="get" asp-page-handler="Pesquisar">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="razaoSocial">Razão Social:</label>
+                    <input type="text" id="razaoSocial" name="razaoSocial" class="form-control" />
+                </div>
+                <div class="col-md-12">
+                    <label for="cnpj">CNPJ:</label>
+                    <input type="text" id="cnpj" name="cnpj" class="form-control" />
+                </div>
+                <div class="col-md-12">
+                    <label for="rua">Rua:</label>
+                    <input type="text" id="rua" name="rua" class="form-control" />
+                </div>
+                <div class="col-md-12">
+                    <label for="bairro">Bairro:</label>
+                    <input type="text" id="bairro" name="bairro" class="form-control" />
+                </div>
+                <div class="col-md-12">
+                    <label for="cidade">Cidade:</label>
+                    <input type="text" id="cidade" name="cidade" class="form-control" />
+                </div>
+                <div class="col-md-12">
+                    <label for="cep">CEP:</label>
+                    <input type="text" id="cep" name="cep" class="form-control" />
+                </div>
+                <div class="col-md-12">
+                    <label for="telefone">Telefone:</label>
+                    <input type="text" id="telefone" name="telefone" class="form-control" />
+                </div>
+                <div class="col-md-12">
+                    <label for="ativo">Ativo:</label>
+                    <select id="ativo" name="ativo" class="form-control">
+                        <option value="">Ambos</option>
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Pesquisar</button>
+        </form>
+
+        @if (Model.Fornecedores.Any())
+        {
+            var mostrarTabela = Model.Fornecedores.Any();
+
+            <table class="table table-bordered mt-4" style="display: @(mostrarTabela ? "table" : "none")">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Razão Social</th>
+                        <th>CNPJ</th>
+                        <th>Rua</th>
+                        <th>Bairro</th>
+                        <th>Cidade</th>
+                        <th>Numero</th>
+                        <th>Complemento</th>
+                        <th>Cep</th>
+                        <th>Telefone</th>
+                        <th>Ativo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cliente in Model.Fornecedores)
+                    {
+                        <tr>
+                            <th>@cliente.Id</th>
+                            <th>@cliente.RazaoSocial</th>
+                            <th>@cliente.CNPJ</th>
+                            <th>@cliente.Rua</th>
+                            <th>@cliente.Bairro</th>
+                            <th>@cliente.Cidade</th>
+                            <th>@cliente.Numero</th>
+                            <th>@cliente.Complemento</th>
+                            <th>@cliente.CEP</th>
+                            <th>@cliente.Telefone</th>
+                            <th>@cliente.Ativo</th>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Nenhum Fornecedor encontrado!</p>
+        }
+    </div>
+</div>
+<script>
+    function submitForm() {
+
+        var ativoSelect = document.getElementById("ativo");
+        var ativoValue = ativoSelect.options[ativoSelect.selectedIndex].value;
+
+        var ativoInput = document.getElementById("ativoInput");
+
+        if (ativoValue !== "") {
+            ativoInput.value = ativoValue;
+        } else {
+            ativoInput.removeAttribute("name");
+        }
+
+        return false;
+    }
+</script>

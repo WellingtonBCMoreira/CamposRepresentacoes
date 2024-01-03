@@ -1,0 +1,47 @@
+﻿@page
+@model CamposRepresentacoes.Pages.Produtos.CadastrarProdutosModel
+@{
+}
+
+<h2>Cadastrar Produto</h2>
+
+<div class="row">
+    <div class="col-sm-6">
+        <form method="post">           
+
+            <div class="form-group">
+                <label for="nome">Nome do Produto:</label>
+                <input type="text" id="nome" name="Produto.Nome" class="form-control" asp-for="Produto.Nome" required>
+            </div>
+
+            <div class="form-group">
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" name="Produto.Descricao" class="form-control" asp-for="Produto.Descricao" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="preco">Preço:</label>                
+                <input type="number" id="preco" name="Produto.Preco" class="form-control" data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'radixPoint': '.', 'autoUnmask': true, 'removeMaskOnSubmit': true" asp-for="Produto.Preco" required>
+            </div>
+
+            <div class="form-group">
+                <label for="fornecedorSelect">Selecione o Fornecedor:</label>
+                <select class="form-control" id="fornecedorSelect" asp-for="Produto.IdFornecedor" required>
+                    <option value="">Selecione...</option>
+                    @if (Model.Fornecedores != null)
+                    {
+                        @foreach (var fornecedor in Model.Fornecedores)
+                        {
+                            <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cadastrar Produto</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
