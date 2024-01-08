@@ -5,8 +5,10 @@ using ExcelDataReader;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 using System.Data;
+using System.Text.Json.Serialization;
 
 namespace CamposRepresentacoes.Pages.Produtos
 {
@@ -119,16 +121,17 @@ namespace CamposRepresentacoes.Pages.Produtos
         public IActionResult OnPostDesativarProduto(string idsProdutosSelecionados)
         {
             if (!string.IsNullOrEmpty(idsProdutosSelecionados))
-            {
-                List<Guid> idProdutos = idsProdutosSelecionados.Split(',').Select(Guid.Parse).ToList();
+            {                
+                List<Guid> idProdutos = JsonConvert.DeserializeObject<List<Guid>>(idsProdutosSelecionados);
                 foreach (var id in idProdutos)
                 {
                     _produtosService.DeletarProdudo(id);
 
-                }                
-                TempData["MensagemSucesso"] = "Produtos desativados com sucesso!!!";
+                }
+
+                MensagemAlerta.SetMensagem("SucessoDesativarProdutos", "Todos os produtos foram desativados!!!");
             }
-            return RedirectToPage();//Redirect("Produtos/Index");
+            return RedirectToPage();
         }
     }
 }

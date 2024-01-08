@@ -46,7 +46,7 @@
                 <!-- Adicionamos um campo oculto para armazenar os IDs dos produtos selecionados -->
                 <input type="hidden" name="idsProdutosSelecionados" id="idsProdutosSelecionados">
 
-                <button type="submit" class="btn btn-success">Salvar Alterações</button>
+                <button type="submit" id="salvarAlteracoes" class="btn btn-success">Salvar Alterações</button>
             </form>
         }
         else
@@ -152,58 +152,49 @@ else if (ViewData.ContainsKey("ProdutosImportados") && ViewData["ProdutosImporta
             }
             return true;
         }
-        var sortable = new Sortable(document.getElementById('sortableTable').getElementsByTagName('tbody')[0], {
-            animation: 150,
-            onStart: function (evt) {
-                // Código executado quando a ordenação começa
-            },
-            onEnd: function (evt) {
-                // Código executado quando a ordenação termina
-                var sortedIds = Array.from(evt.from.children).map(function (tr) {
-                    return tr.getAttribute('data-id');
-                });
-
-                // Agora você pode usar 'sortedIds' para determinar a ordem após o arrastar
-                console.log(sortedIds);
-            }
-        });
+        var mensagemSucesso = '@MensagemAlerta.GetMensagem("SucessoDesativarProdutos")';
+        if (mensagemSucesso) {
+            alert(mensagemSucesso);            
+        }
 
         function prepararIdsProdutos() {
-        var idsProdutos = $('input[name="produtosParaDesativar"]:checked').map(function() {
-            return $(this).val();
-            }).get();
+            var idsProdutos = [];
+
+            // Iterar sobre os checkboxes selecionados
+            $('input[name="produtosParaDesativar"]:checked').each(function () {
+                idsProdutos.push($(this).val());
+            });
 
             if (idsProdutos.length === 0) {
                 alert('Selecione pelo menos um produto para desativar!');
                 return false;
             }
-            
-            sessionStorage.setItem('MensagemSucesso', '@TempData["MensagemSucesso"]');
-            $('#idsProdutosSelecionados').val(idsProdutos.join(''));
-            return true;
-            
-            $('#idsProdutosSelecionados').val(idsProdutos.join(','));
+
+            // Converter o array de IDs em uma string JSON e atribuir ao campo oculto
+            $('#idsProdutosSelecionados').val(JSON.stringify(idsProdutos));
+
             return true;
         }
 
-        $(document).ready(function() {
-            // Adicione uma função de manipulação do evento submit do formulário
-            $('form').submit(function() {
-                return prepararIdsProdutos();
-            });
-        });        
-        document.querySelector('button[type="submit"]').addEventListener('click', prepararIdsProdutos);
-
         $(document).ready(function () {
-            var mensagemSucesso = sessionStorage.getItem('MensagemSucesso');
-            if (mensagemSucesso !== null && mensagemSucesso !== '') {
-                alert(mensagemSucesso);
-                // Limpe a mensagem após exibir o alert
-                sessionStorage.removeItem('MensagemSucesso');
-                // Recarregue a página
-                location.reload();
-            }
+            // Adicione um evento de clique ao botão de salvar
+            $('#salvarAlteracoes').addEventListener('click', function (event) {
+                if (event.type === "click" && event.target.id === "salvarAlteracoes" ) {
+                    return prepararIdsProdutos();
+                }
+            });
         });
+
+        function GetMensagem(mensagem) {
+            if (mensagem) {
+                if (event.type === "click" && event.target.id === "salvarAlteracoes") {
+                    return mensagem;
+                }
+            }
+
+            return null;
+        }
+        
 
     </script>    
 }
