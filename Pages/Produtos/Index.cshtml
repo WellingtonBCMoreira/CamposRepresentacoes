@@ -3,7 +3,47 @@
 @{
 }
 
-<div class="row">
+<div class="row no-print">
+    <div class="col-md-12">
+        <h2>Buscar Produtos</h2>
+        <form method="get" action="/Produtos/Index" id="formBusca" onsubmit="return buscarProdutos()">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="nome">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="produto.Nome" placeholder="Digite o nome">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="descricao">Descrição</label>
+                    <input type="text" class="form-control" id="descricao" name="produto.Descricao" placeholder="Digite a descrição">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="status">Status</label>
+                    <select class="form-control" id="status" name="produto.Status">
+                        <option value="">Todos</option>
+                        <option value="1">Ativo</option>
+                        <option value="0">Inativo</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="fornecedorId">Fornecedor</label>
+                    <select id="fornecedorId" name="produto.IdFornecedor" class="form-control">
+                        <option value="">Todos</option>
+                        @if (Model.Fornecedores != null)
+                        {
+                            @foreach (var fornecedor in Model.Fornecedores)
+                            {
+                                <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-3" id="tabelaProdutos">
     <div class="col-sm-12">
         <h2>Lista de Produtos</h2>
 
@@ -43,7 +83,7 @@
                     </table>
                 </div>
 
-                <!-- Adicionamos um campo oculto para armazenar os IDs dos produtos selecionados -->
+                <!-- Campo oculto para armazenar os IDs dos produtos selecionados -->
                 <input type="hidden" name="idsProdutosSelecionados" id="idsProdutosSelecionados">
 
                 <button type="submit" id="salvarAlteracoes" class="btn btn-success">Salvar Alterações</button>
@@ -131,7 +171,53 @@ else if (ViewData.ContainsKey("ProdutosImportados") && ViewData["ProdutosImporta
 
 @section scripts {
     <script>
-        // Adicionando um evento de clique do botão
+        // function buscarProdutos() {
+        //     document.getElementById("tabelaProdutos").style.display = "block";
+        // }
+        function buscarProdutos() {
+            var formData = $('#formBusca').serialize();
+
+            $.ajax({
+                type: 'GET',
+                url: '/Produtos/Index',
+                data: formData,
+                dataType: 'json',
+                success: function (result) {
+                    console.log(result);
+                    // Limpa a tabela antes de adicionar os novos resultados
+                    $('#tabelaProdutos tbody').empty();
+
+                    // Verifica se a resposta contém dados válidos
+                    if (result && result.length > 0) {
+                        // Atualiza a tabela com os novos resultados
+                        result.forEach(function (produto) {
+                            var row = '<tr>' +
+                                '<td>' + produto.Nome + '</td>' +
+                                '<td>' + produto.Descricao + '</td>' +
+                                '<td>' + (produto.Preco !== undefined ? produto.Preco : '') + '</td>' +
+                                '<td>' + (produto.DataCadastro !== undefined ? produto.DataCadastro : '') + '</td>' +
+                                '<td><input type="checkbox" name="produtosParaDesativar" value="' + produto.Id + '"></td>' +
+                                '<td><a href="/Produtos/EditarProduto?id=' + produto.Id + '" class="btn btn-primary">Editar</a></td>' +
+                                '</tr>';
+
+                            $('#tabelaProdutos tbody').append(row);
+                        });
+                    } else {
+                        // Exibe uma mensagem se não houver dados
+                        $('#tabelaProdutos tbody').html('<tr><td colspan="6">Nenhum produto encontrado!</td></tr>');
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // Verifica se é um erro real (status 500 ou outros)
+                    if (xhr.status >= 400) {
+                        alert('Erro ao buscar produtos. Status: ' + xhr.status + ' - ' + errorThrown);
+                    }
+                }
+            });
+
+            return false; // Impede o envio padrão do formulário
+        }
+        
         function updateFileName() {
             var fileName = document.getElementById("fileInput").files[0].name;
             document.getElementById("fileInputLabel").innerText = fileName;
@@ -178,10 +264,8 @@ else if (ViewData.ContainsKey("ProdutosImportados") && ViewData["ProdutosImporta
 
         $(document).ready(function () {
             // Adicione um evento de clique ao botão de salvar
-            $('#salvarAlteracoes').addEventListener('click', function (event) {
-                if (event.type === "click" && event.target.id === "salvarAlteracoes" ) {
-                    return prepararIdsProdutos();
-                }
+            $('#salvarAlteracoes').click(function () {
+                return prepararIdsProdutos();
             });
         });
 

@@ -124,6 +124,9 @@ namespace CamposRepresentacoes.Repositories
                 if (filtro.Preco > 0)
                     produtos = produtos.Where(p => p.Preco == filtro.Preco);
 
+                if(filtro.IdFornecedor != Guid.Empty)
+                    produtos = produtos.Where(p => p.IdFornecedor == filtro.IdFornecedor);
+
                 return produtos;
             }
             catch (Exception ex)

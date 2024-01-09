@@ -21,18 +21,40 @@ namespace CamposRepresentacoes.Pages.Produtos
             _produtosService = produtosService;
         }
         public List<Produto> Produtos { get; set; } = new(); 
-        public Produto Produto { get; set; } = new(); 
         public IQueryable<Fornecedor> Fornecedores { get; set; }
+
+        [BindProperty(Name = "produto", SupportsGet = true)]
+        public Produto Produto { get; set; }
 
         [BindProperty]
         public IFormFile ArquivoUpload { get; set; }
         [BindProperty]
         public Guid FornecedorId { get; set; }
 
-        public void OnGet()
-        {
-            Produtos = _produtosService.ObterProdutos().ToList();          
-            Fornecedores = _produtosService.ObterFornecedores();
+        public IActionResult OnGet()
+        {   
+            if(Produto.Descricao != string.Empty)
+            {
+                Produtos = _produtosService.ObterProdutos(Produto).ToList();
+                Fornecedores = _produtosService.ObterFornecedores();
+
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    var listaProdutos = Produtos.Select(p => new
+                    {
+                        Nome = p.Nome,
+                        Descricao = p.Descricao,
+                        Preco = p.Preco,
+                        DataCadastro = p.DataCadastro,
+                        Id = p.Id,
+                    });
+
+                    return new JsonResult(listaProdutos);
+                    //ViewData["Produtos"] = listaProdutos;
+                }
+            }           
+            
+            return Page();
         }
 
         public IActionResult OnPost()
@@ -105,19 +127,8 @@ namespace CamposRepresentacoes.Pages.Produtos
             }
             return Page();
         }
-
-        private bool ValidarProduto(Produto produto)
-        {
-            if(string.IsNullOrEmpty(produto.Nome))
-                return false;
-            if(string.IsNullOrEmpty(produto.Descricao))
-                return false;
-            if(produto.Preco <= 0) 
-                return false;
-            
-            return true;
-        }
-
+        
+        [ValidateAntiForgeryToken]
         public IActionResult OnPostDesativarProduto(string idsProdutosSelecionados)
         {
             if (!string.IsNullOrEmpty(idsProdutosSelecionados))
@@ -132,6 +143,18 @@ namespace CamposRepresentacoes.Pages.Produtos
                 MensagemAlerta.SetMensagem("SucessoDesativarProdutos", "Todos os produtos foram desativados!!!");
             }
             return RedirectToPage();
+        }
+
+        private bool ValidarProduto(Produto produto)
+        {
+            if (string.IsNullOrEmpty(produto.Nome))
+                return false;
+            if (string.IsNullOrEmpty(produto.Descricao))
+                return false;
+            if (produto.Preco <= 0)
+                return false;
+
+            return true;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace CamposRepresentacoes.Models
         public decimal Preco { get; set; }
         public bool Status { get; set; }
 
-        public DateTime DataCadastro { get; set; }
+        public DateTime? DataCadastro { get; set; }
 
         // Relacionamentos
         public Fornecedor Fornecedor { get; set; }
