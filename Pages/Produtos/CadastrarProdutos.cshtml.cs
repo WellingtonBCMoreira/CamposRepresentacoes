@@ -26,22 +26,17 @@ namespace CamposRepresentacoes.Pages.Produtos
 
         public IActionResult OnPost() 
         {
-            if (!ModelState.IsValid)
-            {
-                // Se o modelo não for válido, retorne para a página com erros de validação
-                return Page();
-            }
-
             try
             {
                 Produto.Id = Guid.NewGuid();
                 Produto.Status = true;
-                Produto.DataCadastro = DateTime.Now;
+                Produto.DataCadastro = DateTime.Now;                
 
-                _produtosService.CadastrarProduto(Produto);                
+                _produtosService.CadastrarProduto(Produto);
 
-                // Redirecionar para a página de lista de produtos após o cadastro bem-sucedido
-                return RedirectToPage("/Produtos/CadastrarProdutos");
+                MensagemAlerta.SetMensagem("CadastroRealizado", "Produto cadastrado com sucesso!");
+                
+                return RedirectToPage();
             }
             catch (Exception ex)
             {

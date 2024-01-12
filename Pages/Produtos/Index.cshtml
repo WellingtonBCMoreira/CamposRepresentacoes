@@ -2,283 +2,359 @@
 @model CamposRepresentacoes.Pages.Produtos.IndexModel
 @{
 }
-
-<div class="row no-print">
-    <div class="col-md-12">
-        <h2>Buscar Produtos</h2>
-        <form method="get" action="/Produtos/Index" id="formBusca" onsubmit="return buscarProdutos()">
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="nome">Nome</label>
-                    <input type="text" class="form-control" id="nome" name="produto.Nome" placeholder="Digite o nome">
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/dist/css/adminlte.min.css">   
+</head>
+<body>
+    <div class="row no-print">
+        <div class="col-md-12">
+            @* <h2>Buscar Produtos</h2> *@
+            <form method="get" id="formBusca">
+                @Html.AntiForgeryToken()
+                <div id="filter" class="card card-filter elevation-3">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-filter mr-2"></i>Filtro Pesquisa</h5>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="colapse" title="colapse">
+                                <i class="fas fa-minus text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="loading" style="display:none"></div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="nome">Nome</label>
+                                    <input type="text" class="form-control" id="nome" name="Produto.Nome" placeholder="Digite o nome">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="descricao">Descrição</label>
+                                    <input type="text" class="form-control" id="descricao" name="Produto.Descricao" placeholder="Digite a descrição">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select class="form-control" id="status" name="Produto.Status">
+                                        <option value="">Todos</option>
+                                        <option value="true">Ativo</option>
+                                        <option value="false">Inativo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="fornecedorId">Fornecedor</label>
+                                    <select id="fornecedorId" name="produto.IdFornecedor" class="form-control">
+                                        <option value="">Todos</option>
+                                        @if (Model.Fornecedores != null)
+                                        {
+                                            @foreach (var fornecedor in Model.Fornecedores)
+                                            {
+                                                <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="float-right">
+                            <a asp-page="/Produtos/Index" class="btn btn-default elevation-1"><i class="fas fa-eraser"></i> Limpar</a>
+                            <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-search"></i>Buscar</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="descricao">Descrição</label>
-                    <input type="text" class="form-control" id="descricao" name="produto.Descricao" placeholder="Digite a descrição">
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="status">Status</label>
-                    <select class="form-control" id="status" name="produto.Status">
-                        <option value="">Todos</option>
-                        <option value="1">Ativo</option>
-                        <option value="0">Inativo</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="fornecedorId">Fornecedor</label>
-                    <select id="fornecedorId" name="produto.IdFornecedor" class="form-control">
-                        <option value="">Todos</option>
-                        @if (Model.Fornecedores != null)
-                        {
-                            @foreach (var fornecedor in Model.Fornecedores)
-                            {
-                                <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
-                            }
-                        }
-                    </select>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Buscar</button>
-        </form>
-    </div>
-</div>
-
-<div class="row mt-3" id="tabelaProdutos">
-    <div class="col-sm-12">
-        <h2>Lista de Produtos</h2>
-
-        @if (Model.Produtos.Any())
-        {
-            <!-- Formulário para Desativar Produtos -->
-            <form method="post" asp-page-handler="DesativarProduto" onsubmit="return prepararIdsProdutos()">
-                <div class="card-body">
-                    <table id="example2" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Descrição</th>
-                                <th>Preço</th>
-                                <th>Data Cadastro</th>
-                                <th>Ação</th>
-                                <th>Editar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var produto in Model.Produtos)
-                            {
-                                <tr>
-                                    <td>@produto.Nome</td>
-                                    <td>@produto.Descricao</td>
-                                    <td>@produto.Preco.ToString("C")</td>
-                                    <td>@produto.DataCadastro</td>
-                                    <td>
-                                        <input type="checkbox" name="produtosParaDesativar" value="@produto.Id">
-                                    </td>
-                                    <td>
-                                        <a href="/Produtos/EditarProduto?id=@produto.Id" class="btn btn-primary">Editar</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Campo oculto para armazenar os IDs dos produtos selecionados -->
-                <input type="hidden" name="idsProdutosSelecionados" id="idsProdutosSelecionados">
-
-                <button type="submit" id="salvarAlteracoes" class="btn btn-success">Salvar Alterações</button>
             </form>
-        }
-        else
-        {
-            <p>Nenhum produto encontrado!</p>
-        }
+        </div>
     </div>
-</div>
 
-<div class="row mt-3">
-    <div class="col-sm-12">
-        <form method="post" enctype="multipart/form-data">
-            <div class="mt-3">
-                <label for="fornecedorId">Selecione um fornecedor para importar os produtos:</label>
-                <select id="fornecedorId" name="fornecedorId" class="form-control">
-                    <option value="">Selecione...</option>
-                    @if(Model.Fornecedores != null)
-                    {
-                        @foreach (var fornecedor in Model.Fornecedores)
-                        {
-                            <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
-                        }
-                    }                    
-                </select>
-            </div>
-            <div class="input-group mt-3">
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="fileInput" name="ArquivoUpload" onchange="updateFileName()">
-                    <label class="custom-file-label" for="fileInput" id="fileInputLabel">Escolher arquivo</label>
+    <section>
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <div id="tabelaProdutosContainer" style="display: none;">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <!-- Formulário para Desativar Produtos -->
+                            <form method="post" asp-page-handler="DesativarProduto" onsubmit="return prepararIdsProdutos()">
+                                <div class="card-body">
+                                    <table id="tabelaProdutos" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Descrição</th>
+                                                <th>Preço</th>
+                                                <th>Data Cadastro</th>
+                                                <th>Ação</th>
+                                                <th>Editar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="float-left">
+                                        <!-- Campo oculto para armazenar os IDs dos produtos selecionados -->
+                                        <input type="hidden" name="idsProdutosSelecionados" id="idsProdutosSelecionados">
+                                        <button type="submit" id="salvarAlteracoes" class="btn btn-success">Salvar Alterações</button>
+                                    </div>                                    
+                                </div>                                
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary" onclick="return validarFornecedor()">Upload Planilha</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-primary">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="fornecedorId">Selecione um fornecedor para importar os produtos:</label>
+                                    <select id="fornecedorId" name="fornecedorId" class="form-control">
+                                        <option value="">Selecione...</option>
+                                        @if (Model.Fornecedores != null)
+                                        {
+                                            @foreach (var fornecedor in Model.Fornecedores)
+                                            {
+                                                <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>                                                            
+                                <div class="form-group">
+                                    <div class="input-group mt-6">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="fileInput" name="ArquivoUpload" onchange="updateFileName()">
+                                            <label class="custom-file-label" for="fileInput" id="fileInputLabel">Escolher arquivo</label>
+                                        </div>
+                                        <div class="input-group-append mb-2">
+                                            <button type="submit" class="btn btn-primary" onclick="return validarFornecedor()">Upload Planilha</button>
+                                        </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </form>
+                    </div>                    
                 </div>
             </div>
-        </form>
-    </div>
-    <div class="row mt-4">
-        <a href="/Produtos/CadastrarProdutos" class="btn btn-primary ml-2">Cadastrar Produto</a>
-    </div>
-</div>
+        </div>
+    </section>    
 
-@if (ViewData.ContainsKey("ProdutosComErro") && ViewData["ProdutosComErro"] != null && ((List<dynamic>)ViewData["ProdutosComErro"]).Any())
-{
-    <div class="row mt-3">
-        <div class="col-sm-12">
-            <h3>Produtos com Erro</h3>
+    @if (ViewData.ContainsKey("ProdutosComErro") && ViewData["ProdutosComErro"] != null && ((List<dynamic>)ViewData["ProdutosComErro"]).Any())
+    {
+        <div class="row mt-3">
+            <div class="col-sm-12">
+                <h3>Produtos com Erro</h3>
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Status</th>
-                        <th>Nome</th>
-                        <th>Descrição</th>
-                        <th>Preço</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var produtoErro in ViewData["ProdutosComErro"] as List<dynamic>)
-                    {
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>@produtoErro.Status</td>
-                            <td>@produtoErro.Nome</td>
-                            <td>@produtoErro.Descricao</td>
-                            <td>@produtoErro.Preco</td>
+                            <th>Status</th>
+                            <th>Nome</th>
+                            <th>Descrição</th>
+                            <th>Preço</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var produtoErro in ViewData["ProdutosComErro"] as List<dynamic>)
+                        {
+                            <tr>
+                                <td>@produtoErro.Status</td>
+                                <td>@produtoErro.Nome</td>
+                                <td>@produtoErro.Descricao</td>
+                                <td>@produtoErro.Preco</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-}
-else if (ViewData.ContainsKey("ProdutosImportados") && ViewData["ProdutosImportados"] != null && ((List<dynamic>)ViewData["ProdutosImportados"]).Any())
-{
-    <div class="row mt-3">
-        <div class="col-sm-12">
-            <h3>Todos os produtos foram importados com sucesso!</h3>
+    }
+    else if (ViewData.ContainsKey("ProdutosImportados") && ViewData["ProdutosImportados"] != null && ((List<dynamic>)ViewData["ProdutosImportados"]).Any())
+    {
+        <div class="row mt-3">
+            <div class="col-sm-12">
+                <h3>Todos os produtos foram importados com sucesso!</h3>
+            </div>
         </div>
-    </div>
-}
+    }
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    @section scripts {
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>
+        <!-- Bootstrap 4 -->
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- DataTables  & Plugins -->
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/jszip/jszip.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/pdfmake/pdfmake.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/pdfmake/vfs_fonts.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+        <!-- AdminLTE App -->
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/dist/js/adminlte.min.js"></script>        
+        <script>
+            $(document).ready(function () {
+                $('#formBusca').submit(function (event) {
+                    event.preventDefault();
+                    buscarProdutos();
+                })
+            });
 
-@section scripts {
-    <script>
-        // function buscarProdutos() {
-        //     document.getElementById("tabelaProdutos").style.display = "block";
-        // }
-        function buscarProdutos() {
-            var formData = $('#formBusca').serialize();
+            function buscarProdutos() {
+                var formData = $('#formBusca').serialize();
+                //console.log(formData);
 
-            $.ajax({
-                type: 'GET',
-                url: '/Produtos/Index',
-                data: formData,
-                dataType: 'json',
-                success: function (result) {
-                    console.log(result);
-                    // Limpa a tabela antes de adicionar os novos resultados
-                    $('#tabelaProdutos tbody').empty();
+                if ($.fn.DataTable.isDataTable('#tabelaProdutos')) {
+                    $('#tabelaProdutos').DataTable().destroy();
+                }
 
-                    // Verifica se a resposta contém dados válidos
-                    if (result && result.length > 0) {
-                        // Atualiza a tabela com os novos resultados
-                        result.forEach(function (produto) {
-                            var row = '<tr>' +
-                                '<td>' + produto.Nome + '</td>' +
-                                '<td>' + produto.Descricao + '</td>' +
-                                '<td>' + (produto.Preco !== undefined ? produto.Preco : '') + '</td>' +
-                                '<td>' + (produto.DataCadastro !== undefined ? produto.DataCadastro : '') + '</td>' +
-                                '<td><input type="checkbox" name="produtosParaDesativar" value="' + produto.Id + '"></td>' +
-                                '<td><a href="/Produtos/EditarProduto?id=' + produto.Id + '" class="btn btn-primary">Editar</a></td>' +
-                                '</tr>';
+                $.ajax({
+                    type: 'GET',
+                    url: '/Produtos/Index',
+                    data: formData,
+                    dataType: 'json',
 
-                            $('#tabelaProdutos tbody').append(row);
-                        });
-                    } else {
-                        // Exibe uma mensagem se não houver dados
-                        $('#tabelaProdutos tbody').html('<tr><td colspan="6">Nenhum produto encontrado!</td></tr>');
+                    success: function (result) {
+                        //console.log(result);
+                        // Limpa a tabela antes de adicionar os novos resultados
+                        $('#tabelaProdutos tbody').empty();
+
+                        // Verifica se a resposta contém dados válidos
+                        if (result && result.length > 0) {
+                            // Atualiza a tabela com os novos resultados
+                            result.forEach(function (produto) {
+                                var precoFormatado = produto.preco !== undefined ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(produto.preco) : '';
+                                var checkboxMarcado = produto.status !== undefined ? !produto.status : false;
+
+                                var row = '<tr>' +
+                                    '<td>' + (produto.nome !== undefined ? produto.nome : '') + '</td>' +
+                                    '<td>' + (produto.descricao !== undefined ? produto.descricao : '') + '</td>' +
+                                    '<td>' + precoFormatado + '</td>' +
+                                    '<td>' + (produto.dataCadastro !== undefined ? produto.dataCadastro : '') + '</td>' +
+                                    '<td><input type="checkbox" name="produtosParaDesativar" checked data-bootstrap-switch value="' + produto.id + '"' + (checkboxMarcado ? 'checked' : '') + '></td>' +
+                                    '<td><a href="/Produtos/EditarProduto?id=' + produto.id + '" class="btn btn-primary">Editar</a></td>' +
+                                    '</tr>';
+
+                                $('#tabelaProdutos tbody').append(row);
+                            });
+                        } else {
+                            // Exibe uma mensagem se não houver dados
+                            $('#tabelaProdutos tbody').html('<tr><td colspan="6">Nenhum produto encontrado!</td></tr>');
+                        }
+                        $('#tabelaProdutosContainer').show();
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        // Verifica se é um erro real (status 500 ou outros)
+                        if (xhr.status >= 400) {
+                            alert('Erro ao buscar produtos. Status: ' + xhr.status + ' - ' + errorThrown);
+                        }
                     }
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    // Verifica se é um erro real (status 500 ou outros)
-                    if (xhr.status >= 400) {
-                        alert('Erro ao buscar produtos. Status: ' + xhr.status + ' - ' + errorThrown);
+                });
+
+                // Inicializando o DataTable
+                $('#tabelaProdutos').DataTable({
+                    "paging": true,
+                    "lengthChange": false,
+                    "searching": false,
+                    "ordering": false,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                });
+
+                return false; // Impede o envio padrão do formulário
+            }
+
+            function updateFileName() {
+                var fileName = document.getElementById("fileInput").files[0].name;
+                document.getElementById("fileInputLabel").innerText = fileName;
+            }
+
+            function validarFornecedor() {
+                var fornecedorDropdown = document.getElementById("fornecedorId");
+                var fornecedorId = fornecedorDropdown.value;
+
+                var arquivoInput = document.getElementById('fileInput');
+                if (fornecedorId === '') {
+                    alert('Selecione um fornecedor antes de fazer o upload!');
+                    return false;
+                }
+                if (arquivoInput.files.length === 0) {
+                    alert('Selecione uma planilha antes de fazer o upload!');
+                    return false;
+                }
+                return true;
+            }
+            var mensagemSucesso = '@MensagemAlerta.GetMensagem("SucessoDesativarProdutos")';
+            if (mensagemSucesso) {
+                alert(mensagemSucesso);
+            }
+
+            function prepararIdsProdutos() {
+                var idsProdutos = [];
+
+                // Iterar sobre os checkboxes selecionados
+                $('input[name="produtosParaDesativar"]:checked').each(function () {
+                    idsProdutos.push($(this).val());
+                });
+
+                if (idsProdutos.length === 0) {
+                    alert('Selecione pelo menos um produto para desativar!');
+                    return false;
+                }
+
+                // Converter o array de IDs em uma string JSON e atribuir ao campo oculto
+                $('#idsProdutosSelecionados').val(JSON.stringify(idsProdutos));
+
+                return true;
+            }
+
+            $(document).ready(function () {
+                // Adicione um evento de clique ao botão de salvar
+                $('#salvarAlteracoes').click(function () {
+                    return prepararIdsProdutos();
+                });
+            });
+
+            function GetMensagem(mensagem) {
+                if (mensagem) {
+                    if (event.type === "click" && event.target.id === "salvarAlteracoes") {
+                        return mensagem;
                     }
                 }
-            });
 
-            return false; // Impede o envio padrão do formulário
-        }
-        
-        function updateFileName() {
-            var fileName = document.getElementById("fileInput").files[0].name;
-            document.getElementById("fileInputLabel").innerText = fileName;
-        }
+                return null;
+            }            
 
-        function validarFornecedor() {
-            var fornecedorDropdown = document.getElementById("fornecedorId");
-            var fornecedorId = fornecedorDropdown.value;
+        </script>
+    }
 
-            var arquivoInput = document.getElementById('fileInput');
-            if (fornecedorId === '') {
-                alert('Selecione um fornecedor antes de fazer o upload!');
-                return false;
-            }
-            if (arquivoInput.files.length === 0) {
-                alert('Selecione uma planilha antes de fazer o upload!');
-                return false;
-            }
-            return true;
-        }
-        var mensagemSucesso = '@MensagemAlerta.GetMensagem("SucessoDesativarProdutos")';
-        if (mensagemSucesso) {
-            alert(mensagemSucesso);            
-        }
-
-        function prepararIdsProdutos() {
-            var idsProdutos = [];
-
-            // Iterar sobre os checkboxes selecionados
-            $('input[name="produtosParaDesativar"]:checked').each(function () {
-                idsProdutos.push($(this).val());
-            });
-
-            if (idsProdutos.length === 0) {
-                alert('Selecione pelo menos um produto para desativar!');
-                return false;
-            }
-
-            // Converter o array de IDs em uma string JSON e atribuir ao campo oculto
-            $('#idsProdutosSelecionados').val(JSON.stringify(idsProdutos));
-
-            return true;
-        }
-
-        $(document).ready(function () {
-            // Adicione um evento de clique ao botão de salvar
-            $('#salvarAlteracoes').click(function () {
-                return prepararIdsProdutos();
-            });
-        });
-
-        function GetMensagem(mensagem) {
-            if (mensagem) {
-                if (event.type === "click" && event.target.id === "salvarAlteracoes") {
-                    return mensagem;
-                }
-            }
-
-            return null;
-        }
-        
-
-    </script>    
-}
+</body>
+</html>

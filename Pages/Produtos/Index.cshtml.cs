@@ -32,27 +32,26 @@ namespace CamposRepresentacoes.Pages.Produtos
         public Guid FornecedorId { get; set; }
 
         public IActionResult OnGet()
-        {   
-            if(Produto.Descricao != string.Empty)
+        { 
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 Produtos = _produtosService.ObterProdutos(Produto).ToList();
-                Fornecedores = _produtosService.ObterFornecedores();
-
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                
+                var listaProdutos = Produtos.Select(p => new
                 {
-                    var listaProdutos = Produtos.Select(p => new
-                    {
-                        Nome = p.Nome,
-                        Descricao = p.Descricao,
-                        Preco = p.Preco,
-                        DataCadastro = p.DataCadastro,
-                        Id = p.Id,
-                    });
+                    Nome = p.Nome,
+                    Descricao = p.Descricao,
+                    Preco = p.Preco,
+                    DataCadastro = p.DataCadastro,
+                    Status = p.Status,
+                    Id = p.Id,
+                });
 
-                    return new JsonResult(listaProdutos);
-                    //ViewData["Produtos"] = listaProdutos;
-                }
-            }           
+                return new JsonResult(listaProdutos);
+                //ViewData["Produtos"] = listaProdutos;
+            }
+
+            Fornecedores = _produtosService.ObterFornecedores();
             
             return Page();
         }
@@ -140,7 +139,7 @@ namespace CamposRepresentacoes.Pages.Produtos
 
                 }
 
-                MensagemAlerta.SetMensagem("SucessoDesativarProdutos", "Todos os produtos foram desativados!!!");
+                MensagemAlerta.SetMensagem("SucessoDesativarProdutos", "Os produtos selecionados foram desativados!!!");
             }
             return RedirectToPage();
         }
