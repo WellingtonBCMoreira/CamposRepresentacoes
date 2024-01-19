@@ -11,11 +11,14 @@ namespace CamposRepresentacoes.Models
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Preco { get; set; }
+        [NotMapped]
+        public string Preco2 { get; set; }
         public bool? Status { get; set; }
 
         public DateTime? DataCadastro { get; set; }
 
         // Relacionamentos
+        [NotMapped]
         public Fornecedor Fornecedor { get; set; }
     }
 }

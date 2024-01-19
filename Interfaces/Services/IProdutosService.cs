@@ -7,7 +7,7 @@ namespace CamposRepresentacoes.Interfaces.Services
         Produto CadastrarProduto(Produto produto);
         void AlterarProduto(Produto produto);
         void DeletarProdudo(Guid idProduto);
-        Produto ObterProdutoPorId(Guid id);
+        Produto ObterProdutoPorId(string id);
         IQueryable<Produto> ObterProdutos();
         IQueryable<Produto> ObterProdutos(Produto filtro);
         IQueryable<Fornecedor> ObterFornecedores();

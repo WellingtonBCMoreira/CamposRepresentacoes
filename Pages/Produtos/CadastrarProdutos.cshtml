@@ -21,9 +21,9 @@
                 <textarea id="descricao" name="Produto.Descricao" class="form-control" asp-for="Produto.Descricao" required></textarea>
             </div>
             <div class="form-group">
-                <label for="preco">Preço:</label>
+                <label for="preco">Preço: (R$)</label>
                 <div class="input-group">
-                    <input type="text" id="preco" name="Produto.Preco" class="form-control" asp-for="Produto.Preco" required>
+                    <input type="text" class="form-control" asp-for="Produto.Preco2" required>
                 </div>                
             </div>
             <div class="form-group">
@@ -46,23 +46,18 @@
 
     @section scripts{
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
+        <script src="~/lib/jquery.maskmoney.min.js"></script>
 
         <script>
-            $(document).ready(function () {
-                $('#preco').maskMoney({
-                    thousands: '',
-                    decimal: '.',
+            $(function () {
+                $('#Produto_Preco2').maskMoney({
+                    thousands: '.',
+                    decimal: ',',
                     allowZero: true,
                     precision: 2,
-                    prefix: 'R$ '
-                });
-
-                $('form').submit(function () {                    
-                    var preco = $('#preco').maskMoney('unmasked')[0];                                                       
-                    console.log(preco);
-                    
-                    $('input[name="Produto.Preco"]').val(preco);
+                    prefix: 'R$ ',
+                    allowNegative: false,
+                    affixesStay: true
                 });
             });
 

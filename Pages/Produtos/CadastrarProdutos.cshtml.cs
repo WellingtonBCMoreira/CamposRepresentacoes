@@ -26,24 +26,11 @@ namespace CamposRepresentacoes.Pages.Produtos
 
         public IActionResult OnPost() 
         {
-            try
-            {
-                Produto.Id = Guid.NewGuid();
-                Produto.Status = true;
-                Produto.DataCadastro = DateTime.Now;                
+            _produtosService.CadastrarProduto(Produto);
 
-                _produtosService.CadastrarProduto(Produto);
-
-                MensagemAlerta.SetMensagem("CadastroRealizado", "Produto cadastrado com sucesso!");
+            MensagemAlerta.SetMensagem("CadastroRealizado", "Produto cadastrado com sucesso!");
                 
-                return RedirectToPage();
-            }
-            catch (Exception ex)
-            {
-                // Tratar qualquer exceção aqui
-                ModelState.AddModelError(string.Empty, "Ocorreu um erro ao cadastrar o produto.");
-                return Page();
-            }
+            return RedirectToPage();          
             
         }
     }

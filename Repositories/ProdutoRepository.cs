@@ -20,7 +20,13 @@ namespace CamposRepresentacoes.Repositories
             {
                 if(produto is null) throw new ArgumentNullException(nameof(produto));
 
-                _context.Entry(produto).CurrentValues.SetValues(produto);
+                var consultaProd = _context.Produtos.Find(produto.Id) ?? throw new ArgumentException($"Produto com ID {produto.Id} não encontrado na base de dados.");
+                
+                var preco = produto.Preco2.Replace("R$ ", "").Replace(".", "");
+                produto.Preco = decimal.Parse(preco, System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
+                produto.DataCadastro = DateTime.Now;
+                
+                _context.Entry(consultaProd).CurrentValues.SetValues(produto);
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -35,6 +41,12 @@ namespace CamposRepresentacoes.Repositories
             try
             {
                 if (produto is null) throw new ArgumentNullException(nameof (produto));
+
+                produto.Id = Guid.NewGuid();
+                produto.Status = true;
+                produto.DataCadastro = DateTime.Now;
+                var preco = produto.Preco2.Replace("R$ ", "").Replace(".", "");
+                produto.Preco = decimal.Parse(preco, System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
 
                 _context.Produtos.Add(produto);
                 _context.SaveChanges();
@@ -79,13 +91,15 @@ namespace CamposRepresentacoes.Repositories
             }
         }
 
-        public Produto ObterProdutoPorId(Guid id)
+        public Produto ObterProdutoPorId(string id)
         {
             try
             {
-                if(id == Guid.Empty) throw new ArgumentNullException(nameof(id));
+                if(string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
-                return (Produto)_context.Produtos.Where(p => p.Id == id);
+                Guid idProduto = Guid.Parse(id);
+
+                return _context.Produtos.Where(p => p.Id == idProduto).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -132,6 +146,8 @@ namespace CamposRepresentacoes.Repositories
                 if (filtro.IdFornecedor != Guid.Empty)
                     produtos = produtos.Where(p => p.IdFornecedor == filtro.IdFornecedor);
 
+                produtos = produtos.OrderByDescending(p => p.DataCadastro);
+                
                 return produtos;
             }
             catch (Exception ex)

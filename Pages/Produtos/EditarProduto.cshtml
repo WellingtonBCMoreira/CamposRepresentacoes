@@ -2,3 +2,82 @@
 @model CamposRepresentacoes.Pages.Produtos.EditarProdutoModel
 @{
 }
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/dist/css/adminlte.min.css">
+</head>
+<body>
+    <h2>Editar Produto</h2>
+    <div class="row">
+        <div class="col-sm-6">
+            <form method="post">
+                <input type="hidden" asp-for="Produto.Id"/>
+                <input type="hidden" asp-for="Produto.IdFornecedor"/>
+                <div class="form-group">
+                    <label asp-for="Produto.Nome">Nome do Produto</label>
+                    <input type="text" name="Produto.Nome" class="form-control" asp-for="Produto.Nome" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Produto.Descricao">Descrição</label>
+                    <input type="text" name="Produto.Descricao" class="form-control" asp-for="Produto.Descricao" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Produto.Preco">Preço: (R$)</label>
+                    <input type="text" class="form-control" asp-for="Produto.Preco" value="@Model.Produto.Preco.ToString("C", new System.Globalization.CultureInfo("pt-BR"))" required>
+                    <input type="hidden" asp-for="Produto.Preco2"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Produto.Status">Status</label>
+                    <select class="form-control" name="Produto.Status">                    
+                        <option value="true">Ativo</option>
+                        <option value="false">Inativo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-danger" href="/Produtos/Index">Voltar</a>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @section scripts{
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="~/lib/jquery.maskmoney.min.js"></script>
+
+        <script>
+            $(function () {
+                $('#Produto_Preco').maskMoney({
+                    thousands: '.',
+                    decimal: ',',
+                    allowZero: true,
+                    precision: 2,
+                    prefix: 'R$ ',
+                    allowNegative: false,
+                    affixesStay: true
+                });
+            });
+
+            $('form').submit(function () {
+                $('input[name="Produto.Preco2"]').val($('#Produto_Preco').maskMoney('unmasked')[0]);
+                return true;
+            });
+
+            var mensagemSucesso = '@MensagemAlerta.GetMensagem("MsgAlteracao")';
+            if (mensagemSucesso) {
+                alert(mensagemSucesso);
+
+                window.location.href = '/Produtos/Index';
+            }
+        </script>
+    }
+</body>
+</html>

@@ -33,7 +33,7 @@ namespace CamposRepresentacoes.Services
             return _produtosRepository.ObterFornecedores();
         }
 
-        public Produto ObterProdutoPorId(Guid id)
+        public Produto ObterProdutoPorId(string id)
         {
             return _produtosRepository.ObterProdutoPorId(id);
         }
