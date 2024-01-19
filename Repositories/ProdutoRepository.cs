@@ -1,7 +1,6 @@
 ﻿using CamposRepresentacoes.Data;
 using CamposRepresentacoes.Interfaces.Repositories;
 using CamposRepresentacoes.Models;
-using Microsoft.Data.SqlClient;
 
 namespace CamposRepresentacoes.Repositories
 {
@@ -45,8 +44,12 @@ namespace CamposRepresentacoes.Repositories
                 produto.Id = Guid.NewGuid();
                 produto.Status = true;
                 produto.DataCadastro = DateTime.Now;
-                var preco = produto.Preco2.Replace("R$ ", "").Replace(".", "");
-                produto.Preco = decimal.Parse(preco, System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
+                
+                if(!string.IsNullOrEmpty(produto.Preco2))
+                {
+                    var preco = produto.Preco2.Replace("R$ ", "").Replace(".", "");
+                    produto.Preco = decimal.Parse(preco, System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
+                }                
 
                 _context.Produtos.Add(produto);
                 _context.SaveChanges();

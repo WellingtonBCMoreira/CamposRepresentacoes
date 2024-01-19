@@ -1,5 +1,6 @@
 ﻿using CamposRepresentacoes.Data.Configuration;
 using CamposRepresentacoes.Models;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace CamposRepresentacoes.Data
@@ -29,5 +30,22 @@ namespace CamposRepresentacoes.Data
         public DbSet<Transportadora> Transportadoras { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<ItensPedido> ItensPedido { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                var connectionString = new SqliteConnectionStringBuilder
+                {
+                    DataSource = "Db_Campos.db"
+                }.ToString();
+
+                var connection = new SqliteConnection(connectionString);
+
+                optionsBuilder.UseSqlite(connection);
+            }
+
+            base.OnConfiguring(optionsBuilder);
+        }
     }
 }

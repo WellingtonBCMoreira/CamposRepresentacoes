@@ -8,6 +8,8 @@ using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 using System.Data;
+using System.Text;
+using System.Text.Encodings;
 using System.Text.Json.Serialization;
 
 namespace CamposRepresentacoes.Pages.Produtos
@@ -58,6 +60,7 @@ namespace CamposRepresentacoes.Pages.Produtos
 
         public IActionResult OnPost()
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             if (ArquivoUpload != null && ArquivoUpload.Length > 0)
             {
                 if (Path.GetExtension(ArquivoUpload.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
@@ -72,7 +75,10 @@ namespace CamposRepresentacoes.Pages.Produtos
                         if (FornecedorId != Guid.Empty)
                         {
                             // Utilize o ExcelDataReader para ler o arquivo Excel
-                            using (var reader = ExcelReaderFactory.CreateReader(stream))
+                            using (var reader = ExcelReaderFactory.CreateReader(stream, new ExcelReaderConfiguration()
+                            {
+                                FallbackEncoding = Encoding.GetEncoding(1252),
+                            }))
                             {
                                 var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration()
                                 {

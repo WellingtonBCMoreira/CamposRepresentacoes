@@ -300,9 +300,9 @@
             function validarFornecedor() {
                 var fornecedorDropdown = document.getElementById("fornecedorId");
                 var fornecedorId = fornecedorDropdown.value;
-
+                
                 var arquivoInput = document.getElementById('fileInput');
-                if (fornecedorId === '') {
+                if (fornecedorId === '0') {
                     alert('Selecione um fornecedor antes de fazer o upload!');
                     return false;
                 }

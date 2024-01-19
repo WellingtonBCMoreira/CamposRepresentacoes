@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CamposRepresentacoes.Migrations
 {
-    public partial class IniciandoProjetoV1 : Migration
+    public partial class MigrandoODataBase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,17 +13,17 @@ namespace CamposRepresentacoes.Migrations
                 name: "Clientes",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RazaoSocial = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    CNPJ = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
-                    Rua = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Bairro = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Cidade = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Numero = table.Column<int>(type: "int", nullable: false),
-                    Complemento = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    CEP = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    Telefone = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    RazaoSocial = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    CNPJ = table.Column<string>(type: "TEXT", maxLength: 14, nullable: false),
+                    Rua = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Bairro = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Cidade = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Numero = table.Column<int>(type: "INTEGER", nullable: false),
+                    Complemento = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    CEP = table.Column<string>(type: "TEXT", maxLength: 8, nullable: false),
+                    Telefone = table.Column<string>(type: "TEXT", maxLength: 14, nullable: false),
+                    Ativo = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,17 +34,17 @@ namespace CamposRepresentacoes.Migrations
                 name: "Fornecedores",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RazaoSocial = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    CNPJ = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
-                    Rua = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Bairro = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Cidade = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Numero = table.Column<int>(type: "int", nullable: false),
-                    Complemento = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    CEP = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    Telefone = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    RazaoSocial = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    CNPJ = table.Column<string>(type: "TEXT", maxLength: 14, nullable: false),
+                    Rua = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Bairro = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Cidade = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Numero = table.Column<int>(type: "INTEGER", nullable: false),
+                    Complemento = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    CEP = table.Column<string>(type: "TEXT", maxLength: 8, nullable: false),
+                    Telefone = table.Column<string>(type: "TEXT", maxLength: 14, nullable: false),
+                    Ativo = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,17 +55,17 @@ namespace CamposRepresentacoes.Migrations
                 name: "Transportadoras",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RazaoSocial = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    CNPJ = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
-                    Rua = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Bairro = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Cidade = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Numero = table.Column<int>(type: "int", nullable: false),
-                    Complemento = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    CEP = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    Telefone = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    RazaoSocial = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    CNPJ = table.Column<string>(type: "TEXT", maxLength: 14, nullable: false),
+                    Rua = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Bairro = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Cidade = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Numero = table.Column<int>(type: "INTEGER", nullable: false),
+                    Complemento = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    CEP = table.Column<string>(type: "TEXT", maxLength: 8, nullable: false),
+                    Telefone = table.Column<string>(type: "TEXT", maxLength: 14, nullable: false),
+                    Ativo = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,12 +76,13 @@ namespace CamposRepresentacoes.Migrations
                 name: "Produtos",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdFornecedor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IdFornecedor = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Nome = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Descricao = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: false),
                     Preco = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<bool>(type: "bit", maxLength: 1, nullable: false)
+                    Status = table.Column<bool>(type: "INTEGER", maxLength: 1, nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -98,13 +99,13 @@ namespace CamposRepresentacoes.Migrations
                 name: "Pedidos",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdCliente = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdFornecedor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdTransportadora = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DataEmissao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IdCliente = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IdFornecedor = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IdTransportadora = table.Column<Guid>(type: "TEXT", nullable: false),
+                    DataEmissao = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ValorTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(1)", maxLength: 1, nullable: false)
+                    Status = table.Column<string>(type: "TEXT", maxLength: 1, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,12 +134,12 @@ namespace CamposRepresentacoes.Migrations
                 name: "ItensPedido",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdPedido = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdProduto = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdFornecedor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Quantidade = table.Column<int>(type: "int", nullable: false),
-                    PedidoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IdPedido = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IdProduto = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IdFornecedor = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
+                    PedidoId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
