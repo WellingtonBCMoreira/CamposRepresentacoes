@@ -86,7 +86,7 @@ namespace CamposRepresentacoes.Repositories
         {
             try
             {
-                return _context.Fornecedores.Where(f => f.Ativo == true);
+                return _context.Fornecedores.Where(f => f.Status == true);
             }
             catch (Exception ex)
             {

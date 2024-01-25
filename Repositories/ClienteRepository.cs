@@ -53,7 +53,7 @@ namespace CamposRepresentacoes.Repositories
 
                 if (cliente is null) new ArgumentNullException(nameof(cliente));
 
-                cliente.Ativo = status;
+                cliente.Status = status;
                                
                 _context.SaveChanges();
             }
@@ -129,8 +129,8 @@ namespace CamposRepresentacoes.Repositories
                 if (!string.IsNullOrEmpty(filtro.Telefone))
                     clientes = clientes.Where(c => c.Telefone.Contains(filtro.Telefone));
                 
-                if (filtro.Ativo == true || filtro.Ativo == false)
-                    clientes = clientes.Where(c => c.Ativo == filtro.Ativo);
+                if (filtro.Status == true || filtro.Status == false)
+                    clientes = clientes.Where(c => c.Status == filtro.Status);
 
                 return clientes;
 
@@ -146,10 +146,10 @@ namespace CamposRepresentacoes.Repositories
         {
             var clientes = new List<Cliente>
             {
-                new Cliente {Id = Guid.NewGuid(), RazaoSocial = "Teste 1", CNPJ = "11111111111111", Rua = "Teste 1", Bairro = "Teste 1", Cidade = "Teste 1", Numero = 1, Complemento = string.Empty, CEP = "11111111", Telefone = "1111111111", Ativo = true},
-                new Cliente {Id = Guid.NewGuid(), RazaoSocial = "Teste 2", CNPJ = "22222222222222", Rua = "Teste 2", Bairro = "Teste 2", Cidade = "Teste 2", Numero = 2, Complemento = string.Empty, CEP = "22222222", Telefone = "2222222222", Ativo = true},
-                new Cliente {Id = Guid.NewGuid(), RazaoSocial = "Teste 3", CNPJ = "33333333333333", Rua = "Teste 3", Bairro = "Teste 3", Cidade = "Teste 3", Numero = 3, Complemento = string.Empty, CEP = "33333333", Telefone = "3333333333", Ativo = false},
-                new Cliente {Id = Guid.NewGuid(), RazaoSocial = "Teste 4", CNPJ = "44444444444444", Rua = "Teste 4", Bairro = "Teste 4", Cidade = "Teste 4", Numero = 4, Complemento = string.Empty, CEP = "44444444", Telefone = "4444444444", Ativo = false}
+                new Cliente {Id = Guid.NewGuid(), RazaoSocial = "Teste 1", CNPJ = "11111111111111", Rua = "Teste 1", Bairro = "Teste 1", Cidade = "Teste 1", Numero = 1, Complemento = string.Empty, CEP = "11111111", Telefone = "1111111111", Status = true},
+                new Cliente {Id = Guid.NewGuid(), RazaoSocial = "Teste 2", CNPJ = "22222222222222", Rua = "Teste 2", Bairro = "Teste 2", Cidade = "Teste 2", Numero = 2, Complemento = string.Empty, CEP = "22222222", Telefone = "2222222222", Status = true},
+                new Cliente {Id = Guid.NewGuid(), RazaoSocial = "Teste 3", CNPJ = "33333333333333", Rua = "Teste 3", Bairro = "Teste 3", Cidade = "Teste 3", Numero = 3, Complemento = string.Empty, CEP = "33333333", Telefone = "3333333333", Status = false},
+                new Cliente {Id = Guid.NewGuid(), RazaoSocial = "Teste 4", CNPJ = "44444444444444", Rua = "Teste 4", Bairro = "Teste 4", Cidade = "Teste 4", Numero = 4, Complemento = string.Empty, CEP = "44444444", Telefone = "4444444444", Status = false}
     
             };
 

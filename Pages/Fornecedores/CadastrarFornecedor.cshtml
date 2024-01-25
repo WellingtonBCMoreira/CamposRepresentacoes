@@ -1,0 +1,160 @@
+﻿@page
+@model CamposRepresentacoes.Pages.Fornecedores.CadastrarFornecedorModel
+@{
+}
+
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+<body>
+    <h2> Cadastrar Fornecedor</h2>
+    <div class="row">
+        <div class="col-sm-6">
+            <form method="post">
+                <div class="form-group">
+                    <label for="razaoSocial">Razão Social:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-building"></i></span>
+                        </div>
+                        <input type="text" name="Fornecedor.RazaoSocial" class="form-control" asp-for="Fornecedor.RazaoSocial" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cnpj">CNPJ:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                        </div>
+                        <input type="text" class="form-control" data-inputmask='"mask": "99.999.999/9999-99"' data-mask name="Fornecedor.CNPJ"
+                               asp-for="Fornecedor.CNPJ" required />
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="email">Email:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        </div>
+                        <input type="email" name="Fornecedor.Email" class="form-control" asp-for="Fornecedor.Email" placeholder="Email" required />
+                    </div>                    
+                </div>
+                <div class="form-group">
+                    <label for="cep">CEP:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        </div>
+                        <input type="text" class="form-control" data-inputmask='"mask": "99999-999"' data-mask name="Fornecedor.CEP"
+                               asp-for="Fornecedor.CEP" required onchange="buscarEnderecoPorCEP(this.value)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="rua">Rua:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-road"></i></span>
+                        </div>
+                        <input type="text" name="Fornecedor.Rua" class="form-control" asp-for="Fornecedor.Rua" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bairro">Bairro:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        </div>
+                        <input type="text" name="Fornecedor.Bairro" class="form-control" asp-for="Fornecedor.Bairro" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Cidade">Cidade:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-city"></i></span>
+                        </div>
+                        <input type="text" name="Fornecedor.Cidade" class="form-control" asp-for="Fornecedor.Cidade" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="numero">Número:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-sort-numeric-up"></i></span>
+                        </div>
+                        <input type="number" name="Fornecedor.Numero" class="form-control" asp-for="Fornecedor.Numero" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Complemento">Complemento:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                        </div>
+                        <input type="text" name="Fornecedor.Complemento" class="form-control" asp-for="Fornecedor.Complemento" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone com DDD:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        </div>                    
+                        <input type="text" class="form-control" data-inputmask='"mask": "(99) 99999-9999"' data-mask name="Fornecedor.Telefone"
+                            asp-for="Fornecedor.Telefone" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-danger" href="/Fornecedores/Index">Voltar</a>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @section scripts{
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/inputmask/jquery.inputmask.min.js"></script>
+        <script>
+            function buscarEnderecoPorCEP(cep) {
+                // Remova espaços e traços do CEP
+                cep = cep.replace(/\D/g, '');
+
+                // Verifica se o CEP tem o formato válido
+                if (cep.length === 8) {
+                    // Monta a URL da API do ViaCEP
+                    var url = 'https://viacep.com.br/ws/' + cep + '/json/';
+
+                    // Faz a requisição AJAX
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            // Preenche os campos com os dados obtidos
+                            if (data) {
+                                $('input[name="Fornecedor.Rua"]').val(data.logradouro);
+                                $('input[name="Fornecedor.Bairro"]').val(data.bairro);
+                                $('input[name="Fornecedor.Cidade"]').val(data.localidade);
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                            // Trate o erro conforme necessário
+                        }
+                    });
+                }
+            }
+
+            $('[data-mask]').inputmask()
+            
+            var mensagemSucesso = '@MensagemAlerta.GetMensagem("CadastroRealizado")';
+            if (mensagemSucesso) { 
+                alert(mensagemSucesso);
+            }
+        </script>
+    }
+
+</body>
+</html>

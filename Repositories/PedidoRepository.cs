@@ -216,7 +216,7 @@ namespace CamposRepresentacoes.Repositories
         {
             try
             {
-                return _context.Clientes.Where(c => c.Ativo == true);
+                return _context.Clientes.Where(c => c.Status == true);
             }
             catch (Exception ex)
             {
@@ -229,7 +229,7 @@ namespace CamposRepresentacoes.Repositories
         {
             try
             {
-                return _context.Fornecedores.Where(f => f.Ativo == true);
+                return _context.Fornecedores.Where(f => f.Status == true);
             }
             catch (Exception ex)
             {
@@ -254,7 +254,7 @@ namespace CamposRepresentacoes.Repositories
         {
             try
             {
-               return _context.Transportadoras.Where(t => t.Ativo == true);
+               return _context.Transportadoras.Where(t => t.Status == true);
             }
             catch (Exception ex)
             {
