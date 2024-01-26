@@ -3,6 +3,7 @@ using CamposRepresentacoes.Models;
 using CamposRepresentacoes.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace CamposRepresentacoes.Pages.Clientes
@@ -32,9 +33,11 @@ namespace CamposRepresentacoes.Pages.Clientes
                     RazaoSocial = c.RazaoSocial,
                     CNPJ = c.CNPJ,
                     Cidade = c.Cidade,
+                    Numero = c.Numero,
                     Telefone = c.Telefone,
                     Email = c.Email,                    
-                    Status = c.Status                    
+                    Status = c.Status,
+                    Id = c.Id,
                 });
 
                 return new JsonResult(listaClientes);               
@@ -43,16 +46,21 @@ namespace CamposRepresentacoes.Pages.Clientes
             return Page();
         }
 
-        public IActionResult OnGetPesquisar(Cliente filtro)
+        [ValidateAntiForgeryToken]
+        public IActionResult OnPost(string idsClientesSelecionados)
         {
-            
-            Clientes = _clientesService.ObterClientes(filtro).ToList();
+            if (!string.IsNullOrEmpty(idsClientesSelecionados))
+            {
+                List<Guid> idProdutos = JsonConvert.DeserializeObject<List<Guid>>(idsClientesSelecionados);
+                foreach (var id in idProdutos)
+                {
+                    _clientesService.AtivarDesativarCliente(id, false);
 
-            ViewData["MostrarTabela"] = Clientes.Any();
+                }
 
-            ViewData["Pesquisado"] = true;
-
-            return Page();
+                MensagemAlerta.SetMensagem("SucessoDesativarClientes", "Os Clientes selecionados foram desativados!!!");
+            }
+            return RedirectToPage();
         }
     }
 }

@@ -89,7 +89,7 @@
                                                 <th>Numero</th>
                                                 <th>Telefone</th>
                                                 <th>Email</th>
-                                                <th>Ação</th>                                                
+                                                <th>Desativar</th>                                                
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -98,7 +98,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <div class="float-left">
-                                        <input type="hidden" name="idsClientesesSelecionados" id="idsClientesesSelecionados" />
+                                        <input type="hidden" name="idsClientesSelecionados" id="idsClientesSelecionados" />
                                         <button type="submit" id="salvarAlteracoes" class="btn btn-success">Salvar Alterações</button>
                                     </div>
                                 </div>
@@ -111,7 +111,7 @@
     </section>
 
     @section scripts {
-        script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>
         <!-- Bootstrap 4 -->
         <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -135,11 +135,11 @@
             $(document).ready(function () {
                 $('#formBusca').submit(function (event) {
                     event.preventDefault();
-                    buscarProdutos();
+                    buscarClientes();
                 })
             });
 
-            function buscarProdutos() {
+            function buscarClientes() {
                 var formData = $('#formBusca').serialize();
                 //console.log(formData);
 
@@ -170,8 +170,8 @@
                                     '<td>' + (Clientes.cidade !== undefined ? Clientes.cidade : '') + '</td>' +
                                     '<td>' + (Clientes.numero !== undefined ? Clientes.numero : '') + '</td>' +
                                     '<td>' + (Clientes.telefone !== undefined ? Clientes.telefone : '') + '</td>' +
-                                    '<td>' + (Clientes.Email !== undefined ? Clientes.Email : '') + '</td>' +
-                                    '<td><input type="checkbox" name="clientesParaDesativar" value="' + Clientes.id + '"' + (checkboxMarcado ? 'checked' : '') + '></td>' +
+                                    '<td>' + (Clientes.email !== undefined ? Clientes.email : '') + '</td>' +
+                                    '<td><input type="checkbox" name="ClientesParaDesativar" value="' + Clientes.id + '"' + (checkboxMarcado ? 'checked' : '') + '></td>' +
                                     '<td><a href="/Clientes/EditarCliente?id=' + Clientes.id + '" class="btn btn-primary">Editar</a></td>' +
                                     '</tr>';
 
@@ -186,7 +186,7 @@
                     error: function (xhr, textStatus, errorThrown) {
                         // Verifica se é um erro real (status 500 ou outros)
                         if (xhr.status >= 400) {
-                            alert('Erro ao buscar produtos. Status: ' + xhr.status + ' - ' + errorThrown);
+                            alert('Erro ao buscar clientes. Status: ' + xhr.status + ' - ' + errorThrown);
                         }
                     }
                 });
@@ -210,21 +210,21 @@
                 alert(mensagemSucesso);
             }
 
-            function prepararIdsProdutos() {
-                var idsProdutos = [];
+            function prepararIdsClientes() {
+                var idsClientes = [];
 
                 // Iterar sobre os checkboxes selecionados
                 $('input[name="ClientesParaDesativar"]:checked').each(function () {
-                    idsProdutos.push($(this).val());
+                    idsClientes.push($(this).val());
                 });
-
-                if (idsProdutos.length === 0) {
-                    alert('Selecione pelo menos um Clientes para desativar!');
+                
+                if (idsClientes.length === 0) {
+                    alert('Selecione pelo menos um Cliente para desativar!');
                     return false;
                 }
 
                 // Converter o array de IDs em uma string JSON e atribuir ao campo oculto
-                $('#idsClientesSelecionados').val(JSON.stringify(idsProdutos));
+                $('#idsClientesSelecionados').val(JSON.stringify(idsClientes));
 
                 return true;
             }
@@ -232,7 +232,7 @@
             $(document).ready(function () {
                 // Adicione um evento de clique ao botão de salvar
                 $('#salvarAlteracoes').click(function () {
-                    return prepararIdsProdutos();
+                    return prepararIdsClientes();
                 });
             });
 
