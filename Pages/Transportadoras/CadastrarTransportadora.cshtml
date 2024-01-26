@@ -1,5 +1,5 @@
 ﻿@page
-@model CamposRepresentacoes.Pages.Fornecedores.CadastrarFornecedorModel
+@model CamposRepresentacoes.Pages.Transportadoras.CadastrarTransportadoraModel
 @{
 }
 
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
 <body>
-    <h2> Cadastrar Fornecedor</h2>
+    <h2> Cadastrar Transportadora</h2>
     <div class="row">
         <div class="col-sm-6">
             <form method="post">
@@ -18,7 +18,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-building"></i></span>
                         </div>
-                        <input type="text" name="Fornecedor.RazaoSocial" class="form-control" asp-for="Fornecedor.RazaoSocial" required />
+                        <input type="text" name="Transportadora.RazaoSocial" class="form-control" asp-for="Transportadora.RazaoSocial" required />
                     </div>
                 </div>
                 <div class="form-group">
@@ -27,8 +27,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <input type="text" class="form-control" data-inputmask='"mask": "99.999.999/9999-99"' data-mask name="Fornecedor.CNPJ"
-                               asp-for="Fornecedor.CNPJ" required />
+                        <input type="text" class="form-control" data-inputmask='"mask": "99.999.999/9999-99"' data-mask name="Transportadora.CNPJ"
+                               asp-for="Transportadora.CNPJ" required />
                     </div>
                 </div>
                 <div class="input-group mb-3">
@@ -37,8 +37,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         </div>
-                        <input type="email" name="Fornecedor.Email" class="form-control" asp-for="Fornecedor.Email" placeholder="Email" required />
-                    </div>                    
+                        <input type="email" name="Transportadora.Email" class="form-control" asp-for="Transportadora.Email" placeholder="Email" required />
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="cep">CEP:</label>
@@ -46,8 +46,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                         </div>
-                        <input type="text" class="form-control" data-inputmask='"mask": "99999-999"' data-mask name="Fornecedor.CEP"
-                               asp-for="Fornecedor.CEP" required onchange="buscarEnderecoPorCEP(this.value)" />
+                        <input type="text" class="form-control" data-inputmask='"mask": "99999-999"' data-mask name="Transportadora.CEP"
+                               asp-for="Transportadora.CEP" required onchange="buscarEnderecoPorCEP(this.value)" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -56,7 +56,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-road"></i></span>
                         </div>
-                        <input type="text" name="Fornecedor.Rua" class="form-control" asp-for="Fornecedor.Rua" required />
+                        <input type="text" name="Transportadora.Rua" class="form-control" asp-for="Transportadora.Rua" required />
                     </div>
                 </div>
                 <div class="form-group">
@@ -65,7 +65,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                         </div>
-                        <input type="text" name="Fornecedor.Bairro" class="form-control" asp-for="Fornecedor.Bairro" required />
+                        <input type="text" name="Transportadora.Bairro" class="form-control" asp-for="Transportadora.Bairro" required />
                     </div>
                 </div>
                 <div class="form-group">
@@ -74,7 +74,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-city"></i></span>
                         </div>
-                        <input type="text" name="Fornecedor.Cidade" class="form-control" asp-for="Fornecedor.Cidade" required />
+                        <input type="text" name="Transportadora.Cidade" class="form-control" asp-for="Transportadora.Cidade" required />
                     </div>
                 </div>
                 <div class="form-group">
@@ -83,7 +83,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-sort-numeric-up"></i></span>
                         </div>
-                        <input type="number" name="Fornecedor.Numero" class="form-control" asp-for="Fornecedor.Numero" required />
+                        <input type="number" name="Transportadora.Numero" class="form-control" asp-for="Transportadora.Numero" required />
                     </div>
                 </div>
                 <div class="form-group">
@@ -92,7 +92,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
                         </div>
-                        <input type="text" name="Fornecedor.Complemento" class="form-control" asp-for="Fornecedor.Complemento" />
+                        <input type="text" name="Transportadora.Complemento" class="form-control" asp-for="Transportadora.Complemento" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -100,13 +100,13 @@
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                        </div>                    
-                        <input type="text" class="form-control" data-inputmask='"mask": "(99) 99999-9999"' data-mask name="Fornecedor.Telefone"
-                            asp-for="Fornecedor.Telefone" required />
+                        </div>
+                        <input type="text" class="form-control" data-inputmask='"mask": "(99) 99999-9999"' data-mask name="Transportadora.Telefone"
+                               asp-for="Transportadora.Telefone" required />
                     </div>
                 </div>
                 <div class="form-group">
-                    <a class="btn btn-danger" href="/Fornecedores/Index">Voltar</a>
+                    <a class="btn btn-danger" href="/Transportadoraes/Index">Voltar</a>
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
@@ -134,9 +134,9 @@
                         success: function (data) {
                             // Preenche os campos com os dados obtidos
                             if (data) {
-                                $('input[name="Fornecedor.Rua"]').val(data.logradouro);
-                                $('input[name="Fornecedor.Bairro"]').val(data.bairro);
-                                $('input[name="Fornecedor.Cidade"]').val(data.localidade);
+                                $('input[name="Transportadora.Rua"]').val(data.logradouro);
+                                $('input[name="Transportadora.Bairro"]').val(data.bairro);
+                                $('input[name="Transportadora.Cidade"]').val(data.localidade);
                             }
                         },
                         error: function (error) {
@@ -148,12 +148,12 @@
             }
 
             $('[data-mask]').inputmask()
-            
+
             var mensagemSucesso = '@MensagemAlerta.GetMensagem("CadastroRealizado")';
-            if (mensagemSucesso) { 
+            if (mensagemSucesso) {
                 alert(mensagemSucesso);
 
-                window.location.href = '/Fornecedores/Index';
+                window.location.href = '/Transportadoras/Index';
             }
         </script>
     }

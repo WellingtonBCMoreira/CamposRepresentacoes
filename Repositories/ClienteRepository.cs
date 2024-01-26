@@ -34,6 +34,8 @@ namespace CamposRepresentacoes.Repositories
             {
                 if (cliente is null) throw new ArgumentException(nameof(cliente));
 
+                cliente.Status = true;
+
                 _context.Clientes.Add(cliente);
                 _context.SaveChanges();
                 return cliente;
@@ -116,19 +118,7 @@ namespace CamposRepresentacoes.Repositories
                 
                 if (!string.IsNullOrEmpty(filtro.Cidade))
                     clientes = clientes.Where(c => c.Cidade.Contains(filtro.Cidade));
-                
-                if (filtro.Numero != null)
-                    clientes = clientes.Where(c => c.Numero == filtro.Numero);
-                
-                if (!string.IsNullOrEmpty(filtro.Complemento))
-                    clientes = clientes.Where(c => c.Complemento.Contains(filtro.Complemento));
-                
-                if (!string.IsNullOrEmpty(filtro.CEP))
-                    clientes = clientes.Where(c => c.CEP.Contains(filtro.CEP));
-                
-                if (!string.IsNullOrEmpty(filtro.Telefone))
-                    clientes = clientes.Where(c => c.Telefone.Contains(filtro.Telefone));
-                
+
                 if (filtro.Status == true || filtro.Status == false)
                     clientes = clientes.Where(c => c.Status == filtro.Status);
 

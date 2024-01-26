@@ -27,7 +27,7 @@ namespace CamposRepresentacoes.Pages.Fornecedores
 
             MensagemAlerta.SetMensagem("CadastroRealizado", "Fornecedor cadastrado com sucesso :)");
 
-            return RedirectToPage();
+            return Page();
         }
     }
 }

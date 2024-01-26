@@ -91,16 +91,32 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>
                                     Clientes
-                                    <span class="right badge badge-danger">New</span>
+                                    <span class="fas fa-angle-left right"></span>
                                 </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-page="/Clientes/Index" class="nav-link">
+                                        <i class="fas fa-circle nav-icon"></i>
+                                        <p>Consultar Clientes</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-page="/Clientes/CadastrarCliente" class="nav-link">
+                                        <i class="fas fa-circle nav-icon"></i>
+                                        <p>Cadastrar Clientes</p>
+
+                                    </a>
+                                </li>
+
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a asp-page="/Fornecedores/Index" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>
                                     Fornecedores
-                                    <span class="right badge badge-danger">New</span>
+                                    <span class="fas fa-angle-left right"></span>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
@@ -123,9 +139,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>
                                     Transportadoras
-                                    <span class="right badge badge-danger">new</span>
+                                    <span class="fas fa-angle-left right"></span>
                                 </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-page="/Transportadoras/Index" class="nav-link">
+                                        <i class="fas fa-circle nav-icon"></i>
+                                        <p>Consultar Transportadoras</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-page="/Transportadoras/CadastrarTransportadora" class="nav-link">
+                                        <i class="fas fa-circle nav-icon"></i>
+                                        <p>Cadastar Transportadora</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>

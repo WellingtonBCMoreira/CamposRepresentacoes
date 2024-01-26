@@ -139,6 +139,8 @@ namespace CamposRepresentacoes.Repositories
             {
                 if (transportadora is null) throw new ArgumentException(nameof(transportadora));
 
+                transportadora.Status= true;
+
                 _context.Transportadoras.Add(transportadora);
                 _context.SaveChanges();
                 return transportadora;
