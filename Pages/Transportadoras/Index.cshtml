@@ -21,7 +21,7 @@
                 @Html.AntiForgeryToken()
                 <div id="filter" class="card card-filter elevation-3">
                     <div class="card-header">
-                        <h5 class="card-title"><i class="fas fa-filter mr-2"></i>Filtro Pesquisa</h5>
+                        <h5 class="card-title"><i class="fas fa-filter mr-2"></i>Filtro Pesquisa Transportadoras</h5>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="colapse" title="colapse">
                                 <i class="fas fa-minus text-white"></i>
@@ -34,25 +34,25 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="razaoSocial">Razão Social:</label>
-                                    <input type="text" class="form-control" name="Transportadoras.RazaoSocial" placeholder="Digite a Razão Social" />
+                                    <input type="text" class="form-control" name="Transportadora.RazaoSocial" placeholder="Digite a Razão Social" />
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="cnpj">CNPJ:</label>
-                                    <input type="text" class="form-control" name="Transportadoras.CNPJ" placeholder="Digite o CNPJ" />
+                                    <input type="text" class="form-control" name="Transportadora.CNPJ" placeholder="Digite o CNPJ" />
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="cidade">Cidade:</label>
-                                    <input type="text" name="Transportadoras.Cidade" class="form-control" placeholder="Digite a Cidade" />
+                                    <input type="text" name="Transportadora.Cidade" class="form-control" placeholder="Digite a Cidade" />
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="status">Status</label>
-                                    <select class="form-control" name="Transportadoras.Status">
+                                    <select class="form-control" name="Transportadora.Status">
                                         <option value="">Ambos</option>
                                         <option value="true">Ativo</option>
                                         <option value="false">Inativo</option>
@@ -63,7 +63,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="float-right">
-                            <a asp-page="/Transportadorases/Index" class="btn btn-default elevation-1"><i class="fas fa-eraser"></i>Limpar</a>
+                            <a asp-page="/Transportadoras/Index" class="btn btn-default elevation-1"><i class="fas fa-eraser"></i>Limpar</a>
                             <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-search"></i>Buscar</button>
                         </div>
                     </div>
@@ -75,25 +75,21 @@
     <section>
         <div class="container-fluid">
             <div class="col-md-12">
-                <div id="tabelaTransportadorasesContainer" style="display:none">
+                <div id="tabelaTransportadorasContainer" style="display:none">
                     <div class="col-md-12">
                         <div class="card">
-                            <form method="post" asp-page-handler="DesativarTransportadoras" onsubmit="return prepararIdsTransportadorases()">
+                            <form method="post" asp-page-handler="DesativarTransportadoras" onsubmit="return prepararIdsTransportadoras()">
                                 <div class="card-body">
-                                    <table id="tabelaTransportadorases" class="table table-bordered table-hover">
+                                    <table id="tabelaTransportadoras" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Razão Social</th>
                                                 <th>CNPJ</th>
                                                 <th>Rua</th>
-                                                <th>Bairro</th>
                                                 <th>Cidade</th>
-                                                <th>Numero</th>
-                                                <th>Complemento</th>
-                                                <th>Cep</th>
-                                                <th>Telefone</th>
-                                                <th>Data Cadastro</th>
-                                                <th>Ação</th>
+                                                <th>Numero</th>                                                
+                                                <th>Telefone</th>                                                
+                                                <th>Desativar</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -102,7 +98,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <div class="float-left">
-                                        <input type="hidden" name="idsTransportadorasesSelecionados" id="idsTransportadorasesSelecionados" />
+                                        <input type="hidden" name="idsTransportadorasSelecionadas" id="idsTransportadorasSelecionadas" />
                                         <button type="submit" id="salvarAlteracoes" class="btn btn-success">Salvar Alterações</button>
                                     </div>
                                 </div>
@@ -115,7 +111,7 @@
     </section>
 
     @section scripts {
-        script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>
         <!-- Bootstrap 4 -->
         <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -139,28 +135,28 @@
             $(document).ready(function () {
                 $('#formBusca').submit(function (event) {
                     event.preventDefault();
-                    buscarProdutos();
+                    buscarTransportadoras();
                 })
             });
 
-            function buscarProdutos() {
+            function buscarTransportadoras() {
                 var formData = $('#formBusca').serialize();
                 //console.log(formData);
 
-                if ($.fn.DataTable.isDataTable('#tabelaTransportadorases')) {
-                    $('#tabelaTransportadorases').DataTable().destroy();
+                if ($.fn.DataTable.isDataTable('#tabelaTransportadoras')) {
+                    $('#tabelaTransportadoras').DataTable().destroy();
                 }
 
                 $.ajax({
                     type: 'GET',
-                    url: '/Transportadorases/Index',
+                    url: '/Transportadoras/Index',
                     data: formData,
                     dataType: 'json',
 
                     success: function (result) {
                         //console.log(result);
                         // Limpa a tabela antes de adicionar os novos resultados
-                        $('#tabelaTransportadorases tbody').empty();
+                        $('#tabelaTransportadoras tbody').empty();
 
                         // Verifica se a resposta contém dados válidos
                         if (result && result.length > 0) {
@@ -170,36 +166,33 @@
 
                                 var row = '<tr>' +
                                     '<td>' + (Transportadoras.razaoSocial !== undefined ? Transportadoras.razaoSocial : '') + '</td>' +
-                                    '<td>' + (Transportadoras.cnpj !== undefined ? Transportadoras.cnpj : '') + '</td>' +
-                                    '<td>' + (Transportadoras.rua !== undefined ? Transportadoras.rua : '') + '</td>' +
-                                    '<td>' + (Transportadoras.bairro !== undefined ? Transportadoras.bairro : '') + '</td>' +
+                                    '<td>' + (Transportadoras.cnpj !== undefined ? Transportadoras.cnpj : '') + '</td>' +                                    
                                     '<td>' + (Transportadoras.cidade !== undefined ? Transportadoras.cidade : '') + '</td>' +
-                                    '<td>' + (Transportadoras.numero !== undefined ? Transportadoras.numero : '') + '</td>' +
-                                    '<td>' + (Transportadoras.complemento !== undefined ? Transportadoras.complemento : '') + '</td>' +
-                                    '<td>' + (Transportadoras.cep !== undefined ? Transportadoras.cep : '') + '</td>' +
+                                    '<td>' + (Transportadoras.numero !== undefined ? Transportadoras.numero : '') + '</td>' +                                    
                                     '<td>' + (Transportadoras.telefone !== undefined ? Transportadoras.telefone : '') + '</td>' +
-                                    '<td><input type="checkbox" name="produtosParaDesativar" value="' + produto.id + '"' + (checkboxMarcado ? 'checked' : '') + '></td>' +
-                                    '<td><a href="/Produtos/EditarProduto?id=' + produto.id + '" class="btn btn-primary">Editar</a></td>' +
+                                    '<td>' + (Transportadoras.email !== undefined ? Transportadoras.email : '') + '</td>' +
+                                    '<td><input type="checkbox" name="TransportadorasParaDesativar" value="' + Transportadoras.id + '"' + (checkboxMarcado ? 'checked' : '') + '></td>' +
+                                    '<td><a href="/Transportadoras/EditarTransportadora?id=' + Transportadoras.id + '" class="btn btn-primary">Editar</a></td>' +
                                     '</tr>';
 
-                                $('#tabelaTransportadorases tbody').append(row);
+                                $('#tabelaTransportadoras tbody').append(row);
                             });
                         } else {
                             // Exibe uma mensagem se não houver dados
-                            $('#tabelaTransportadorases tbody').html('<tr><td colspan="6">Nenhum Transportadoras encontrado!</td></tr>');
+                            $('#tabelaTransportadoras tbody').html('<tr><td colspan="6">Nenhum Transportadoras encontrado!</td></tr>');
                         }
-                        $('#tabelaTransportadorasesContainer').show();
+                        $('#tabelaTransportadorasContainer').show();
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         // Verifica se é um erro real (status 500 ou outros)
                         if (xhr.status >= 400) {
-                            alert('Erro ao buscar produtos. Status: ' + xhr.status + ' - ' + errorThrown);
+                            alert('Erro ao buscar Transportadoras. Status: ' + xhr.status + ' - ' + errorThrown);
                         }
                     }
                 });
 
                 // Inicializando o DataTable
-                $('#tabelaTransportadorases').DataTable({
+                $('#tabelaTransportadoras').DataTable({
                     "paging": true,
                     "lengthChange": false,
                     "searching": false,
@@ -212,26 +205,26 @@
                 return false; // Impede o envio padrão do formulário
             }
 
-            var mensagemSucesso = '@MensagemAlerta.GetMensagem("SucessoDesativarTransportadorases")';
+            var mensagemSucesso = '@MensagemAlerta.GetMensagem("SucessoDesativarTransportadoras")';
             if (mensagemSucesso) {
                 alert(mensagemSucesso);
             }
 
-            function prepararIdsProdutos() {
-                var idsProdutos = [];
+            function prepararIdsTransportadoras() {
+                var idsTransportadoras = [];
 
                 // Iterar sobre os checkboxes selecionados
-                $('input[name="TransportadorasesParaDesativar"]:checked').each(function () {
-                    idsProdutos.push($(this).val());
+                $('input[name="TransportadorasParaDesativar"]:checked').each(function () {
+                    idsTransportadoras.push($(this).val());
                 });
 
-                if (idsProdutos.length === 0) {
-                    alert('Selecione pelo menos um Transportadoras para desativar!');
+                if (idsTransportadoras.length === 0) {
+                    alert('Selecione pelo menos uma Transportadora para desativar!');
                     return false;
                 }
 
                 // Converter o array de IDs em uma string JSON e atribuir ao campo oculto
-                $('#idsTransportadorasesSelecionados').val(JSON.stringify(idsProdutos));
+                $('#idsTransportadorasSelecionadas').val(JSON.stringify(idsTransportadoras));
 
                 return true;
             }
@@ -239,7 +232,7 @@
             $(document).ready(function () {
                 // Adicione um evento de clique ao botão de salvar
                 $('#salvarAlteracoes').click(function () {
-                    return prepararIdsProdutos();
+                    return prepararIdsTransportadoras();
                 });
             });
 

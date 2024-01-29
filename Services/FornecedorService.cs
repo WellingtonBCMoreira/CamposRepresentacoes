@@ -43,9 +43,9 @@ namespace CamposRepresentacoes.Services
             return _fornecedoresRepository.ObterFornecedoresAsync();
         }
 
-        public Fornecedor ObterFornecedorPorCnpj(string cnpj)
+        public Fornecedor ObterFornecedorPorId(string cnpj)
         {
-            return _fornecedoresRepository.ObterFornecedorPorCnpj(cnpj);
+            return _fornecedoresRepository.ObterFornecedorPorId(cnpj);
         }
     }
 }

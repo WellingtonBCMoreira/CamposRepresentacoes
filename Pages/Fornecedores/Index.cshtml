@@ -16,18 +16,18 @@
 </head>
 <body>
     <div class="row no-print">
-        <div class="col-md-12">            
-            <form method="get" id = "formBusca">
+        <div class="col-md-12">
+            <form method="get" id="formBusca">
                 @Html.AntiForgeryToken()
                 <div id="filter" class="card card-filter elevation-3">
                     <div class="card-header">
-                        <h5 class="card-title"><i class="fas fa-filter mr-2"></i>Filtro Pesquisa</h5>
+                        <h5 class="card-title"><i class="fas fa-filter mr-2"></i>Filtro Pesquisa Fornecedores</h5>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="colapse" title="colapse">
                                 <i class="fas fa-minus text-white"></i>
                             </button>
                         </div>
-                    </div> 
+                    </div>
                     <div class="card-body">
                         <div id="loading" style="display:none"></div>
                         <div class="row">
@@ -40,15 +40,15 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="cnpj">CNPJ:</label>
-                                    <input type="text" class="form-control" name="Fornecedor.CNPJ" placeholder="Digite o CNPJ"/>
+                                    <input type="text" class="form-control" name="Fornecedor.CNPJ" placeholder="Digite o CNPJ" />
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="cidade">Cidade:</label>
-                                    <input type="text" name="Fornecedor.Cidade" class="form-control" placeholder="Digite a Cidade"/>
-                                </div>                                
-                            </div>                                                        
+                                    <input type="text" name="Fornecedor.Cidade" class="form-control" placeholder="Digite a Cidade" />
+                                </div>
+                            </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="status">Status</label>
@@ -57,9 +57,9 @@
                                         <option value="true">Ativo</option>
                                         <option value="false">Inativo</option>
                                     </select>
-                                </div>                                
+                                </div>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
                     <div class="card-footer">
                         <div class="float-right">
@@ -67,36 +67,32 @@
                             <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-search"></i>Buscar</button>
                         </div>
                     </div>
-                </div>                
+                </div>
             </form>
         </div>
     </div>
-            
+
     <section>
         <div class="container-fluid">
             <div class="col-md-12">
                 <div id="tabelaFornecedoresContainer" style="display:none">
                     <div class="col-md-12">
                         <div class="card">
-                            <form method="post" asp-page-handler="DesativarFornecedor" onsubmit="return prepararIdsFornecedores()">
+                            <form method="post" asp-page-handler="DesativarFornecedores" onsubmit="return prepararIdsFornecedores()">
                                 <div class="card-body">
                                     <table id="tabelaFornecedores" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Razão Social</th>
-                                                <th>CNPJ</th>
-                                                <th>Rua</th>
-                                                <th>Bairro</th>
+                                                <th>CNPJ</th>                                                
                                                 <th>Cidade</th>
                                                 <th>Numero</th>
-                                                <th>Complemento</th>
-                                                <th>Cep</th>
                                                 <th>Telefone</th>
-                                                <th>Data Cadastro</th>
-                                                <th>Ação</th>
+                                                <th>Email</th>
+                                                <th>Desativar</th>
                                             </tr>
                                         </thead>
-                                        <tbody>                                            
+                                        <tbody>
                                         </tbody>
                                     </table>
                                 </div>
@@ -112,10 +108,10 @@
                 </div>
             </div>
         </div>
-    </section>
-    
+    </section> 
+
     @section scripts {
-        script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>
         <!-- Bootstrap 4 -->
         <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -139,11 +135,11 @@
             $(document).ready(function () {
                 $('#formBusca').submit(function (event) {
                     event.preventDefault();
-                    buscarProdutos();
+                    buscarFornecedores();
                 })
             });
 
-            function buscarProdutos() {
+            function buscarFornecedores() {
                 var formData = $('#formBusca').serialize();
                 //console.log(formData);
 
@@ -165,28 +161,25 @@
                         // Verifica se a resposta contém dados válidos
                         if (result && result.length > 0) {
                             // Atualiza a tabela com os novos resultados
-                            result.forEach(function (fornecedor) {
-                                var checkboxMarcado = fornecedor.status !== undefined ? !fornecedor.status : false;
+                            result.forEach(function (Fornecedores) {
+                                var checkboxMarcado = Fornecedores.status !== undefined ? !Fornecedores.status : false;
 
                                 var row = '<tr>' +
-                                    '<td>' + (fornecedor.razaoSocial !== undefined ? fornecedor.razaoSocial : '') + '</td>' +
-                                    '<td>' + (fornecedor.cnpj !== undefined ? fornecedor.cnpj : '') + '</td>' +
-                                    '<td>' + (fornecedor.rua !== undefined ? fornecedor.rua : '') + '</td>' +
-                                    '<td>' + (fornecedor.bairro !== undefined ? fornecedor.bairro : '') + '</td>' +
-                                    '<td>' + (fornecedor.cidade !== undefined ? fornecedor.cidade : '') + '</td>' +
-                                    '<td>' + (fornecedor.numero !== undefined ? fornecedor.numero : '') + '</td>' +
-                                    '<td>' + (fornecedor.complemento !== undefined ? fornecedor.complemento : '') + '</td>' +
-                                    '<td>' + (fornecedor.cep !== undefined ? fornecedor.cep : '') + '</td>' +
-                                    '<td>' + (fornecedor.telefone !== undefined ? fornecedor.telefone : '') + '</td>' +                                    
-                                    '<td><input type="checkbox" name="produtosParaDesativar" value="' + produto.id + '"' + (checkboxMarcado ? 'checked' : '') + '></td>' +                                    
-                                    '<td><a href="/Produtos/EditarProduto?id=' + produto.id + '" class="btn btn-primary">Editar</a></td>' +
+                                    '<td>' + (Fornecedores.razaoSocial !== undefined ? Fornecedores.razaoSocial : '') + '</td>' +
+                                    '<td>' + (Fornecedores.cnpj !== undefined ? Fornecedores.cnpj : '') + '</td>' +
+                                    '<td>' + (Fornecedores.cidade !== undefined ? Fornecedores.cidade : '') + '</td>' +
+                                    '<td>' + (Fornecedores.numero !== undefined ? Fornecedores.numero : '') + '</td>' +
+                                    '<td>' + (Fornecedores.telefone !== undefined ? Fornecedores.telefone : '') + '</td>' +
+                                    '<td>' + (Fornecedores.email !== undefined ? Fornecedores.email : '') + '</td>' +
+                                    '<td><input type="checkbox" name="FornecedoresParaDesativar" value="' + Fornecedores.id + '"' + (checkboxMarcado ? 'checked' : '') + '></td>' +
+                                    '<td><a href="/Fornecedores/EditarFornecedor?id=' + Fornecedores.id + '" class="btn btn-primary">Editar</a></td>' +
                                     '</tr>';
 
                                 $('#tabelaFornecedores tbody').append(row);
                             });
                         } else {
                             // Exibe uma mensagem se não houver dados
-                            $('#tabelaFornecedores tbody').html('<tr><td colspan="6">Nenhum fornecedor encontrado!</td></tr>');
+                            $('#tabelaFornecedores tbody').html('<tr><td colspan="6">Nenhum Fornecedores encontrado!</td></tr>');
                         }
                         $('#tabelaFornecedoresContainer').show();
                     },
@@ -217,21 +210,21 @@
                 alert(mensagemSucesso);
             }
 
-            function prepararIdsProdutos() {
-                var idsProdutos = [];
+            function prepararIdsFornecedores() {
+                var idsFornecedores = [];
 
                 // Iterar sobre os checkboxes selecionados
-                $('input[name="fornecedoresParaDesativar"]:checked').each(function () {
-                    idsProdutos.push($(this).val());
+                $('input[name="FornecedoresParaDesativar"]:checked').each(function () {
+                    idsFornecedores.push($(this).val());
                 });
 
-                if (idsProdutos.length === 0) {
-                    alert('Selecione pelo menos um fornecedor para desativar!');
+                if (idsFornecedores.length === 0) {
+                    alert('Selecione pelo menos um Fornecedore para desativar!');
                     return false;
                 }
 
                 // Converter o array de IDs em uma string JSON e atribuir ao campo oculto
-                $('#idsFornecedoresSelecionados').val(JSON.stringify(idsProdutos));
+                $('#idsFornecedoresSelecionados').val(JSON.stringify(idsFornecedores));
 
                 return true;
             }
@@ -239,7 +232,7 @@
             $(document).ready(function () {
                 // Adicione um evento de clique ao botão de salvar
                 $('#salvarAlteracoes').click(function () {
-                    return prepararIdsProdutos();
+                    return prepararIdsFornecedores();
                 });
             });
 
@@ -255,6 +248,6 @@
 
         </script>
     }
-    
+
 </body>
 </html>

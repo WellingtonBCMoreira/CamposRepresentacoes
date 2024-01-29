@@ -19,7 +19,9 @@ namespace CamposRepresentacoes.Repositories
             {
                 if (fornecedor is null) throw new ArgumentNullException(nameof(fornecedor));
 
-                _context.Entry(fornecedor).CurrentValues.SetValues(fornecedor);
+                var consultarFornecedor = _context.Fornecedores.Find(fornecedor.Id) ?? throw new ArgumentException($"Fornecedor com id {fornecedor.Id} não encontrado na base de dados.");
+
+                _context.Entry(consultarFornecedor).CurrentValues.SetValues(fornecedor);
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -135,13 +137,15 @@ namespace CamposRepresentacoes.Repositories
             return fornecedores;
         }
 
-        public Fornecedor ObterFornecedorPorCnpj(string cnpj)
+        public Fornecedor ObterFornecedorPorId(string id)
         {
             try
             {
-                if (cnpj is null) new ArgumentNullException(nameof(cnpj));
+                if (id is null) new ArgumentNullException(nameof(id));
 
-                return _context.Fornecedores.Where(c => c.CNPJ == cnpj).FirstOrDefault();
+                Guid idFornecedor = Guid.Parse(id);
+
+                return _context.Fornecedores.Where(c => c.Id == idFornecedor).FirstOrDefault();
 
             }
             catch (Exception ex)

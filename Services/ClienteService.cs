@@ -29,9 +29,9 @@ namespace CamposRepresentacoes.Services
             _clientesRepository.AtivarDesativarCliente(clienteId, status);
         }
 
-        public Cliente ObterClientePeloCnpj(string cnpj)
+        public Cliente ObterClientePeloId(string id)
         {
-            return _clientesRepository.ObterClientePeloCnpj(cnpj);
+            return _clientesRepository.ObterClientePeloId(id);
         }
 
         public IQueryable<Cliente> ObterClientes()

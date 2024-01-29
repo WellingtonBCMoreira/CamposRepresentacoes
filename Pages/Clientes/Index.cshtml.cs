@@ -58,7 +58,7 @@ namespace CamposRepresentacoes.Pages.Clientes
 
                 }
 
-                MensagemAlerta.SetMensagem("SucessoDesativarClientes", "Os Clientes selecionados foram desativados!!!");
+                MensagemAlerta.SetMensagem("SucessoDesativarClientes", "Os Clientes selecionados foram desativados :(");
             }
             return RedirectToPage();
         }

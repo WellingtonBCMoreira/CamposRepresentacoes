@@ -24,20 +24,18 @@ namespace CamposRepresentacoes.Pages.Fornecedores
         {
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                Fornecedores = _fornecedoresService.ObterFornecedores().ToList();
+                Fornecedores = _fornecedoresService.ObterFornecedores(Fornecedor).ToList();
 
                 var listaFornecedores = Fornecedores.Select(f => new
                 {
                     RazaoSocial = f.RazaoSocial,
                     CNPJ = f.CNPJ,
-                    Rua = f.Rua,
-                    Bairro = f.Bairro,
                     Cidade = f.Cidade,
                     Numero = f.Numero,
-                    Complemento = f.Complemento,
-                    CEP = f.CEP,
                     Telefone = f.Telefone,
-                    Acao = f.Status
+                    Email = f.Email,
+                    Status = f.Status,
+                    Id = f.Id
                 });
 
                 return new JsonResult(listaFornecedores);

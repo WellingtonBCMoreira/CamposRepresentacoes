@@ -7,7 +7,7 @@ namespace CamposRepresentacoes.Interfaces.Repositories
         Fornecedor CadastrarFornecedor(Fornecedor fornecedor);
         void AlterarFornecedor(Fornecedor fornecedor);
         void AtivarDesativarFornecedor(Guid fornecedorId, bool status);
-        Fornecedor ObterFornecedorPorCnpj(string cnpj);
+        Fornecedor ObterFornecedorPorId(string id);
         IQueryable<Fornecedor> ObterFornecedores();
         IQueryable<Fornecedor> ObterFornecedores(Fornecedor filtro);
         Task<List<Fornecedor>> ObterFornecedoresAsync();

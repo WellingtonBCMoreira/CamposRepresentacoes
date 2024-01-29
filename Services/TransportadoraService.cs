@@ -23,9 +23,9 @@ namespace CamposRepresentacoes.Services
             _transportadorasRepository.AtivarDesativarTransportadora(transportadoraId, status);
         }
 
-        public Transportadora ObterTransportadoraPeloCnpj(string cnpj)
+        public Transportadora ObterTransportadoraPeloId(string id)
         {
-            return _transportadorasRepository.ObterTransportadoraPeloCnpj(cnpj);
+            return _transportadorasRepository.ObterTransportadoraPeloId(id);
         }
 
         public IQueryable<Transportadora> ObterTransportadoras(Transportadora filtro)

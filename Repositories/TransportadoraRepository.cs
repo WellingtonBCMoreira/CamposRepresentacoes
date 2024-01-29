@@ -19,7 +19,9 @@ namespace CamposRepresentacoes.Repositories
             {
                 if (transportadora is null) throw new ArgumentNullException(nameof(transportadora));
 
-                _context.Entry(transportadora).CurrentValues.SetValues(transportadora);
+                var consultarTransportadora = _context.Transportadoras.Find(transportadora.Id) ?? throw new ArgumentException($"Transportadora com id {transportadora.Id} não encontrado na base de dados.");
+
+                _context.Entry(consultarTransportadora).CurrentValues.SetValues(transportadora);
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -32,11 +34,11 @@ namespace CamposRepresentacoes.Repositories
         {
             try
             {
-                var cliente = _context.Clientes.FirstOrDefault(c => c.Id == transportadoraId);
+                var transportadora = _context.Transportadoras.FirstOrDefault(t => t.Id == transportadoraId);
 
-                if (cliente is null) new ArgumentNullException(nameof(cliente));
+                if (transportadora is null) new ArgumentNullException(nameof(transportadora));
 
-                cliente.Status = status;
+                transportadora.Status = status;
 
                 _context.SaveChanges();
             }
@@ -47,13 +49,15 @@ namespace CamposRepresentacoes.Repositories
             }
         }
 
-        public Transportadora ObterTransportadoraPeloCnpj(string cnpj)
+        public Transportadora ObterTransportadoraPeloId(string id)
         {
             try
             {
-                if (cnpj is null) new ArgumentNullException(nameof(cnpj));
+                if (id is null) new ArgumentNullException(nameof(id));
 
-                return _context.Transportadoras.Where(c => c.CNPJ == cnpj).FirstOrDefault();
+                Guid idTransportadora = Guid.Parse(id);
+
+                return _context.Transportadoras.Where(c => c.Id == idTransportadora).FirstOrDefault();
 
             }
             catch (Exception ex)

@@ -19,12 +19,14 @@ namespace CamposRepresentacoes.Repositories
             {
                 if (cliente is null) throw new ArgumentNullException(nameof(cliente));
 
-                _context.Entry(cliente).CurrentValues.SetValues(cliente);
+                var consultaCliente = _context.Clientes.Find(cliente.Id) ?? throw new ArgumentException($"Cliente com id {cliente.Id} não encontrado na base de dados.");
+
+                _context.Entry(consultaCliente).CurrentValues.SetValues(cliente);
                 _context.SaveChanges();
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao Alterar o produto: {ex.Message}");
+                throw new Exception($"Erro ao Alterar o cliente: {ex.Message}");
             }
         }
 
@@ -66,13 +68,15 @@ namespace CamposRepresentacoes.Repositories
             }
         }
 
-        public Cliente ObterClientePeloCnpj(string cnpj)
+        public Cliente ObterClientePeloId(string id)
         {
             try
             {
-                if (cnpj is null) new ArgumentNullException(nameof(cnpj));
+                if (id is null) new ArgumentNullException(nameof(id));
 
-                return _context.Clientes.Where(c => c.CNPJ == cnpj).FirstOrDefault();
+                Guid idCliente = Guid.Parse(id);
+
+                return _context.Clientes.Where(c => c.Id == idCliente).FirstOrDefault();
 
             }
             catch (Exception ex)
