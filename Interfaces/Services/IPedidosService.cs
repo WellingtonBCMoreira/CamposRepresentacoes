@@ -16,6 +16,7 @@ namespace CamposRepresentacoes.Interfaces.Services
         IQueryable<Fornecedor> ObterFornecedores();
         IQueryable<Cliente> ObterClientes();
         IQueryable<Transportadora> ObterTransportadoras();
-        IQueryable<Produto> ObterProdutos(Guid? idFornecedor);
+        IQueryable<Produto> ObterProdutos(string idFornecedor);
+        void DeletarItemPedido(string id);
     }
 }

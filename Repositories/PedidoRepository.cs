@@ -237,12 +237,14 @@ namespace CamposRepresentacoes.Repositories
             }
         }
 
-        IQueryable<Produto> IPedidosRepository.ObterProdutos(Guid? idFornecedor)
+        IQueryable<Produto> IPedidosRepository.ObterProdutos(string idFornecedor)
         {
             try
             {
+                Guid id = Guid.Parse(idFornecedor);
+
                 return _context.Produtos                    
-                    .Where(p => p.Status == true && p.IdFornecedor == idFornecedor);
+                    .Where(p => p.Status == true && p.IdFornecedor == id);
             }
             catch (Exception ex)
             {
@@ -261,6 +263,26 @@ namespace CamposRepresentacoes.Repositories
 
                 throw new Exception($"Erro ao obter as Transpostadoras");
             }
+        }
+
+        public void DeletarItemPedido(string id)
+        {
+            try
+            {
+                if (id is null) new ArgumentNullException(nameof(id));
+
+                Guid idItem = Guid.Parse(id);
+
+                _context.Remove(idItem);
+
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
         }
     }
 }

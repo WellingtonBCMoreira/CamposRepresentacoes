@@ -68,7 +68,7 @@ namespace CamposRepresentacoes.Services
             return _pedidosRepository.ObterPedidosTesteAsync();
         }
 
-        public IQueryable<Produto> ObterProdutos(Guid? idFornecedor)
+        public IQueryable<Produto> ObterProdutos(string idFornecedor)
         {
             return _pedidosRepository.ObterProdutos(idFornecedor);
         }
@@ -76,6 +76,11 @@ namespace CamposRepresentacoes.Services
         public IQueryable<Transportadora> ObterTransportadoras()
         {
             return _pedidosRepository.ObterTransportadoras();
+        }
+
+        public void DeletarItemPedido(string id)
+        {
+            _pedidosRepository.DeletarItemPedido(id);
         }
     }
 }

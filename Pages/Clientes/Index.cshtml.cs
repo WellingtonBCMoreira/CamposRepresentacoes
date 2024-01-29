@@ -40,7 +40,7 @@ namespace CamposRepresentacoes.Pages.Clientes
                     Id = c.Id,
                 });
 
-                return new JsonResult(listaClientes);               
+                return new JsonResult(listaClientes);
             }
 
             return Page();

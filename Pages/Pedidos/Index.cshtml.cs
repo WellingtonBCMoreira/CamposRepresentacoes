@@ -17,6 +17,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
         [BindProperty]
         public Pedido Pedido { get; set; }
         public List<ItensPedido> ItensPedido { get; set; }
+        
         [BindProperty]
         public string Confirmacao { get; set; }
 
@@ -27,42 +28,69 @@ namespace CamposRepresentacoes.Pages.Pedidos
 
         public void OnGet()
         {
-            CarregarDados();
-        }
-        private void CarregarDados()
-        {
             Fornecedores = _pedidosService.ObterFornecedores();
             Clientes = _pedidosService.ObterClientes();
-            Transportadoras = _pedidosService.ObterTransportadoras();               
-
-            if (Pedido is not null)
-            {
-                Produtos = Pedido.IdFornecedor != Guid.Empty
-                ? _pedidosService.ObterProdutos(Pedido.IdFornecedor)
-                : Enumerable.Empty<Produto>().AsQueryable();
-            }
-            
-        }      
+            Transportadoras = _pedidosService.ObterTransportadoras();                      
+        }              
 
         public IActionResult OnPostConfirmar()
         {
             try
             {
+                Pedido.ItensPedido = new List<ItensPedido>();
+
                 Pedido.Id = Guid.NewGuid();
                 Pedido.DataEmissao = DateTime.Now;
                 Pedido.Status = "Aberto";
 
                 _pedidosService.CadastrarCapaPedido(Pedido);
                 
-                // Limpar dados do pedido
-                Pedido = new Pedido();
+                MensagemAlerta.SetMensagem("MensagemSucesso", "Pedido salvo com sucesso!!!");
 
-                return new JsonResult(new { success = true , confirmacao = "Capa do pedido criada com sucesso!" });
+                return Page();
             }
             catch (Exception ex)
             {               
                 return new JsonResult(new { success = false, error = ex.Message });
             }
-        }        
+        }
+
+        public IActionResult OnGetObterProdutosPorFornecedor(string IdFornecedor)
+        {
+            // Lógica para buscar produtos por fornecedor (substituir com sua lógica real)
+            var produtos = _pedidosService.ObterProdutos(IdFornecedor);
+            return new JsonResult(produtos);
+        }
+
+        public IActionResult OnPostAdicionarItemPedido([FromBody] ItensPedido item)
+        {
+            try
+            {
+                ItensPedido ??= new List<ItensPedido>();
+                ItensPedido.Add(item);
+
+                _pedidosService.InserirItens(item);
+
+                return RedirectToPage();
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { success = false, error = ex.Message });
+            }
+        }
+
+        public IActionResult OnPostRemoverItemPedido(string item)
+        {
+            try
+            {
+                _pedidosService.DeletarItemPedido(item);
+
+                return RedirectToPage();
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { success = false, error = ex.Message });
+            }
+        }
     }
 }
