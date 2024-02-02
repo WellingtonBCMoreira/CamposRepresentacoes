@@ -83,9 +83,9 @@
         // Lógica para adicionar produto ao carrinho
         $('#tabelaProdutos').on('click', '.btnAddProduto', function () {
             // Lógica para adicionar produto ao carrinho e salvar no backend
-            // Exemplo: $.post("/Pedidos/AdicionarProdutoAoCarrinho", { produtoId: $(this).data('produto-id') }, function (data) {
-            //     // Atualizar a interface conforme necessário
-            // });
+            
+            $.post("/Pedidos/Index?handler=AdicionarProdutoAoCarrinho", { produtoId: $(this).data('produto-id') }, function (data) {
+            });
             // Exibir o carrinho
             $('#carrinho').show();
         });

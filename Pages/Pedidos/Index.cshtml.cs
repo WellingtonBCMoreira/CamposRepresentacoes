@@ -92,5 +92,27 @@ namespace CamposRepresentacoes.Pages.Pedidos
                 return new JsonResult(new { success = false, error = ex.Message });
             }
         }
+
+        public IActionResult OnPostCancelarPedido()
+        {
+
+            return Page();
+        }
+
+        private decimal CalcularValorTotalItem(string idProduto, int quantidade)
+        {
+            var produto = _pedidosService.ObterProdutos(idProduto).FirstOrDefault();
+            return produto.Preco * quantidade;
+        }
+
+        public void AtualizarValorTotalPedido()
+        {
+            Pedido.ValorTotal = Pedido.ItensPedido.Sum(item => item.Quantidade);
+        }
+
+        public void SalvarPedido()
+        {
+            _pedidosService.CriarPedido(Pedido,ItensPedido);
+        }
     }
 }
