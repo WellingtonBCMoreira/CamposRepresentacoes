@@ -27,7 +27,11 @@ namespace CamposRepresentacoes.Data.Configuration
             builder.Property(p => p.Status)
                 .HasColumnName("Status")
                 .HasMaxLength(1)
-                .IsRequired();           
+                .IsRequired();
+
+            builder.Property(p => p.FormaPagamento)
+                .HasColumnName("FormaPagamento")
+                .HasMaxLength(255);
 
             // Relacionamento com o Cliente
             builder.HasOne(p => p.Cliente)                
