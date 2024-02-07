@@ -31,6 +31,9 @@ namespace CamposRepresentacoes.Data.Configuration
                 .HasColumnName("Quantidade")
                 .IsRequired();
 
+            builder.Property(ip => ip.Preco)
+                .HasColumnName("Preco");
+
             //Relacionamentos
             builder.HasOne(ip => ip.Pedido)
                 .WithMany()

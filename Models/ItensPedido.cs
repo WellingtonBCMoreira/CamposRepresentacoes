@@ -7,6 +7,7 @@
         public Guid IdProduto { get; set; }
         public Guid IdFornecedor { get; set; }
         public int Quantidade { get; set; }
+        public decimal? Preco { get; set; }
 
         // Relacionamentos
         public Pedido Pedido { get; set; }

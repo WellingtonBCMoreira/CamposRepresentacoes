@@ -31,18 +31,14 @@ namespace CamposRepresentacoes.Pages.Pedidos
             Fornecedores = _pedidosService.ObterFornecedores();
             Clientes = _pedidosService.ObterClientes();
             Transportadoras = _pedidosService.ObterTransportadoras();                      
-        }              
+        }
 
-        public IActionResult OnPostConfirmar()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult OnPostSalvarPedido()
         {
             try
-            {
-                Pedido.ItensPedido = new List<ItensPedido>();
-
-                Pedido.Id = Guid.NewGuid();
-                Pedido.DataEmissao = DateTime.Now;
-                Pedido.Status = "Aberto";
-
+            {   
                 _pedidosService.CadastrarCapaPedido(Pedido);
                 
                 MensagemAlerta.SetMensagem("MensagemSucesso", "Pedido salvo com sucesso!!!");
@@ -59,7 +55,17 @@ namespace CamposRepresentacoes.Pages.Pedidos
         {
             // Lógica para buscar produtos por fornecedor (substituir com sua lógica real)
             var produtos = _pedidosService.ObterProdutos(IdFornecedor);
-            return new JsonResult(produtos);
+
+            var listadeProdutos = produtos.Select(produto => new
+            {
+                Id = produto.Id,
+                Nome = produto.Nome,
+                Descricao = produto.Descricao,
+                Preco = produto.Preco
+                // Adicione outros campos conforme necessário
+            });
+
+            return new JsonResult(listadeProdutos);
         }
 
         public IActionResult OnPostAdicionarItemPedido([FromBody] ItensPedido item)

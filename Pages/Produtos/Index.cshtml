@@ -94,6 +94,7 @@
                                     <table id="tabelaProdutos" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
+                                                <th>Codigo</th>
                                                 <th>Nome</th>
                                                 <th>Descrição</th>
                                                 <th>Preço</th>
@@ -254,6 +255,7 @@
                                 var checkboxMarcado = produto.status !== undefined ? !produto.status : false;
 
                                 var row = '<tr>' +
+                                    '<td>' + (produto.codigo !== undefined ? produto.codigo : '') + '</td>' +
                                     '<td>' + (produto.nome !== undefined ? produto.nome : '') + '</td>' +
                                     '<td>' + (produto.descricao !== undefined ? produto.descricao : '') + '</td>' +
                                     '<td>' + precoFormatado + '</td>' +

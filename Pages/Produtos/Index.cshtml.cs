@@ -41,6 +41,7 @@ namespace CamposRepresentacoes.Pages.Produtos
                 
                 var listaProdutos = Produtos.Select(p => new
                 {
+                    Codigo = p.Codigo,
                     Nome = p.Nome,
                     Descricao = p.Descricao,
                     Preco = p.Preco,
@@ -96,6 +97,7 @@ namespace CamposRepresentacoes.Pages.Produtos
                                     {
                                         Id = Guid.NewGuid(),
                                         IdFornecedor = FornecedorId,
+                                        Codigo = row["Codigo"].ToString() != "" ? row["Codigo"].ToString().Trim() : string.Empty,
                                         Nome = row["Nome"].ToString() != "" ? row["Nome"].ToString().Trim() : string.Empty,
                                         Descricao = row["Descrição"].ToString() != "" ? row["Descrição"].ToString().Trim() : string.Empty,
                                         Preco = row["Preço"].ToString() != "" ? decimal.Parse(s: row["Preço"].ToString().Trim()): 0,
@@ -108,6 +110,7 @@ namespace CamposRepresentacoes.Pages.Produtos
                                     var produtoItem = new
                                     {
                                         Status = isValid ? "Importado" : "Não importado",
+                                        Codigo = produto.Codigo,
                                         Nome = produto.Nome,
                                         Descricao = produto.Descricao,
                                         Preco = produto.Preco
@@ -152,6 +155,8 @@ namespace CamposRepresentacoes.Pages.Produtos
 
         private bool ValidarProduto(Produto produto)
         {
+            if (string.IsNullOrEmpty(produto.Codigo))
+                return false;
             if (string.IsNullOrEmpty(produto.Nome))
                 return false;
             if (string.IsNullOrEmpty(produto.Descricao))

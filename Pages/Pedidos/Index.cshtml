@@ -4,58 +4,118 @@
     ViewData["Title"] = "Emissão de Pedido";
 }
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
+
+<style>
+    #carrinhoIcon {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 999; /* Garante que o ícone fique acima do conteúdo */
+    }
+</style>
+
+
 <div class="container mt-5">
-    <form method="post">
-        <!-- Seleção de Cliente, Fornecedor e Transportadora -->
-        <div class="form-group">
-            <label for="clienteSelect">Selecione o Cliente:</label>
-            <select class="form-control" asp-for="Pedido.IdCliente">
-                <option value="">Selecione...</option>
-                @if (Model.Clientes != null)
-                {
-                    @foreach (var cliente in Model.Clientes)
-                    {
-                        <option value="@cliente.Id">@cliente.RazaoSocial</option>
-                    }
-                }
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="fornecedorSelect">Selecione o Fornecedor:</label>
-            <select class="form-control" asp-for="Pedido.IdFornecedor">
-                <option value="">Selecione...</option>
-                @if (Model.Fornecedores != null)
-                {
-                    @foreach (var fornecedor in Model.Fornecedores)
-                    {
-                        <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
-                    }
-                }
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="transportadoraSelect">Selecione a Transportadora:</label>
-            <select class="form-control" asp-for="Pedido.IdTransportadora">
-                <option value="">Selecione...</option>
-                @if (Model.Transportadoras != null)
-                {
-                    @foreach (var transportadora in Model.Transportadoras)
-                    {
-                        <option value="@transportadora.Id">@transportadora.RazaoSocial</option>
-                    }
-                }
-            </select>
-        </div>
-
-        <!-- Botão para buscar produtos -->
-        <button id="btnBuscarProdutos" type="button" class="btn btn-primary mt-2">Buscar Produtos</button>
+    <form method="post" asp-page-handler="SalvarPedido" onsubmit="return salvarPedido()">
+        <!-- Seleção de Cliente, Fornecedor, Transportadora e Forma de Pagamento -->
+        <div class="card card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="clienteSelect">Selecione o Cliente:</label>
+                        <select class="form-control" asp-for="Pedido.IdCliente" id="clienteSelect">
+                            <option value="">Selecione...</option>
+                            @if (Model.Clientes != null)
+                            {
+                                @foreach (var cliente in Model.Clientes)
+                                {
+                                    <option value="@cliente.Id">@cliente.RazaoSocial</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="fornecedorSelect">Selecione o Fornecedor:</label>
+                        <select class="form-control" asp-for="Pedido.IdFornecedor" id="fornecedorSelect">
+                            <option value="">Selecione...</option>
+                            @if (Model.Fornecedores != null)
+                            {
+                                @foreach (var fornecedor in Model.Fornecedores)
+                                {
+                                    <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="transportadoraSelect">Selecione a Transportadora:</label>
+                        <select class="form-control" asp-for="Pedido.IdTransportadora" id="transportadoraSelect">
+                            <option value="">Selecione...</option>
+                            @if (Model.Transportadoras != null)
+                            {
+                                @foreach (var transportadora in Model.Transportadoras)
+                                {
+                                    <option value="@transportadora.Id">@transportadora.RazaoSocial</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="formaPagamentoSelect">Forma de Pagamento:</label>
+                        <select class="form-control" asp-for="Pedido.FormaPagamento" id="formaPagamentoSelect">
+                            <option value="">Selecione...</option>
+                            <option value="1 - Cartao de Credito">Cartão de Crédito</option>
+                            <option value="2 - Boleto Bancario">Boleto Bancário</option>
+                            <!-- Adicione outras opções conforme necessário -->
+                        </select>
+                    </div>
+                </div>                
+            </div>
+            <!-- Botão para buscar produtos -->
+            <button id="btnSalvarPedido" type="submit" class="btn btn-primary mt-2" disabled>Salvar Capa do Pedido</button>
+        </div>         
     </form>
 
     <!-- Tabela de Produtos -->
     <div id="tabelaProdutos" style="display: none;">
-        <!-- Preenchida dinamicamente com produtos -->
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post" asp-page-handler="AdicionarProdutos" onsubmit="return prepararIdsProdutos()">
+                    <div class="card-body">
+                        <table id="tabelaProdutos" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Preço</th>                                    
+                                    <th>Quantidade</th>
+                                    <th>Adicionar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <div class="float-left">
+                            <!-- Campo oculto para armazenar os IDs dos produtos selecionados -->
+                            <input type="hidden" name="idsProdutosSelecionados" id="idsProdutosSelecionados">
+                            <button type="submit" id="salvarAlteracoes" class="btn btn-success">Salvar Pedido</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Carrinho -->
@@ -64,46 +124,134 @@
         <button id="btnFinalizarPedido" class="btn btn-success mt-2">Finalizar Pedido</button>
         <button id="btnCancelarPedido" class="btn btn-danger mt-2">Cancelar Pedido</button>
     </div>
+
+    <!-- Ícone do carrinho -->
+    <a href="#" id="carrinhoIcon">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="carrinhoItemCount" class="badge bg-primary"></span>
+    </a>
 </div>
 
 @section Scripts {
+    <!-- Incluir jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <script>
+        $('#btnSalvarPedido').click(function () {
+            // Coletar os dados do pedido aqui, por exemplo:
+            var idCliente = $('#clienteSelect').val();
+            var idFornecedor = $('#fornecedorSelect').val();
+            var idTransportadora = $('#transportadoraSelect').val();
+            var formaPagamento = $('#formaPagamentoSelect option:selected').text();
+
+            // Montar o objeto de dados do pedido
+            var pedidoData = {
+                IdCliente: idCliente,
+                IdFornecedor: idFornecedor,
+                IdTransportadora: idTransportadora,
+                FormaPagamento: formaPagamento
+                // Adicione outras propriedades do pedido conforme necessário
+            };
+
+            // Enviar solicitação AJAX para salvar o pedido
+            $.ajax({
+                url: '/Pedidos/Index?handler=SalvarPedido',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(pedidoData),
+                success: function (response) {
+                    var mensagemSucesso = '@MensagemAlerta.GetMensagem("MensagemSucesso")';
+                    if (mensagemSucesso) {
+                        alert(mensagemSucesso);                                             
+                    }
+
+                    $('#btnBuscarProdutos').click(function () {
+                        var idFornecedor = $('#fornecedorSelect').val();
+
+                        $.get("/Pedidos/Index?handler=ObterProdutosPorFornecedor", { idFornecedor: idFornecedor }, function (data) {
+                            // Limpe a tabela de produtos antes de adicionar novos dados
+                            $('#tabelaProdutos tbody').empty();
+
+                            // Adicione os novos dados à tabela de produtos
+                            data.forEach(function (produto) {
+                                var precoFormatado = produto.preco !== undefined ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(produto.preco) : '';
+
+                                var row = "<tr>" +
+                                    "<td>" + produto.nome + "</td>" +
+                                    "<td>" + produto.descricao + "</td>" +
+                                    "<td>" + precoFormatado + "</td>" +
+                                    "<td><input type ='number' class='form-control quantidadeInput' style='width: 100%;' value='1' min='1'></td>" +
+                                    "<td><button class='btnAddProduto' data-produto-id='" + produto.Id + "'>Adicionar</button></td>" +
+                                    "</tr>";
+                                $('#tabelaProdutos tbody').append(row);
+                            });
+
+                            // Exibir a tabela de produtos
+                            $('#tabelaProdutos').show();
+                        });
+
+                        // Lógica para adicionar produto ao carrinho
+                        $('#tabelaProdutos').on('click', '.btnAddProduto', function () {
+                            var produtoId = $(this).data('produto-id');
+                            var quantidade = $(this).closest('tr').find('.quantidadeInput').val();
+
+                            $.post("/Pedidos/Index?handler=AdicionarItemPedido", { produtoId: produtoId, quantidade: quantidade }, function (data) {
+                                // Atualizar contador de itens no carrinho
+                                $('#carrinhoItemCount').text(data); // Supondo que 'data' retorne a contagem de itens no carrinho
+                            });
+                            // Exibir o carrinho
+                            $('#carrinho').show();
+                        });
+
+                        // Lógica para finalizar pedido
+                        $('#btnFinalizarPedido').click(function () {
+                            // Lógica para finalizar o pedido e salvar no backend
+                            // Exemplo: $.post("/Pedidos/FinalizarPedido", function (data) {
+                            //     // Redirecionar ou atualizar a interface conforme necessário
+                            // });
+                        });
+
+                        // Lógica para cancelar pedido
+                        $('#btnCancelarPedido').click(function () {
+                            // Lógica para cancelar o pedido e deletar itens e capa no backend
+                            // Exemplo: $.post("/Pedidos/CancelarPedido", function (data) {
+                            //     // Redirecionar ou atualizar a interface conforme necessário
+                            // });
+                        });
+                    });
+                },
+                error: function (xhr, status, error) {
+                    // Lidar com erros, se houver
+                    console.error('Erro ao salvar pedido:', error);
+                }
+            });
+        });
+
         $(document).ready(function () {
-            $('#btnBuscarProdutos').click(function () {
-                var idFornecedor = $('#fornecedorSelect').val();
+            $('#clienteSelect, #fornecedorSelect, #transportadoraSelect, #formaPagamentoSelect').change(function () {
+                var clienteSelecionado = $('#clienteSelect').val();
+                var fornecedorSelecionado = $('#fornecedorSelect').val();
+                var transportadoraSelecionada = $('#transportadoraSelect').val();
+                var formaPagamentoSelecionada = $('#formaPagamentoSelect').val();
 
-                $.get("/Pedidos/Index?handler=ObterProdutosPorFornecedor", { idFornecedor: idFornecedor }, function (data) {
-                    // Atualizar a interface com a lista de produtos (substitua isso pela sua lógica real)
-                    console.log(data); // Exemplo de log dos dados recebidos
-                });
+                // Verifique se ambos Cliente e Fornecedor foram selecionados
+                if (clienteSelecionado && fornecedorSelecionado && transportadoraSelecionada && formaPagamentoSelecionada) {
+                    $('#btnSalvarPedido').prop('disabled', false); // Habilita o botão
+                } else {
+                    $('#btnSalvarPedido').prop('disabled', true); // Desabilita o botão
+                }
             });
-        });
-        
 
-        // Lógica para adicionar produto ao carrinho
-        $('#tabelaProdutos').on('click', '.btnAddProduto', function () {
-            // Lógica para adicionar produto ao carrinho e salvar no backend
             
-            $.post("/Pedidos/Index?handler=AdicionarProdutoAoCarrinho", { produtoId: $(this).data('produto-id') }, function (data) {
-            });
-            // Exibir o carrinho
-            $('#carrinho').show();
+
+            
         });
 
-        // Lógica para finalizar pedido
-        $('#btnFinalizarPedido').click(function () {
-            // Lógica para finalizar o pedido e salvar no backend
-            // Exemplo: $.post("/Pedidos/FinalizarPedido", function (data) {
-            //     // Redirecionar ou atualizar a interface conforme necessário
-            // });
-        });
+        var mensagemSucesso = '@MensagemAlerta.GetMensagem("MensagemSucesso")';
+        if (mensagemSucesso) {
+            alert(mensagemSucesso);
 
-        // Lógica para cancelar pedido
-        $('#btnCancelarPedido').click(function () {
-            // Lógica para cancelar o pedido e deletar itens e capa no backend
-            // Exemplo: $.post("/Pedidos/CancelarPedido", function (data) {
-            //     // Redirecionar ou atualizar a interface conforme necessário
-            // });
-        });
+            window.location.href = '/Pedidos/Index';
+        }
     </script>
 }

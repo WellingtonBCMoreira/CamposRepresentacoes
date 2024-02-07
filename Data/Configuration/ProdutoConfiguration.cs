@@ -36,6 +36,12 @@ namespace CamposRepresentacoes.Data.Configuration
             builder.Property(p => p.DataCadastro)
                 .HasColumnName("DataCadastro");
 
+            builder.Property(p => p.Codigo)
+                .HasColumnName("Codigo")
+                .HasMaxLength(255)
+                .IsRequired();
+
+
             // Relacionamento com o Fornecedor
             builder.HasOne(p => p.Fornecedor)
                 .WithMany()

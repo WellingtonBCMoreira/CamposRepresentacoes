@@ -39,6 +39,12 @@ namespace CamposRepresentacoes.Repositories
             {
                 if (pedido is null) new ArgumentNullException(nameof(pedido));
 
+                pedido.Id = Guid.NewGuid();
+                pedido.DataEmissao = DateTime.Now;
+                pedido.ValorTotal = 0;
+                pedido.Status = "Aberto";
+
+
                 _context.Pedidos.Add(pedido);
                 _context.SaveChanges();
 
