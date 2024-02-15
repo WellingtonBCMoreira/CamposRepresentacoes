@@ -1,0 +1,224 @@
+﻿@page
+@model CamposRepresentacoes.Pages.Pedidos.CadastarPedidoModel
+@{
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
+
+<style>
+    #carrinhoIcon {
+        position: initial;
+        top: 20px;
+        right: 20px;
+        z-index: 999; /* Garante que o ícone fique acima do conteúdo */
+    }
+</style>
+
+
+<div class="container mt-5">
+    <form method="post" asp-page-handler="SalvarPedido" onsubmit="return salvarPedido()">
+        <!-- Seleção de Cliente, Fornecedor, Transportadora e Forma de Pagamento -->
+        <div class="card card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="clienteSelect">Selecione o Cliente:</label>
+                        <select class="form-control" asp-for="Pedido.IdCliente" id="clienteSelect">
+                            <option value="">Selecione...</option>
+                            @if (Model.Clientes != null)
+                            {
+                                @foreach (var cliente in Model.Clientes)
+                                {
+                                    <option value="@cliente.Id">@cliente.RazaoSocial</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="fornecedorSelect">Selecione o Fornecedor:</label>
+                        <select class="form-control" asp-for="Pedido.IdFornecedor" id="fornecedorSelect">
+                            <option value="">Selecione...</option>
+                            @if (Model.Fornecedores != null)
+                            {
+                                @foreach (var fornecedor in Model.Fornecedores)
+                                {
+                                    <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="transportadoraSelect">Selecione a Transportadora:</label>
+                        <select class="form-control" asp-for="Pedido.IdTransportadora" id="transportadoraSelect">
+                            <option value="">Selecione...</option>
+                            @if (Model.Transportadoras != null)
+                            {
+                                @foreach (var transportadora in Model.Transportadoras)
+                                {
+                                    <option value="@transportadora.Id">@transportadora.RazaoSocial</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="formaPagamentoSelect">Forma de Pagamento:</label>
+                        <select class="form-control" asp-for="Pedido.FormaPagamento" id="formaPagamentoSelect">
+                            <option value="">Selecione...</option>
+                            <option value="1 - Cartao de Credito">Cartão de Crédito</option>
+                            <option value="2 - Boleto Bancario">Boleto Bancário</option>
+                            <!-- Adicione outras opções conforme necessário -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Botão para buscar produtos -->
+            <button id="btnSalvarPedido" type="submit" class="btn btn-primary mt-2" disabled>Salvar Capa do Pedido</button>
+        </div>
+    </form>
+
+    <!-- Carrinho -->
+    <div id="carrinho" style="display: none;">
+        <!-- Preenchido dinamicamente com itens do carrinho -->
+        <button id="btnFinalizarPedido" class="btn btn-success mt-2">Finalizar Pedido</button>
+        <button id="btnCancelarPedido" class="btn btn-danger mt-2">Cancelar Pedido</button>
+    </div>
+
+    <!-- Ícone do carrinho -->
+    <a href="#" id="carrinhoIcon">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="carrinhoItemCount" class="badge bg-primary"></span>
+    </a>
+    <!-- Tabela de pedidos-->
+    <div class="mt-5">
+        <h2>Lista de Pedidos</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Fornecedor</th>
+                    <th>Qtd. de Itens</th>
+                    <th>Valor</th>
+                    <th>Forma de Pagamento</th>
+                    <th>Status</th>
+                    <th>Editar</th>
+                    <th>Deletar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Os dados dos pedidos serão preenchidos dinamicamente aqui -->
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+@section Scripts {
+    <!-- Incluir jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Função para carregar os pedidos
+            function carregarPedidos() {
+                $.get("/Pedidos/Index?handler=ObterPedidos", function (data) {
+                    // Limpar a tabela antes de adicionar novos dados
+                    $('tbody').empty();
+
+                    // Preencher a tabela com os dados dos pedidos
+                    data.forEach(function (pedido) {
+                        var row = "<tr>" +
+                            "<td>" + pedido.RazaoSocialCliente + "</td>" +
+                            "<td>" + pedido.RazaoSocialFornecedor + "</td>" +
+                            "<td>" + pedido.QuantidadeItens + "</td>" +
+                            "<td>" + pedido.Valor + "</td>" +
+                            "<td>" + pedido.FormaPagamento + "</td>" +
+                            "<td>" + pedido.Status + "</td>" +
+                            "<td><button class='btn btn-primary editarPedido' data-id='" + pedido.Id + "'>Editar</button></td>" +
+                            "<td><button class='btn btn-danger deletarPedido' data-id='" + pedido.Id + "'>Deletar</button></td>"
+                        "</tr>";
+                        $('tbody').append(row);
+                    });
+                }).fail(function (xhr, status, error) {
+                    // Lidar com erros de solicitação AJAX
+                    console.error('Erro ao carregar pedidos:', error);
+                });
+            }
+
+            // Chamar a função para carregar os pedidos ao carregar a página
+            carregarPedidos();
+
+            // Adicionar evento de clique para os botões de editar e deletar pedido
+            $('tbody').on('click', '.editarPedido', function () {
+                var idPedido = $(this).data('id');
+                // Implementar a lógica para editar o pedido
+                // Por exemplo: redirecionar para uma página de edição do pedido com o ID do pedido
+            });
+
+            $('tbody').on('click', '.deletarPedido', function () {
+                var idPedido = $(this).data('id');
+                // Implementar a lógica para deletar o pedido
+                // Por exemplo: enviar uma solicitação AJAX para deletar o pedido com o ID especificado
+            });
+
+            $('#btnSalvarPedido').click(function () {
+                // Coletar os dados do pedido aqui
+                var idCliente = $('#clienteSelect').val();
+                var idFornecedor = $('#fornecedorSelect').val();
+                var idTransportadora = $('#transportadoraSelect').val();
+                var formaPagamento = $('#formaPagamentoSelect option:selected').text();
+
+                // Montar o objeto de dados do pedido
+                var pedidoData = {
+                    IdCliente: idCliente,
+                    IdFornecedor: idFornecedor,
+                    IdTransportadora: idTransportadora,
+                    FormaPagamento: formaPagamento
+                    // Adicione outras propriedades do pedido conforme necessário
+                };
+
+                // Enviar solicitação AJAX para salvar o pedido
+                $.ajax({
+                    url: '/Pedidos/Index?handler=SalvarPedido',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(pedidoData),
+                    success: function (response) {
+                        var mensagemSucesso = '@MensagemAlerta.GetMensagem("MensagemSucesso")';
+                        if (mensagemSucesso) {
+                            alert(mensagemSucesso);
+                        }
+
+                        // Recarregar os pedidos após o salvamento bem-sucedido
+                        carregarPedidos();
+                    },
+                    error: function (xhr, status, error) {
+                        // Lidar com erros, se houver
+                        console.error('Erro ao salvar pedido:', error);
+                    }
+                });
+            });
+
+            // Verificar a seleção de campos antes de habilitar o botão de salvar pedido
+            $('#clienteSelect, #fornecedorSelect, #transportadoraSelect, #formaPagamentoSelect').change(function () {
+                var clienteSelecionado = $('#clienteSelect').val();
+                var fornecedorSelecionado = $('#fornecedorSelect').val();
+                var transportadoraSelecionada = $('#transportadoraSelect').val();
+                var formaPagamentoSelecionada = $('#formaPagamentoSelect').val();
+
+                if (clienteSelecionado && fornecedorSelecionado && transportadoraSelecionada && formaPagamentoSelecionada) {
+                    $('#btnSalvarPedido').prop('disabled', false);
+                } else {
+                    $('#btnSalvarPedido').prop('disabled', true);
+                }
+            });
+        });
+    </script>
+}

@@ -13,7 +13,10 @@ namespace CamposRepresentacoes.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal? ValorTotal { get; set; }
         public string Status { get; set; }
-        public string FormaPagamento { get; set; }
+        public string FormaPagamento { get; set; }                
+        public string RazaoSocialCliente { get; set; }
+        public string RazaoSocialFornecedor { get; set; }
+        public int QuantidadeItens { get; set; }
 
         // Relacionamentos
         public Cliente Cliente { get; set; }

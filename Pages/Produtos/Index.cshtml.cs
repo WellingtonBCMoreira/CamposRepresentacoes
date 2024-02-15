@@ -45,13 +45,13 @@ namespace CamposRepresentacoes.Pages.Produtos
                     Nome = p.Nome,
                     Descricao = p.Descricao,
                     Preco = p.Preco,
-                    DataCadastro = p.DataCadastro,
+                    DataCadastro = $"{p.DataCadastro:dd-MM-yyyy HH:mm:ss}",
+                    RazaoSocialFornecedor = p.RazaoSocialFornecedor,
                     Status = p.Status,
                     Id = p.Id,
                 });
 
-                return new JsonResult(listaProdutos);
-                //ViewData["Produtos"] = listaProdutos;
+                return new JsonResult(listaProdutos);                
             }
 
             Fornecedores = _produtosService.ObterFornecedores();
@@ -133,7 +133,7 @@ namespace CamposRepresentacoes.Pages.Produtos
                     ViewData["ProdutosImportados"] = dadosImportados;
                 }
             }
-            return Page();
+            return RedirectToPage();
         }
         
         [ValidateAntiForgeryToken]

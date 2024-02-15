@@ -22,6 +22,10 @@
                 <input type="hidden" asp-for="Produto.Id"/>
                 <input type="hidden" asp-for="Produto.IdFornecedor"/>
                 <div class="form-group">
+                    <label asp-for="Produto.Codigo">Codigo do Produto</label>
+                    <input type="text" name="Produto.Codigo" class="form-control" asp-for="Produto.Codigo" required>
+                </div>
+                <div class="form-group">
                     <label asp-for="Produto.Nome">Nome do Produto</label>
                     <input type="text" name="Produto.Nome" class="form-control" asp-for="Produto.Nome" required>
                 </div>

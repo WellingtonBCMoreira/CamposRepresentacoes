@@ -15,6 +15,8 @@ namespace CamposRepresentacoes.Models
         [NotMapped]
         public string Preco2 { get; set; }
         public bool? Status { get; set; }
+        [NotMapped]
+        public string RazaoSocialFornecedor { get; set; }
 
         public DateTime? DataCadastro { get; set; }
 

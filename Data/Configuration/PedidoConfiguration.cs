@@ -33,6 +33,19 @@ namespace CamposRepresentacoes.Data.Configuration
                 .HasColumnName("FormaPagamento")
                 .HasMaxLength(255);
 
+            builder.Property(p => p.RazaoSocialCliente)
+                .HasColumnName("RazaoSocialCliente")
+                .HasMaxLength(255);
+            
+            builder.Property(p => p.RazaoSocialFornecedor)
+                .HasColumnName("RazaoSocialFornecedor")
+                .HasMaxLength(255);
+            
+            builder.Property(p => p.QuantidadeItens)
+                .HasColumnName("QuantidadeItens")
+                .IsRequired()
+                .HasColumnType("int");
+
             // Relacionamento com o Cliente
             builder.HasOne(p => p.Cliente)                
                 .WithMany()

@@ -150,6 +150,20 @@ namespace CamposRepresentacoes.Repositories
                     produtos = produtos.Where(p => p.IdFornecedor == filtro.IdFornecedor);
 
                 produtos = produtos.OrderByDescending(p => p.DataCadastro);
+
+                produtos = from produto in produtos
+                           join fornecedor in _context.Fornecedores on produto.IdFornecedor equals fornecedor.Id
+                           select new Produto
+                           {
+                               Id = produto.Id,
+                               Codigo = produto.Codigo,
+                               Nome = produto.Nome,
+                               Descricao = produto.Descricao,
+                               Preco = produto.Preco,
+                               DataCadastro = produto.DataCadastro,
+                               RazaoSocialFornecedor = fornecedor.RazaoSocial,
+                               Status = produto.Status,
+                           };
                 
                 return produtos;
             }

@@ -33,18 +33,26 @@ namespace CamposRepresentacoes.Repositories
             
         }
 
-        public Pedido CadastrarCapaPedido(Pedido pedido)
+        public Pedido CadastrarCapaPedido(Pedido pPedido)
         {
             try
             {
-                if (pedido is null) new ArgumentNullException(nameof(pedido));
+                if (pPedido is null) new ArgumentNullException(nameof(pPedido));
 
-                pedido.Id = Guid.NewGuid();
-                pedido.DataEmissao = DateTime.Now;
-                pedido.ValorTotal = 0;
-                pedido.Status = "Aberto";
+                var cliente = _context.Clientes.FirstOrDefault(x => x.Id == pPedido.IdCliente);
+                var fornecedor = _context.Fornecedores.FirstOrDefault(x => x.Id == pPedido.IdFornecedor);
 
-
+                Pedido pedido = new Pedido
+                {
+                    Id = Guid.NewGuid(),
+                    DataEmissao = DateTime.Now,
+                    RazaoSocialCliente = cliente.RazaoSocial,
+                    RazaoSocialFornecedor = fornecedor.RazaoSocial,
+                    ValorTotal = 0,
+                    QuantidadeItens = 0,
+                    Status = "Aberto"
+                };
+                                
                 _context.Pedidos.Add(pedido);
                 _context.SaveChanges();
 
@@ -173,12 +181,14 @@ namespace CamposRepresentacoes.Repositories
         public IQueryable<Pedido> ObterPedidos()
         {
             try
-            {
-                return _context.Pedidos.Where(p => p.Status != "Cancelado");
+            {                
+                IQueryable<Pedido> pedidos = _context.Pedidos.Where(p => p.Status != "Cancelado");                
+
+                return pedidos;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao tentar obter os Pedidos");
+                throw new Exception($"Erro ao tentar obter os Pedidos: {ex.Message}");
             }
         }
 

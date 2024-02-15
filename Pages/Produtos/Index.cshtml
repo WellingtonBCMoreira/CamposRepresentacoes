@@ -99,6 +99,7 @@
                                                 <th>Descrição</th>
                                                 <th>Preço</th>
                                                 <th>Data Cadastro</th>
+                                                <th>Fornecedor</th>
                                                 <th>Ação</th>
                                                 <th>Editar</th>
                                             </tr>
@@ -260,6 +261,7 @@
                                     '<td>' + (produto.descricao !== undefined ? produto.descricao : '') + '</td>' +
                                     '<td>' + precoFormatado + '</td>' +
                                     '<td>' + (produto.dataCadastro !== undefined ? produto.dataCadastro : '') + '</td>' +
+                                    '<td>' + (produto.razaoSocialFornecedor !== undefined ? produto.razaoSocialFornecedor : '') + '</td>' +
                                     '<td><input type="checkbox" name="produtosParaDesativar" value="' + produto.id + '"' + (checkboxMarcado ? 'checked' : '') + '></td>' +
                                     '<td><a href="/Produtos/EditarProduto?id=' + produto.id + '" class="btn btn-primary">Editar</a></td>' +
                                     '</tr>';
