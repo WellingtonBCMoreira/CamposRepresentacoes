@@ -42,21 +42,21 @@ namespace CamposRepresentacoes.Repositories
                 var cliente = _context.Clientes.FirstOrDefault(x => x.Id == pPedido.IdCliente);
                 var fornecedor = _context.Fornecedores.FirstOrDefault(x => x.Id == pPedido.IdFornecedor);
 
-                Pedido pedido = new Pedido
-                {
-                    Id = Guid.NewGuid(),
-                    DataEmissao = DateTime.Now,
-                    RazaoSocialCliente = cliente.RazaoSocial,
-                    RazaoSocialFornecedor = fornecedor.RazaoSocial,
-                    ValorTotal = 0,
-                    QuantidadeItens = 0,
-                    Status = "Aberto"
-                };
-                                
-                _context.Pedidos.Add(pedido);
+                pPedido.Id = Guid.NewGuid();
+                pPedido.DataEmissao = DateTime.Now;
+                pPedido.RazaoSocialCliente = cliente.RazaoSocial;
+                pPedido.RazaoSocialFornecedor = fornecedor.RazaoSocial;
+                pPedido.ValorTotal = 0;
+                pPedido.FormaPagamento = pPedido.FormaPagamento;
+                pPedido.QuantidadeItens = 0;
+                pPedido.Status = "Aberto";
+
+
+
+                _context.Pedidos.Add(pPedido);
                 _context.SaveChanges();
 
-                return pedido;
+                return pPedido;
 
             }
             catch (Exception ex)

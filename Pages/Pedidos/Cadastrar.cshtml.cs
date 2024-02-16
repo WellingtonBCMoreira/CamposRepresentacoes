@@ -99,9 +99,9 @@ namespace CamposRepresentacoes.Pages.Pedidos
             }
         }
 
-        public IActionResult OnPostCancelarPedido()
+        public IActionResult OnPostCancelarPedido(string id)
         {
-
+            _pedidosService.DeletarItemPedido(id);
             return Page();
         }
 
