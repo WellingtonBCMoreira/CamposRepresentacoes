@@ -37,19 +37,13 @@ namespace CamposRepresentacoes.Pages.Pedidos
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult OnPostSalvarPedido()
-        {
-            try
-            {
-                _pedidosService.CadastrarCapaPedido(Pedido);
+        {            
+            _pedidosService.CadastrarCapaPedido(Pedido);
 
-                MensagemAlerta.SetMensagem("MensagemSucesso", "Pedido salvo com sucesso!!!");
-
-                return RedirectToPage();
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(new { success = false, error = ex.Message });
-            }
+            MensagemAlerta.SetMensagem("MensagemSucesso", "Pedido salvo com sucesso!!!");
+            
+            return Page();
+                        
         }
 
         public IActionResult OnGetObterProdutosPorFornecedor(string IdFornecedor)
@@ -58,8 +52,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
             var produtos = _pedidosService.ObterProdutos(IdFornecedor);
 
             var listadeProdutos = produtos.Select(produto => new
-            {
-                Id = produto.Id,
+            {                
                 Nome = produto.Nome,
                 Descricao = produto.Descricao,
                 Preco = produto.Preco

@@ -1,17 +1,14 @@
 ﻿@page
 @model CamposRepresentacoes.Pages.Pedidos.CadastrarModel
-@{
-}
-
 <!DOCTYPE html>
 <html>
-    <head>
+<head>
     <!-- Importação de estilos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">
     <!-- Importação de scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
-    
+
     <!-- Estilos aqui -->
     <style>
         #carrinhoIcon {
@@ -21,10 +18,15 @@
             z-index: 999; /* Garante que o ícone fique acima do conteúdo */
         }
     </style>
-    </head>
-    <body>
+</head>
+<body>
+    <!-- Ícone do carrinho -->
+    <a href="#" id="carrinhoIcon">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="carrinhoItemCount" class="badge bg-primary"></span>
+    </a>
     <div class="container mt-5">
-        <form method="post" asp-page-handler="SalvarPedido" onsubmit="return salvarPedido()">
+        <form>
             <!-- Seleção de Cliente, Fornecedor, Transportadora e Forma de Pagamento -->
             <div class="card card-body">
                 <div class="row">
@@ -82,31 +84,44 @@
                                 <option value="">Selecione...</option>
                                 <option value="1 - Cartao de Credito">Cartão de Crédito</option>
                                 <option value="2 - Boleto Bancario">Boleto Bancário</option>
+                                <option value="3 - 30/60/90">30/60/90</option>
+                                <option value="4 - Vini Paga">Vini Paga</option>
                                 <!-- Adicione outras opções conforme necessário -->
                             </select>
                         </div>
                     </div>
                 </div>
                 <!-- Botão para buscar produtos -->
-                <button id="btnSalvarPedido" type="submit" class="btn btn-primary mt-2" disabled>Salvar Capa do Pedido</button>
+                <button id="btnBuscarProdutos" class="btn btn-primary mt-2">Buscar Produtos do Fornecedor</button>
             </div>
         </form>
 
-        <!-- Carrinho -->
-        <div id="carrinho" style="display: none;">
-            <!-- Preenchido dinamicamente com itens do carrinho -->
-            <button id="btnFinalizarPedido" class="btn btn-success mt-2">Finalizar Pedido</button>
-            <button id="btnCancelarPedido" class="btn btn-danger mt-2">Cancelar Pedido</button>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="tabelaProdutos" class="table table-bordered table-striped">
+                            <h2>Produtos</h2>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome Produto</th>
+                                        <th>Descrição</th>
+                                        <th>Preço</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpoTabelaProdutos">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <!-- Ícone do carrinho -->
-        <a href="#" id="carrinhoIcon">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="carrinhoItemCount" class="badge bg-primary"></span>
-        </a>
-
     </div>
-    </body>
+</body>
 </html>
 
 @section Scripts {
@@ -115,46 +130,7 @@
 
     <script>
         $(document).ready(function () {
-            
-            $('#btnSalvarPedido').click(function () {
-                // Coletar os dados do pedido aqui
-                var idCliente = $('#clienteSelect').val();
-                var idFornecedor = $('#fornecedorSelect').val();
-                var idTransportadora = $('#transportadoraSelect').val();
-                var formaPagamento = $('#formaPagamentoSelect option:selected').text();
-
-                // Montar o objeto de dados do pedido
-                var pedidoData = {
-                    IdCliente: idCliente,
-                    IdFornecedor: idFornecedor,
-                    IdTransportadora: idTransportadora,
-                    FormaPagamento: formaPagamento
-                    // Adicione outras propriedades do pedido conforme necessário
-                };
-
-                // Enviar solicitação AJAX para salvar o pedido
-                $.ajax({
-                    url: '/Pedidos/Cadastrar?handler=SalvarPedido',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(pedidoData),
-                    success: function (response) {
-                        var mensagemSucesso = '@MensagemAlerta.GetMensagem("MensagemSucesso")';
-                        if (mensagemSucesso) {
-                            alert(mensagemSucesso);
-                        }
-
-                        // Recarregar os pedidos após o salvamento bem-sucedido
-                        carregarPedidos();
-                    },
-                    error: function (xhr, status, error) {
-                        // Lidar com erros, se houver
-                        console.error('Erro ao salvar pedido:', error);
-                    }
-                });
-            });
-
-            // Verificar a seleção de campos antes de habilitar o botão de salvar pedido
+            // Verificar a seleção de campos antes de habilitar o botão de buscar produtos
             $('#clienteSelect, #fornecedorSelect, #transportadoraSelect, #formaPagamentoSelect').change(function () {
                 var clienteSelecionado = $('#clienteSelect').val();
                 var fornecedorSelecionado = $('#fornecedorSelect').val();
@@ -162,11 +138,56 @@
                 var formaPagamentoSelecionada = $('#formaPagamentoSelect').val();
 
                 if (clienteSelecionado && fornecedorSelecionado && transportadoraSelecionada && formaPagamentoSelecionada) {
-                    $('#btnSalvarPedido').prop('disabled', false);
+                    $('#btnBuscarProdutos').prop('disabled', false);
                 } else {
-                    $('#btnSalvarPedido').prop('disabled', true);
+                    $('#btnBuscarProdutos').prop('disabled', true);
                 }
             });
+
+            $('#btnBuscarProdutos').click(function () {
+                var idFornecedor = $('#fornecedorSelect').val();
+                if (!idFornecedor) {
+                    alert("Por favor, selecione um fornecedor antes de buscar os produtos.");
+                    return;
+                }
+                carregarProdutosFornecedor(idFornecedor);
+            });
+
+            function carregarProdutosFornecedor(idFornecedor) {
+                $.ajax({
+                    url: '/Pedidos/Cadastrar?handler=ObterProdutosPorFornecedor',
+                    type: 'GET',
+                    data: { IdFornecedor: idFornecedor },
+                    dataType: 'json',
+
+                    success: function (result) {
+                        console.log("Requisição bem sucedida. Dados recebidos:", data);
+                        // Limpar a tabela antes de adicionar os novos produtos
+                        $('#corpoTabelaProdutos').empty();
+
+                        if (result && result.length > 0) {
+                            // Preencher a tabela com os produtos recebidos
+                            result.forEach(function (produto) {
+                                var linhaProduto = '<tr>' +
+                                    '<td>' + produto.nome + '</td>' +
+                                    '<td>' + produto.descricao + '</td>' +
+                                    '<td>' + produto.preco + '</td>' +
+                                    '<td><button onclick="adicionarProduto(' + produto.id + ')" class="btn btn-primary">Adicionar</button></td>' +
+                                    '</tr>';
+
+                                $('#corpoTabelaProdutos tbody').append(linhaProduto);
+                            });
+                        }
+                        else {
+                            $('#corpoTabelaProdutos tbody').html('<tr><td colspan="6">Nenhum produto encontrado!</td></tr>');
+                        }                        
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erro ao carregar produtos:', error);
+                    }
+                });
+            }
         });
+
     </script>
 }
