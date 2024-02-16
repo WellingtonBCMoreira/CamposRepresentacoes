@@ -29,13 +29,11 @@ namespace CamposRepresentacoes.Pages.Pedidos
                      
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult OnPostExcluir(Guid id)
         {
             _pedidosService.DeletarPedido(id);
 
-            MensagemAlerta.SetMensagem("MensagemExclusao", "Pedido excluído com sucesso!");
+            MensagemAlerta.SetMensagem("MensagemExclusao", "Pedido excluido com sucesso!");
 
             return RedirectToPage(); 
         }

@@ -135,7 +135,9 @@ namespace CamposRepresentacoes.Repositories
 
                 if (pedido is null) new ArgumentNullException(nameof(pedido));
 
-                _context.Pedidos.Remove(pedido);
+                pedido.Status = "Cancelado";
+
+                //_context.Pedidos.Remove(pedido);
                 _context.SaveChanges();
             }
             catch (Exception ex)

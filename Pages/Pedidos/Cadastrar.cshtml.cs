@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CamposRepresentacoes.Pages.Pedidos
 {
-    public class CadastarPedidoModel : PageModel
+    public class CadastrarModel : PageModel
     {
         private readonly IPedidosService _pedidosService;
 
-        public CadastarPedidoModel(IPedidosService pedidosService)
+        public CadastrarModel(IPedidosService pedidosService)
         {
             _pedidosService = pedidosService;
         }
@@ -29,6 +29,9 @@ namespace CamposRepresentacoes.Pages.Pedidos
 
         public void OnGet()
         {
+            Clientes = _pedidosService.ObterClientes();
+            Fornecedores = _pedidosService.ObterFornecedores();
+            Transportadoras = _pedidosService.ObterTransportadoras();
         }
 
         [HttpPost]
