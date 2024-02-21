@@ -1,5 +1,8 @@
 ﻿@page
 @model CamposRepresentacoes.Pages.Pedidos.CadastrarModel
+@{
+}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,14 +22,9 @@
         }
     </style>
 </head>
-<body>
-    <!-- Ícone do carrinho -->
-    <a href="#" id="carrinhoIcon">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="carrinhoItemCount" class="badge bg-primary"></span>
-    </a>
+<body>    
     <div class="container mt-5">
-        <form>
+        <form method="post" asp-page-handler="SalvarPedido">
             <!-- Seleção de Cliente, Fornecedor, Transportadora e Forma de Pagamento -->
             <div class="card card-body">
                 <div class="row">
@@ -91,35 +89,10 @@
                         </div>
                     </div>
                 </div>
-                <!-- Botão para buscar produtos -->
-                <button id="btnBuscarProdutos" class="btn btn-primary mt-2">Buscar Produtos do Fornecedor</button>
+                <!-- Botão para salvar a capa do pedido -->
+                <button id="btnSalvarPedido" type="submit" class="btn btn-primary mt-2">Salvar Capa do Pedido</button>
             </div>
-        </form>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div id="tabelaProdutos" class="table table-bordered table-striped">
-                            <h2>Produtos</h2>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Nome Produto</th>
-                                        <th>Descrição</th>
-                                        <th>Preço</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="corpoTabelaProdutos">
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </form>        
     </div>
 </body>
 </html>
@@ -130,64 +103,41 @@
 
     <script>
         $(document).ready(function () {
-            // Verificar a seleção de campos antes de habilitar o botão de buscar produtos
-            $('#clienteSelect, #fornecedorSelect, #transportadoraSelect, #formaPagamentoSelect').change(function () {
+            // Função para verificar se todos os campos obrigatórios foram selecionados
+            function verificarCamposObrigatorios() {
                 var clienteSelecionado = $('#clienteSelect').val();
                 var fornecedorSelecionado = $('#fornecedorSelect').val();
                 var transportadoraSelecionada = $('#transportadoraSelect').val();
                 var formaPagamentoSelecionada = $('#formaPagamentoSelect').val();
 
-                if (clienteSelecionado && fornecedorSelecionado && transportadoraSelecionada && formaPagamentoSelecionada) {
-                    $('#btnBuscarProdutos').prop('disabled', false);
+                return clienteSelecionado && fornecedorSelecionado && transportadoraSelecionada && formaPagamentoSelecionada;
+            }
+
+            $('#btnSalvarPedido').prop('disabled', true);
+
+            // Habilitar/desabilitar botão de salvar pedido com base na seleção dos campos obrigatórios
+            $('#clienteSelect, #fornecedorSelect, #transportadoraSelect, #formaPagamentoSelect').change(function () {
+                if (verificarCamposObrigatorios()) {
+                    $('#btnSalvarPedido').prop('disabled', false);
                 } else {
-                    $('#btnBuscarProdutos').prop('disabled', true);
+                    $('#btnSalvarPedido').prop('disabled', true);
                 }
             });
 
-            $('#btnBuscarProdutos').click(function () {
-                var idFornecedor = $('#fornecedorSelect').val();
-                if (!idFornecedor) {
-                    alert("Por favor, selecione um fornecedor antes de buscar os produtos.");
+            // Handler para clique no botão de salvar pedido
+            $('#btnSalvarPedido').on('click', function (event) {
+                event.preventDefault(); // Evita que o formulário seja enviado diretamente
+
+                if (!verificarCamposObrigatorios()) {
+                    alert("Por favor, selecione cliente, fornecedor, transportadora e forma de pagamento antes de salvar o pedido.");
                     return;
                 }
-                carregarProdutosFornecedor(idFornecedor);
+
+                // Se todos os campos obrigatórios estiverem selecionados, então envie o formulário
+                $('form').submit();
             });
-
-            function carregarProdutosFornecedor(idFornecedor) {
-                $.ajax({
-                    url: '/Pedidos/Cadastrar?handler=ObterProdutosPorFornecedor',
-                    type: 'GET',
-                    data: { IdFornecedor: idFornecedor },
-                    dataType: 'json',
-
-                    success: function (result) {
-                        console.log("Requisição bem sucedida. Dados recebidos:", data);
-                        // Limpar a tabela antes de adicionar os novos produtos
-                        $('#corpoTabelaProdutos').empty();
-
-                        if (result && result.length > 0) {
-                            // Preencher a tabela com os produtos recebidos
-                            result.forEach(function (produto) {
-                                var linhaProduto = '<tr>' +
-                                    '<td>' + produto.nome + '</td>' +
-                                    '<td>' + produto.descricao + '</td>' +
-                                    '<td>' + produto.preco + '</td>' +
-                                    '<td><button onclick="adicionarProduto(' + produto.id + ')" class="btn btn-primary">Adicionar</button></td>' +
-                                    '</tr>';
-
-                                $('#corpoTabelaProdutos tbody').append(linhaProduto);
-                            });
-                        }
-                        else {
-                            $('#corpoTabelaProdutos tbody').html('<tr><td colspan="6">Nenhum produto encontrado!</td></tr>');
-                        }                        
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Erro ao carregar produtos:', error);
-                    }
-                });
-            }
         });
-
     </script>
 }
+
+

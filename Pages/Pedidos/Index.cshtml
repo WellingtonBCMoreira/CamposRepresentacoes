@@ -120,7 +120,7 @@
                                     <td>@pedido.FormaPagamento</td>
                                     <td>@pedido.Status</td>
                                     <td>
-                                        <a href="/Pedidos/EditarPedido?id=@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
+                                        <a href="/Pedidos/Detalhes?id=@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
                                         <form method="post" asp-page-handler="Excluir" asp-route-id="@pedido.Id" onsubmit="return confirm('Tem certeza que deseja excluir este pedido?')">
                                             <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
                                         </form>

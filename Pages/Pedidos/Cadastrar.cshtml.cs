@@ -2,6 +2,7 @@ using CamposRepresentacoes.Interfaces.Services;
 using CamposRepresentacoes.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 
 namespace CamposRepresentacoes.Pages.Pedidos
 {
@@ -37,13 +38,19 @@ namespace CamposRepresentacoes.Pages.Pedidos
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult OnPostSalvarPedido()
-        {            
-            _pedidosService.CadastrarCapaPedido(Pedido);
+        {                        
+            var pedido = _pedidosService.CadastrarCapaPedido(Pedido);
 
-            MensagemAlerta.SetMensagem("MensagemSucesso", "Pedido salvo com sucesso!!!");
-            
-            return Page();
-                        
+            if(pedido == null)
+            {
+                return new JsonResult(new { success = false });
+            }
+
+            string pedidoJson = JsonConvert.SerializeObject(pedido);
+
+            TempData["Pedido"] = pedidoJson;
+
+            return RedirectToPage("/Pedidos/Detalhes");
         }
 
         public IActionResult OnGetObterProdutosPorFornecedor(string IdFornecedor)
