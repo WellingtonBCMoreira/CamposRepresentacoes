@@ -1,4 +1,5 @@
 ﻿@page
+@using Newtonsoft.Json;
 @model CamposRepresentacoes.Pages.Pedidos.DetalhesModel
 @{
 }
@@ -55,10 +56,11 @@
                     <table id="tabelaProdutos" class="table table-bordered table-striped">
                         <thead>
                             <tr>
+                                <th>Codigo</th>
                                 <th>Nome</th>
                                 <th>Descrição</th>
                                 <th>Preço</th>
-                                <th>Quantidade</th>
+                                @* <th>Quantidade</th> *@
                                 <th></th>
                             </tr>
                         </thead>
@@ -68,10 +70,11 @@
                                 @foreach (var produto in Model.Produtos)
                                 {
                                     <tr>
+                                        <td>@produto.Codigo</td>
                                         <td>@produto.Nome</td>
                                         <td>@produto.Descricao</td>
                                         <td>@string.Format("{0:C}", produto.Preco)</td>
-                                        <td><input type="number" min="0" value="0" class="form-control" /></td>
+                                        @* <td><input type="number" min="0" value="0" class="form-control" /></td> *@
                                         <td><button onclick="adicionarProduto(@produto.Id)" class="btn btn-primary">Adicionar</button></td>
                                     </tr>
                                 }
@@ -82,7 +85,39 @@
             </div>
         </div>        
     </div>
-
+    <div class="modal fade" id="carrinhoModal" tabindex="-1" role="dialog" aria-labelledby="carrinhoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="carrinhoModalLabel">Carrinho</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tabela de itens do carrinho -->
+                    <table id="tabelaCarrinho" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>Valor</th>
+                                <th>Quantidade</th>
+                                <th>Valor Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary">Confirmar Pedido</button>
+                </div>
+            </div>
+        </div>
+    </div>
     @section scripts {
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>
@@ -100,7 +135,108 @@
         <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
         <!-- AdminLTE App -->
         <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/dist/js/adminlte.min.js"></script>
-            
+
+        <script>
+            function adicionarProduto(produtoId) {
+                // Encontre o produto com o ID fornecido
+                const produto = @Html.Raw(JsonConvert.SerializeObject(Model.Produtos));
+                const produtoEncontrado = produto.find(p => p.Id == produtoId);
+
+                if (produtoEncontrado) {
+                    // Verifique se o item já existe no carrinho
+                    const itemExistente = @Html.Raw(JsonConvert.SerializeObject(Model.ItensPedido));
+                    const itemEncontrado = itemExistente.find(i => i.ProdutoId == produtoId);
+
+                    if (itemEncontrado) {
+                        // Se o item já existe no carrinho, atualize a quantidade
+                        itemEncontrado.Quantidade++;
+                    } else {
+                        // Se o item não existe no carrinho, adicione-o
+                        const novoItem = {
+                            PedidoId: @Model.Pedido.Id,
+                            ProdutoId: produtoId,
+                            Quantidade: 1
+                        };
+                        Model.ItensPedido.push(novoItem);
+                    }
+
+                    // Atualize a quantidade no ícone do carrinho
+                    atualizarCarrinho();
+
+                    // Salve os itens no banco
+                    salvarItensPedido();
+                }
+            }
+            function atualizarCarrinho() {
+                // Obtenha a lista de itens do carrinho a partir da propriedade ItensPedidoJson
+                const itensJson = '@Html.Raw(Model.ItensPedidoJson)';
+                const itens = JSON.parse(itensJson);
+
+                // Atualize a quantidade no ícone do carrinho
+                const quantidadeItens = itens.length;
+                $('.cart-icon i').text(`${quantidadeItens} itens`);
+            }
+            function salvarItensPedido() {
+                // Converta a lista de itens em uma string JSON
+                const itensJson = JSON.stringify(Model.ItensPedido);
+
+                // Envie uma solicitação AJAX para salvar os itens no banco
+                $.ajax({
+                    type: 'POST',
+                    url: '/Pedidos/SalvarItensPedido',
+                    data: { itens: itensJson },
+                    success: function (response) {
+                        if (response.sucesso) {
+                            // Atualize a lista de itens no servidor
+                            Model.ItensPedido = JSON.parse(response.itens);
+
+                            // Atualize a quantidade no ícone do carrinho
+                            atualizarCarrinho();
+                        } else {
+                            console.error(response.mensagem);
+                        }
+                    },
+                }
+            }
+            // Exiba o modal do carrinho quando o usuário clicar no ícone do carrinho
+            $('.cart-icon').click(function () {
+                // Preencha a tabela de itens do carrinho
+                preencherTabelaCarrinho();
+
+                // Exiba o modal do carrinho
+                $('#carrinhoModal').modal('show');
+            });
+            function preencherTabelaCarrinho() {
+                // Limpe a tabela de itens do carrinho
+                $('#tabelaCarrinho tbody').empty();
+
+                // Obtenha a lista de itens do carrinho
+                const itensJson = '@Html.Raw(JsonConvert.SerializeObject(Model.ItensPedido))';
+                const itens = JSON.parse(itensJson);
+
+                // Para cada item no carrinho, adicione uma linha à tabela
+                itens.forEach(item => {
+                    const produto = @Html.Raw(JsonConvert.SerializeObject(Model.Produtos));
+                    const produtoEncontrado = produto.find(p => p.Id == item.ProdutoId);
+
+                    const linha = `
+                        <tr>
+                            <td>${produtoEncontrado.Codigo}</td>
+                            <td>${produtoEncontrado.Nome}</td>
+                            <td>${produtoEncontrado.Preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                            <td>${item.Quantidade}</td>
+                            <td>${(produtoEncontrado.Preco * item.Quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                            <td>
+                                <button onclick="removerItemCarrinho(${item.Id})" class="btn btn-danger">Remover</button>
+                            </td>
+                        </tr>
+                    `;
+
+                    $('#tabelaCarrinho tbody').append(linha);
+                });
+            }
+
+        </script>            
     }
 </body>
 </html>

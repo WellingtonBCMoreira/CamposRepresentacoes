@@ -17,6 +17,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
         [BindProperty]
         public Pedido Pedido { get; set; }
         public List<ItensPedido> ItensPedido { get; set; }
+        public ItensPedido ItemPedido { get; set; }
 
         [BindProperty]
         public string Confirmacao { get; set; }
@@ -26,7 +27,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
         public IQueryable<Transportadora> Transportadoras { get; set; }
         public IQueryable<Produto> Produtos { get; set; }
         public IQueryable<Pedido> Pedidos { get; set; }
-
+        public string ItensPedidoJson { get; set; }
         public IActionResult OnGet(Guid id)
         {
             if (TempData.ContainsKey("Pedido"))
@@ -45,5 +46,33 @@ namespace CamposRepresentacoes.Pages.Pedidos
             }
             return Page();
         }
+        [HttpPost]
+        public IActionResult AdicionarItemPedido(Guid pedidoId, Guid produtoId)
+        {
+            var item = _pedidosService.ObterProdutos(Convert.ToString(produtoId));
+            _pedidosService.InserirItens(ItemPedido);
+            return Page();
+        }
+
+        //[HttpPost]
+        //public IActionResult AtualizarQuantidadeItemPedido(Guid itemPedidoId, int quantidade)
+        //{
+        //    _pedidosService.AtualizarQuantidadeItemPedido(itemPedidoId, quantidade);
+        //    return Ok();
+        //}
+
+        //[HttpPost]
+        //public IActionResult RemoverItemPedido(Guid itemPedidoId)
+        //{
+        //    _pedidosService.RemoverItemPedido(itemPedidoId);
+        //    return Ok();
+        //}
+
+        //[HttpPost]
+        //public IActionResult SalvarItensPedido(List<ItensPedido> itensPedido)
+        //{
+        //    _pedidosService.SalvarItensPedido(itensPedido);
+        //    return Ok();
+        //}
     }
 }
