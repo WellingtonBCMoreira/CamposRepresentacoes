@@ -1,5 +1,6 @@
 using CamposRepresentacoes.Interfaces.Services;
 using CamposRepresentacoes.Models;
+using CamposRepresentacoes.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -9,10 +10,12 @@ namespace CamposRepresentacoes.Pages.Pedidos
     public class CadastrarModel : PageModel
     {
         private readonly IPedidosService _pedidosService;
-
-        public CadastrarModel(IPedidosService pedidosService)
+        private readonly IProdutosService _produtosService;
+        
+        public CadastrarModel(IPedidosService pedidosService, IProdutosService produtosService)
         {
             _pedidosService = pedidosService;
+            _produtosService = produtosService;
         }
 
         [BindProperty]
@@ -46,11 +49,21 @@ namespace CamposRepresentacoes.Pages.Pedidos
                 return new JsonResult(new { success = false });
             }
 
-            string pedidoJson = JsonConvert.SerializeObject(pedido);
+            var produtos = _produtosService.ObterProdutoPorFornecedor(pedido.IdFornecedor);
 
-            TempData["Pedido"] = pedidoJson;
+            var listaDeProdutos = produtos.Select(p => new
+            {
+                Codigo = p.Codigo,
+                Nome = p.Nome,
+                Descricao = p.Descricao,
+                Preco = p.Preco,
+            });
 
-            return RedirectToPage("/Pedidos/Detalhes");
+            return new JsonResult(new {success = true, pedido = pedido, produtos = listaDeProdutos});
+
+            //TempData["Pedido"] = pedidoJson;
+
+            //return RedirectToPage("/Pedidos/Detalhes");
         }
 
         public IActionResult OnGetObterProdutosPorFornecedor(string IdFornecedor)
@@ -116,9 +129,6 @@ namespace CamposRepresentacoes.Pages.Pedidos
             Pedido.ValorTotal = Pedido.ItensPedido.Sum(item => item.Quantidade);
         }
 
-        public void SalvarPedido()
-        {
-            _pedidosService.CriarPedido(Pedido, ItensPedido);
-        }
+        
     }
 }

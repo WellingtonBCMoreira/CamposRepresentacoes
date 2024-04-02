@@ -12,5 +12,6 @@ namespace CamposRepresentacoes.Interfaces.Repositories
         IQueryable<Produto> ObterProdutos(Produto filtro);
         IQueryable<Fornecedor> ObterFornecedores();
         Task<List<Produto>> ObterProdutosDeTesteAsync();
+        IQueryable<Produto> ObterProdutoPorFornecedor(Guid idFornecedor);
     }
 }

@@ -45,34 +45,12 @@ namespace CamposRepresentacoes.Pages.Pedidos
                 Produtos = _pedidosService.ObterProdutos(Convert.ToString(Pedido.IdFornecedor));
             }
             return Page();
-        }
-        [HttpPost]
-        public IActionResult AdicionarItemPedido(Guid pedidoId, Guid produtoId)
+        }        
+                
+        public IActionResult OnPostSalvarItemPedido(ItensPedido itensPedido)
         {
-            var item = _pedidosService.ObterProdutos(Convert.ToString(produtoId));
-            _pedidosService.InserirItens(ItemPedido);
+            _pedidosService.InserirItens(itensPedido);
             return Page();
         }
-
-        //[HttpPost]
-        //public IActionResult AtualizarQuantidadeItemPedido(Guid itemPedidoId, int quantidade)
-        //{
-        //    _pedidosService.AtualizarQuantidadeItemPedido(itemPedidoId, quantidade);
-        //    return Ok();
-        //}
-
-        //[HttpPost]
-        //public IActionResult RemoverItemPedido(Guid itemPedidoId)
-        //{
-        //    _pedidosService.RemoverItemPedido(itemPedidoId);
-        //    return Ok();
-        //}
-
-        //[HttpPost]
-        //public IActionResult SalvarItensPedido(List<ItensPedido> itensPedido)
-        //{
-        //    _pedidosService.SalvarItensPedido(itensPedido);
-        //    return Ok();
-        //}
     }
 }

@@ -33,6 +33,11 @@ namespace CamposRepresentacoes.Services
             return _produtosRepository.ObterFornecedores();
         }
 
+        public IQueryable<Produto> ObterProdutoPorFornecedor(Guid idFornecedor)
+        {
+            return _produtosRepository.ObterProdutoPorFornecedor(idFornecedor);
+        }
+
         public Produto ObterProdutoPorId(string id)
         {
             return _produtosRepository.ObterProdutoPorId(id);

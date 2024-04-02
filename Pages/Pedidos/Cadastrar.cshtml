@@ -22,7 +22,7 @@
         }
     </style>
 </head>
-<body>    
+<body>
     <div class="container mt-5">
         <form method="post" asp-page-handler="SalvarPedido">
             <!-- Seleção de Cliente, Fornecedor, Transportadora e Forma de Pagamento -->
@@ -92,7 +92,24 @@
                 <!-- Botão para salvar a capa do pedido -->
                 <button id="btnSalvarPedido" type="submit" class="btn btn-primary mt-2">Salvar Capa do Pedido</button>
             </div>
-        </form>        
+        </form>
+        <div id="produto-table" style="display: none">
+            <table id="tblProdutos" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Preço</th>
+                        @* <th>Quantidade</th> *@
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>
@@ -101,7 +118,8 @@
     <!-- Incluir jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <script>
+    <script>        
+
         $(document).ready(function () {
             // Função para verificar se todos os campos obrigatórios foram selecionados
             function verificarCamposObrigatorios() {
@@ -137,6 +155,64 @@
                 $('form').submit();
             });
         });
+                
+        $(document).ready(function () {
+            // Adicione esta parte para lidar com a resposta após o pedido ser salvo
+            $('form').submit(function (event) {
+                event.preventDefault(); // Impede o envio direto do formulário
+
+                // Serializa os dados do formulário
+                var formData = $(this).serialize();
+
+                $.post($(this).attr('action'), formData)
+                    .done(function (response) {
+                        if (response.success) {
+                            // Atualiza a tabela de produtos com os produtos retornados
+                            $('#tblProdutos tbody').empty();
+
+                            $.each(response.produtos, function (index, produto) {
+                                var linha = '<tr>';
+                                linha += '<td>' + produto.codigo + '</td>';
+                                linha += '<td>' + produto.nome + '</td>';
+                                linha += '<td>' + produto.descricao + '</td>';
+                                linha += '<td>' + parseFloat(produto.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</td>';
+                                linha += '</tr>';
+                                $('#tblProdutos tbody').append(linha);
+                            });
+
+                            $('#produto-table').show();
+                        } else {
+                            alert("Falha ao salvar o pedido.");
+                        }
+                    })
+                    .fail(function () {
+                        alert("Erro de comunicação com o servidor.");
+                    });
+            });
+        });
+
+        // function getProdutos() {
+        //     const fornecedorId = $('#fornecedorSelect').val();
+        //     const url = `/Pedidos/Cadastrar?handler=ObterProdutosPorFornecedor&IdFornecedor=${fornecedorId}`;
+
+        //     $.get(url, function (data) {
+        //         $('#tblProdutos tbody').empty();
+
+        //         $.each(data, function (index, produto) {
+        //             var linha = '<tr>';
+        //             linha += '<td>' + produto.Nome + '</td>';
+        //             linha += '<td>' + produto.Descricao + '</td>';
+        //             linha += '<td>' + produto.Preco + '</td>';
+        //             linha += '</tr>';
+        //             $('#tblProdutos tbody').append(linha);
+        //         });
+        //         $('#produto-table').show();
+        //     });
+        // }
+
+        // $('#fornecedorSelect').change(function () {
+        //     getProdutos();
+        // });
     </script>
 }
 

@@ -94,6 +94,20 @@ namespace CamposRepresentacoes.Repositories
             }
         }
 
+        public IQueryable<Produto> ObterProdutoPorFornecedor(Guid idFornecedor)
+        {
+            try
+            {
+                if (idFornecedor == null) throw new ArgumentException(nameof(idFornecedor));
+
+                return _context.Produtos.Where(p => p.IdFornecedor == idFornecedor).AsQueryable();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter a lista de produtos do fornecedor com id: {idFornecedor}");
+            }
+        }
+
         public Produto ObterProdutoPorId(string id)
         {
             try
