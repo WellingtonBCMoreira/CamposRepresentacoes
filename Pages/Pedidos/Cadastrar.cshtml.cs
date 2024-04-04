@@ -11,7 +11,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
     {
         private readonly IPedidosService _pedidosService;
         private readonly IProdutosService _produtosService;
-        
+
         public CadastrarModel(IPedidosService pedidosService, IProdutosService produtosService)
         {
             _pedidosService = pedidosService;
@@ -41,10 +41,10 @@ namespace CamposRepresentacoes.Pages.Pedidos
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult OnPostSalvarPedido()
-        {                        
+        {
             var pedido = _pedidosService.CadastrarCapaPedido(Pedido);
 
-            if(pedido == null)
+            if (pedido == null)
             {
                 return new JsonResult(new { success = false });
             }
@@ -53,49 +53,44 @@ namespace CamposRepresentacoes.Pages.Pedidos
 
             var listaDeProdutos = produtos.Select(p => new
             {
+                ProdutoId = p.Id,
                 Codigo = p.Codigo,
                 Nome = p.Nome,
                 Descricao = p.Descricao,
                 Preco = p.Preco,
             });
 
-            return new JsonResult(new {success = true, pedido = pedido, produtos = listaDeProdutos});
+            return new JsonResult(new { success = true, pedido = pedido, produtos = listaDeProdutos });
 
             //TempData["Pedido"] = pedidoJson;
 
             //return RedirectToPage("/Pedidos/Detalhes");
         }
 
-        public IActionResult OnGetObterProdutosPorFornecedor(string IdFornecedor)
-        {
+        //public IActionResult OnGetObterProdutosPorFornecedor(string IdFornecedor)
+        //{
 
-            var produtos = _pedidosService.ObterProdutos(IdFornecedor);
+        //    var produtos = _pedidosService.ObterProdutos(IdFornecedor);
 
-            var listadeProdutos = produtos.Select(produto => new
-            {                
-                Nome = produto.Nome,
-                Descricao = produto.Descricao,
-                Preco = produto.Preco
-            });
+        //    var listadeProdutos = produtos.Select(produto => new
+        //    {                
+        //        Nome = produto.Nome,
+        //        Descricao = produto.Descricao,
+        //        Preco = produto.Preco
+        //    });
 
-            return new JsonResult(listadeProdutos);
-        }
+        //    return new JsonResult(listadeProdutos);
+        //}
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult OnPostAdicionarItemPedido([FromBody] ItensPedido item)
         {
-            try
-            {
-                ItensPedido ??= new List<ItensPedido>();
-                ItensPedido.Add(item);
+            var itemPedido = _pedidosService.InserirItens(item);
 
-                _pedidosService.InserirItens(item);
+            MensagemAlerta.SetMensagem("ItemAdicionado", "Item adicionado com sucesso :)");
 
-                return RedirectToPage();
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(new { success = false, error = ex.Message });
-            }
+            return Page();
         }
 
         public IActionResult OnPostRemoverItemPedido(string item)
@@ -129,6 +124,6 @@ namespace CamposRepresentacoes.Pages.Pedidos
             Pedido.ValorTotal = Pedido.ItensPedido.Sum(item => item.Quantidade);
         }
 
-        
+
     }
 }

@@ -146,7 +146,7 @@ namespace CamposRepresentacoes.Repositories
             }            
         }
 
-        public void InserirItens(ItensPedido itensPedido)
+        public ItensPedido InserirItens(ItensPedido itensPedido)
         {
             try
             {
@@ -155,6 +155,7 @@ namespace CamposRepresentacoes.Repositories
                 _context.ItensPedido.Add(itensPedido);
                 _context.SaveChanges();
 
+                return itensPedido;
             }
             catch (Exception ex)
             {

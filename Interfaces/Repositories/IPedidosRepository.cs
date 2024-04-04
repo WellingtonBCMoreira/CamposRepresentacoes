@@ -5,7 +5,7 @@ namespace CamposRepresentacoes.Interfaces.Repositories
     public interface IPedidosRepository
     {
         Pedido CadastrarCapaPedido(Pedido pedido);
-        void InserirItens(ItensPedido itensPedido);
+        ItensPedido InserirItens(ItensPedido itensPedido);
         Pedido CriarPedido(Pedido pedido, List<ItensPedido> itensPedido);
         void AlterarCapaPedido(Pedido pedido);
         void DeletarPedido(Guid idPedido);

@@ -33,9 +33,9 @@ namespace CamposRepresentacoes.Services
             _pedidosRepository.DeletarPedido(idPedido);
         }
 
-        public void InserirItens(ItensPedido itensPedido)
+        public ItensPedido InserirItens(ItensPedido itensPedido)
         {
-            _pedidosRepository.InserirItens(itensPedido);
+            return _pedidosRepository.InserirItens(itensPedido);
         }
 
         public IQueryable<Cliente> ObterClientes()

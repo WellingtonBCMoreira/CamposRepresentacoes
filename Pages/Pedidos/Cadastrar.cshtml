@@ -101,7 +101,7 @@
                         <th>Nome</th>
                         <th>Descrição</th>
                         <th>Preço</th>
-                        @* <th>Quantidade</th> *@
+                        <th>Quantidade</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -176,6 +176,8 @@
                                 linha += '<td>' + produto.nome + '</td>';
                                 linha += '<td>' + produto.descricao + '</td>';
                                 linha += '<td>' + parseFloat(produto.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</td>';
+                                linha += '<td><input type="number" class="form-control quantidade-produto" value="1" min="1"></td>';
+                                linha += '<td><button type="button" class="btn btn-primary btn-adicionar-produto">Adicionar</button></td>';
                                 linha += '</tr>';
                                 $('#tblProdutos tbody').append(linha);
                             });
@@ -191,28 +193,61 @@
             });
         });
 
-        // function getProdutos() {
-        //     const fornecedorId = $('#fornecedorSelect').val();
-        //     const url = `/Pedidos/Cadastrar?handler=ObterProdutosPorFornecedor&IdFornecedor=${fornecedorId}`;
+        $(document).ready(function () {
+            // Adicionar item ao pedido
+            $('#tblProdutos').on('click', '.btn-adicionar-produto', function () {
+                var $linha = $(this).closest('tr');
+                var idPedido = $('#pedidoId').val(); // Id do pedido, ajuste conforme necessário
+                var idProduto = $linha.find('.produto-id').text(); // Id do produto, ajuste conforme necessário
+                var idFornecedor = $('#fornecedorSelect').val(); // Id do fornecedor, ajuste conforme necessário
+                var quantidade = $linha.find('.quantidade-produto').val();
+                var preco = parseFloat($linha.find('.preco-produto').text().replace(',', '.')); // Preço do produto, ajuste conforme necessário
 
-        //     $.get(url, function (data) {
-        //         $('#tblProdutos tbody').empty();
+                // Verifica se os valores foram recuperados corretamente
+                console.log("Id do Pedido: " + idPedido);
+                console.log("Id do Produto: " + idProduto);
+                console.log("Id do Fornecedor: " + idFornecedor);
+                console.log("Quantidade: " + quantidade);
+                console.log("Preço: " + preco);
 
-        //         $.each(data, function (index, produto) {
-        //             var linha = '<tr>';
-        //             linha += '<td>' + produto.Nome + '</td>';
-        //             linha += '<td>' + produto.Descricao + '</td>';
-        //             linha += '<td>' + produto.Preco + '</td>';
-        //             linha += '</tr>';
-        //             $('#tblProdutos tbody').append(linha);
-        //         });
-        //         $('#produto-table').show();
-        //     });
-        // }
+                // Construir objeto de item de pedido
+                var itemPedido = {
+                    IdPedido: idPedido,
+                    IdProduto: idProduto,
+                    IdFornecedor: idFornecedor,
+                    Quantidade: parseInt(quantidade),
+                    Preco: preco
+                };
 
-        // $('#fornecedorSelect').change(function () {
-        //     getProdutos();
-        // });
+                // Fazer solicitação AJAX para adicionar o item ao pedido
+                $.ajax({
+                    url: '/Cadastrar?handler=AdicionarItemPedido',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(itemPedido),
+                    success: function (response) {
+                        if (response.success) {
+                            // Item adicionado com sucesso, você pode fazer algo aqui, como atualizar a exibição dos itens do pedido
+                            alert('Item adicionado ao pedido com sucesso!');
+                        } else {
+                            alert('Falha ao adicionar o item ao pedido.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Erro ao adicionar o item ao pedido.');
+                    }
+                });
+            });
+        });
+
+
+
+        var mensagemSucesso = '@MensagemAlerta.GetMensagem("ItemAdicionado")';
+        if (mensagemSucesso) {
+            alert(mensagemSucesso);
+
+            window.location.href = '/Pedidos/Cadastrar';
+        }
     </script>
 }
 
