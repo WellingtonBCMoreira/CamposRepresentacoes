@@ -60,27 +60,17 @@ namespace CamposRepresentacoes.Pages.Pedidos
                 Preco = p.Preco,
             });
 
-            return new JsonResult(new { success = true, pedido = pedido, produtos = listaDeProdutos });
-
-            //TempData["Pedido"] = pedidoJson;
-
-            //return RedirectToPage("/Pedidos/Detalhes");
+            return Partial("_ProdutosTablePartial", listaDeProdutos);
+                        
         }
 
-        //public IActionResult OnGetObterProdutosPorFornecedor(string IdFornecedor)
-        //{
+        [HttpPost]
+        public IActionResult OnPostBuscarProdutos(string termo, Guid idFornecedor)
+        {
+            var produtos = _produtosService.BuscarProdutos(termo, idFornecedor);
 
-        //    var produtos = _pedidosService.ObterProdutos(IdFornecedor);
-
-        //    var listadeProdutos = produtos.Select(produto => new
-        //    {                
-        //        Nome = produto.Nome,
-        //        Descricao = produto.Descricao,
-        //        Preco = produto.Preco
-        //    });
-
-        //    return new JsonResult(listadeProdutos);
-        //}
+            return Partial("_ProdutosTablePartial", produtos);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

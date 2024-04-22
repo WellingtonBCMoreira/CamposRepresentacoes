@@ -1,7 +1,6 @@
 ﻿@page
 @model CamposRepresentacoes.Pages.Pedidos.CadastrarModel
-@{
-}
+
 
 <!DOCTYPE html>
 <html>
@@ -24,7 +23,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <form method="post" asp-page-handler="SalvarPedido">
+        <form method="post" asp-page-handler="SalvarPedido" id="formSalvarPedido">
             <!-- Seleção de Cliente, Fornecedor, Transportadora e Forma de Pagamento -->
             <div class="card card-body">
                 <div class="row">
@@ -90,165 +89,125 @@
                     </div>
                 </div>
                 <!-- Botão para salvar a capa do pedido -->
-                <button id="btnSalvarPedido" type="submit" class="btn btn-primary mt-2">Salvar Capa do Pedido</button>
+                <button id="btnSalvarPedido" type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#produtosModal">Salvar Capa do Pedido</button>
             </div>
         </form>
-        <div id="produto-table" style="display: none">
-            <table id="tblProdutos" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Codigo</th>
-                        <th>Nome</th>
-                        <th>Descrição</th>
-                        <th>Preço</th>
-                        <th>Quantidade</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-            </table>
+        <div class="modal fade" id="produtosModal" tabindex="-1" role="dialog" aria-labelledby="produtosModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="produtosModalLabel">Produtos do Fornecedor</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <form method="post" id="formBuscarProduto" asp-page-handler="BuscarProduto">
+                               <div class="form-group">
+                                   <input type="text" class="form-control" name="termo" placeholder="Digite o código do produto..." />
+                               </div> 
+                               <button type="submit" class="btn btn-primary"></button>
+                            </form>
+                        </div>
+                        <div id="produto-table">
+                            @Model IEnumerable<Produto>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo</th>
+                                        <th>Nome</th>
+                                        <th>Descrição</th>
+                                        <th>Preço</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var produto in Model.Produtos)
+                                    {
+                                        <tr>
+                                            <td>@produto.Codigo</td>
+                                            <td>@produto.Nome</td>
+                                            <td>@produto.Descricao</td>
+                                            <td>@produto.Preco</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</body>
-</html>
 
-@section Scripts {
-    <!-- Incluir jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    @section Scripts {
+        <!-- Incluir jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <script>        
+        <script>
+            $(document).ready(function () {
+                // Função para verificar se todos os campos obrigatórios foram selecionados
+                function verificarCamposObrigatorios() {
+                    var clienteSelecionado = $('#clienteSelect').val();
+                    var fornecedorSelecionado = $('#fornecedorSelect').val();
+                    var transportadoraSelecionada = $('#transportadoraSelect').val();
+                    var formaPagamentoSelecionada = $('#formaPagamentoSelect').val();
 
-        $(document).ready(function () {
-            // Função para verificar se todos os campos obrigatórios foram selecionados
-            function verificarCamposObrigatorios() {
-                var clienteSelecionado = $('#clienteSelect').val();
-                var fornecedorSelecionado = $('#fornecedorSelect').val();
-                var transportadoraSelecionada = $('#transportadoraSelect').val();
-                var formaPagamentoSelecionada = $('#formaPagamentoSelect').val();
-
-                return clienteSelecionado && fornecedorSelecionado && transportadoraSelecionada && formaPagamentoSelecionada;
-            }
-
-            $('#btnSalvarPedido').prop('disabled', true);
-
-            // Habilitar/desabilitar botão de salvar pedido com base na seleção dos campos obrigatórios
-            $('#clienteSelect, #fornecedorSelect, #transportadoraSelect, #formaPagamentoSelect').change(function () {
-                if (verificarCamposObrigatorios()) {
-                    $('#btnSalvarPedido').prop('disabled', false);
-                } else {
-                    $('#btnSalvarPedido').prop('disabled', true);
-                }
-            });
-
-            // Handler para clique no botão de salvar pedido
-            $('#btnSalvarPedido').on('click', function (event) {
-                event.preventDefault(); // Evita que o formulário seja enviado diretamente
-
-                if (!verificarCamposObrigatorios()) {
-                    alert("Por favor, selecione cliente, fornecedor, transportadora e forma de pagamento antes de salvar o pedido.");
-                    return;
+                    return clienteSelecionado && fornecedorSelecionado && transportadoraSelecionada && formaPagamentoSelecionada;
                 }
 
-                // Se todos os campos obrigatórios estiverem selecionados, então envie o formulário
-                $('form').submit();
-            });
-        });
-                
-        $(document).ready(function () {
-            // Adicione esta parte para lidar com a resposta após o pedido ser salvo
-            $('form').submit(function (event) {
-                event.preventDefault(); // Impede o envio direto do formulário
+                $('#btnSalvarPedido').prop('disabled', true);
 
-                // Serializa os dados do formulário
-                var formData = $(this).serialize();
-
-                $.post($(this).attr('action'), formData)
-                    .done(function (response) {
-                        if (response.success) {
-                            // Atualiza a tabela de produtos com os produtos retornados
-                            $('#tblProdutos tbody').empty();
-
-                            $.each(response.produtos, function (index, produto) {
-                                var linha = '<tr>';
-                                linha += '<td>' + produto.codigo + '</td>';
-                                linha += '<td>' + produto.nome + '</td>';
-                                linha += '<td>' + produto.descricao + '</td>';
-                                linha += '<td>' + parseFloat(produto.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</td>';
-                                linha += '<td><input type="number" class="form-control quantidade-produto" value="1" min="1"></td>';
-                                linha += '<td><button type="button" class="btn btn-primary btn-adicionar-produto">Adicionar</button></td>';
-                                linha += '</tr>';
-                                $('#tblProdutos tbody').append(linha);
-                            });
-
-                            $('#produto-table').show();
-                        } else {
-                            alert("Falha ao salvar o pedido.");
-                        }
-                    })
-                    .fail(function () {
-                        alert("Erro de comunicação com o servidor.");
-                    });
-            });
-        });
-
-        $(document).ready(function () {
-            // Adicionar item ao pedido
-            $('#tblProdutos').on('click', '.btn-adicionar-produto', function () {
-                var $linha = $(this).closest('tr');
-                var idPedido = $('#pedidoId').val(); // Id do pedido, ajuste conforme necessário
-                var idProduto = $linha.find('.produto-id').text(); // Id do produto, ajuste conforme necessário
-                var idFornecedor = $('#fornecedorSelect').val(); // Id do fornecedor, ajuste conforme necessário
-                var quantidade = $linha.find('.quantidade-produto').val();
-                var preco = parseFloat($linha.find('.preco-produto').text().replace(',', '.')); // Preço do produto, ajuste conforme necessário
-
-                // Verifica se os valores foram recuperados corretamente
-                console.log("Id do Pedido: " + idPedido);
-                console.log("Id do Produto: " + idProduto);
-                console.log("Id do Fornecedor: " + idFornecedor);
-                console.log("Quantidade: " + quantidade);
-                console.log("Preço: " + preco);
-
-                // Construir objeto de item de pedido
-                var itemPedido = {
-                    IdPedido: idPedido,
-                    IdProduto: idProduto,
-                    IdFornecedor: idFornecedor,
-                    Quantidade: parseInt(quantidade),
-                    Preco: preco
-                };
-
-                // Fazer solicitação AJAX para adicionar o item ao pedido
-                $.ajax({
-                    url: '/Cadastrar?handler=AdicionarItemPedido',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(itemPedido),
-                    success: function (response) {
-                        if (response.success) {
-                            // Item adicionado com sucesso, você pode fazer algo aqui, como atualizar a exibição dos itens do pedido
-                            alert('Item adicionado ao pedido com sucesso!');
-                        } else {
-                            alert('Falha ao adicionar o item ao pedido.');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Erro ao adicionar o item ao pedido.');
+                // Habilitar/desabilitar botão de salvar pedido com base na seleção dos campos obrigatórios
+                $('#clienteSelect, #fornecedorSelect, #transportadoraSelect, #formaPagamentoSelect').change(function () {
+                    if (verificarCamposObrigatorios()) {
+                        $('#btnSalvarPedido').prop('disabled', false);
+                    } else {
+                        $('#btnSalvarPedido').prop('disabled', true);
                     }
                 });
+
+                // Handler para clique no botão de salvar pedido
+                $('#btnSalvarPedido').on('click', function (event) {
+                    event.preventDefault(); // Evita que o formulário seja enviado diretamente
+
+                    if (!verificarCamposObrigatorios()) {
+                        alert("Por favor, selecione cliente, fornecedor, transportadora e forma de pagamento antes de salvar o pedido.");
+                        return;
+                    }
+
+                    // Se todos os campos obrigatórios estiverem selecionados, então envie o formulário
+                    $('#formSalvarPedido').submit();
+                });
             });
-        });
 
+            $(document).ready(function () {
+                // Adicione esta parte para lidar com a resposta após o pedido ser salvo
+                $('#formSalvarPedido').submit(function (event) {
+                    event.preventDefault(); // Impede o envio direto do formulário
 
+                    // Serializa os dados do formulário
+                    var formData = $(this).serialize();
 
-        var mensagemSucesso = '@MensagemAlerta.GetMensagem("ItemAdicionado")';
-        if (mensagemSucesso) {
-            alert(mensagemSucesso);
-
-            window.location.href = '/Pedidos/Cadastrar';
-        }
-    </script>
-}
-
-
+                    $.post($(this).attr('action'), formData)
+                        .done(function (response) {
+                            if (response.success) {
+                                // Atualiza a tabela de produtos com os produtos retornados
+                                $('#produto-table').html(response);
+                                $('#produtosModal').modal('show');
+                            } else {
+                                alert("Falha ao salvar o pedido.");
+                            }
+                        })
+                        .fail(function () {
+                            alert("Erro de comunicação com o servidor.");
+                        });
+                });
+            });
+        </script>
+    }
+</body>
+</html>

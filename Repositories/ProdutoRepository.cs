@@ -33,8 +33,7 @@ namespace CamposRepresentacoes.Repositories
                 throw new Exception($"Erro ao Alterar o Produto: {ex.Message}");
             }
 
-        }
-
+        }        
         public Produto CadastrarProduto(Produto produto)
         {
             try
@@ -62,7 +61,6 @@ namespace CamposRepresentacoes.Repositories
                 throw new Exception($"Erro ao Cadastrar o Produto: {ex.Message}");
             }
         }
-
         public void DeletarProdudo(Guid idProduto)
         {
             try
@@ -81,7 +79,6 @@ namespace CamposRepresentacoes.Repositories
                 throw new Exception($"Erro ao Deletar o Produto: {ex.Message}");
             }
         }
-
         public IQueryable<Fornecedor> ObterFornecedores()
         {
             try
@@ -93,7 +90,6 @@ namespace CamposRepresentacoes.Repositories
                 throw new Exception($"Erro ao obter Fornecedores: {ex.Message}");
             }
         }
-
         public IQueryable<Produto> ObterProdutoPorFornecedor(Guid idFornecedor)
         {
             try
@@ -107,7 +103,6 @@ namespace CamposRepresentacoes.Repositories
                 throw new Exception($"Erro ao obter a lista de produtos do fornecedor com id: {idFornecedor}");
             }
         }
-
         public Produto ObterProdutoPorId(string id)
         {
             try
@@ -124,7 +119,6 @@ namespace CamposRepresentacoes.Repositories
                 throw new Exception($"Erro ao Obter o Produto: {ex.Message}"); ;
             }            
         }
-
         public IQueryable<Produto> ObterProdutos()
         {
             try
@@ -136,7 +130,6 @@ namespace CamposRepresentacoes.Repositories
                 throw new Exception($"Erro ao Obter os Produtos: {ex.Message}"); ;
             }
         }
-
         public IQueryable<Produto> ObterProdutos(Produto filtro)
         {
             try
@@ -186,7 +179,6 @@ namespace CamposRepresentacoes.Repositories
                 throw new Exception($"Erro ao Listar os Produtos: {ex.Message}"); ;
             }
         }
-
         public async Task<List<Produto>> ObterProdutosDeTesteAsync()
         {
             // Aqui, você pode criar alguns produtos de teste manualmente
@@ -199,6 +191,18 @@ namespace CamposRepresentacoes.Repositories
             };           
 
             return produtosDeTeste;
+        }
+        public IQueryable<Produto> BuscarProdutos(string descricao, Guid idFornecedor)
+        {
+            try
+            {
+                return _context.Produtos.Where(p => p.Descricao.Contains(descricao) && p.IdFornecedor == idFornecedor).AsQueryable();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Erro na função BuscarProdutos: {ex.Message}",ex);
+            }
         }
     }
 }
