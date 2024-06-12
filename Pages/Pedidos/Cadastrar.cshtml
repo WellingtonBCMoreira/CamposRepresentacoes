@@ -1,6 +1,8 @@
 ﻿@page
 @model CamposRepresentacoes.Pages.Pedidos.CadastrarModel
+@{
 
+}
 
 <!DOCTYPE html>
 <html>
@@ -9,204 +11,106 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">
     <!-- Importação de scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>    
 
-    <!-- Estilos aqui -->
-    <style>
-        #carrinhoIcon {
-            position: initial;
-            top: 20px;
-            right: 20px;
-            z-index: 999; /* Garante que o ícone fique acima do conteúdo */
-        }
-    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <form method="post" asp-page-handler="SalvarPedido" id="formSalvarPedido">
-            <!-- Seleção de Cliente, Fornecedor, Transportadora e Forma de Pagamento -->
-            <div class="card card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="clienteSelect">Selecione o Cliente:</label>
-                            <select class="form-control" asp-for="Pedido.IdCliente" id="clienteSelect">
-                                <option value="">Selecione...</option>
-                                @if (Model.Clientes != null)
-                                {
-                                    @foreach (var cliente in Model.Clientes)
-                                    {
-                                        <option value="@cliente.Id">@cliente.RazaoSocial</option>
-                                    }
-                                }
-                            </select>
+    <div class="row no-print">
+        <div class="container mt-5">
+            <form method="get" asp-page="/Pedidos/Cadastrar" asp-page-handler="Buscar" id="formBuscarProduto">
+                <div>
+                    <div class="card-header bg-principal border-0 pt-2 pb-2">
+                        <h5 class="card-title"><i class="fas fa-filter mr-2"></i>Filtro de Pesquisa</h5>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus text-white"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="fornecedorSelect">Selecione o Fornecedor:</label>
-                            <select class="form-control" asp-for="Pedido.IdFornecedor" id="fornecedorSelect">
-                                <option value="">Selecione...</option>
-                                @if (Model.Fornecedores != null)
-                                {
-                                    @foreach (var fornecedor in Model.Fornecedores)
-                                    {
-                                        <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
-                                    }
-                                }
-                            </select>
+                    <div class="card card-body">
+                        <div id="loading" style="display:none"></div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="clienteSelect">Selecione o Cliente:</label>
+                                    <select class="form-control" id="clienteSelect" required>
+                                        <option value="">Selecione...</option>
+                                        @if (Model.Clientes != null)
+                                        {
+                                            @foreach (var cliente in Model.Clientes)
+                                            {
+                                                <option value="@cliente.Id">@cliente.RazaoSocial</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="fornecedorSelect">Selecione o Fornecedor:</label>
+                                    <select class="form-control" asp-for="Pedido.IdFornecedor" id="fornecedorSelect" required>
+                                        <option value="">Selecione...</option>
+                                        @if (Model.Fornecedores != null)
+                                        {
+                                            @foreach (var fornecedor in Model.Fornecedores)
+                                            {
+                                                <option value="@fornecedor.Id">@fornecedor.RazaoSocial</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="transportadoraSelect">Selecione a Transportadora:</label>
+                                    <select class="form-control" id="transportadoraSelect" required>
+                                        <option value="">Selecione...</option>
+                                        @if (Model.Transportadoras != null)
+                                        {
+                                            @foreach (var transportadora in Model.Transportadoras)
+                                            {
+                                                <option value="@transportadora.Id">@transportadora.RazaoSocial</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="formaPagamentoSelect">Forma de Pagamento:</label>
+                                    <select class="form-control" asp-for="Pedido.FormaPagamento" id="formaPagamentoSelect" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="1 - Cartao de Credito">Cartão de Crédito</option>
+                                        <option value="2 - Boleto Bancario">Boleto Bancário</option>
+                                        <option value="3 - 30/60/90">30/60/90</option>
+                                        <option value="4 - Vini Paga">Vini Paga</option>
+                                        <!-- Adicione outras opções conforme necessário -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer pt-2 pb-2">
+                            <div class="float-right">
+                                <a asp-page="/Pedidos/Cadastrar" class="btn btn-default elevation-1"><i class="fas fa-eraser"></i> Limpar</a>
+                                <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-search"></i>Buscar</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="transportadoraSelect">Selecione a Transportadora:</label>
-                            <select class="form-control" asp-for="Pedido.IdTransportadora" id="transportadoraSelect">
-                                <option value="">Selecione...</option>
-                                @if (Model.Transportadoras != null)
-                                {
-                                    @foreach (var transportadora in Model.Transportadoras)
-                                    {
-                                        <option value="@transportadora.Id">@transportadora.RazaoSocial</option>
-                                    }
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="formaPagamentoSelect">Forma de Pagamento:</label>
-                            <select class="form-control" asp-for="Pedido.FormaPagamento" id="formaPagamentoSelect">
-                                <option value="">Selecione...</option>
-                                <option value="1 - Cartao de Credito">Cartão de Crédito</option>
-                                <option value="2 - Boleto Bancario">Boleto Bancário</option>
-                                <option value="3 - 30/60/90">30/60/90</option>
-                                <option value="4 - Vini Paga">Vini Paga</option>
-                                <!-- Adicione outras opções conforme necessário -->
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <!-- Botão para salvar a capa do pedido -->
-                <button id="btnSalvarPedido" type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#produtosModal">Salvar Capa do Pedido</button>
-            </div>
-        </form>
-        <div class="modal fade" id="produtosModal" tabindex="-1" role="dialog" aria-labelledby="produtosModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="produtosModalLabel">Produtos do Fornecedor</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div>
-                            <form method="post" id="formBuscarProduto" asp-page-handler="BuscarProduto">
-                               <div class="form-group">
-                                   <input type="text" class="form-control" name="termo" placeholder="Digite o código do produto..." />
-                               </div> 
-                               <button type="submit" class="btn btn-primary"></button>
-                            </form>
-                        </div>
-                        <div id="produto-table">
-                            @Model IEnumerable<Produto>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Codigo</th>
-                                        <th>Nome</th>
-                                        <th>Descrição</th>
-                                        <th>Preço</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var produto in Model.Produtos)
-                                    {
-                                        <tr>
-                                            <td>@produto.Codigo</td>
-                                            <td>@produto.Nome</td>
-                                            <td>@produto.Descricao</td>
-                                            <td>@produto.Preco</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
+                </div>                
+            </form>
         </div>
+        <partial name="_ProdutosTablePartial" model="Model.Produtos" />
     </div>
-
-    @section Scripts {
-        <!-- Incluir jQuery -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+    
+    @section Scripts {       
+        
+        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.js"></script>
         <script>
-            $(document).ready(function () {
-                // Função para verificar se todos os campos obrigatórios foram selecionados
-                function verificarCamposObrigatorios() {
-                    var clienteSelecionado = $('#clienteSelect').val();
-                    var fornecedorSelecionado = $('#fornecedorSelect').val();
-                    var transportadoraSelecionada = $('#transportadoraSelect').val();
-                    var formaPagamentoSelecionada = $('#formaPagamentoSelect').val();
-
-                    return clienteSelecionado && fornecedorSelecionado && transportadoraSelecionada && formaPagamentoSelecionada;
-                }
-
-                $('#btnSalvarPedido').prop('disabled', true);
-
-                // Habilitar/desabilitar botão de salvar pedido com base na seleção dos campos obrigatórios
-                $('#clienteSelect, #fornecedorSelect, #transportadoraSelect, #formaPagamentoSelect').change(function () {
-                    if (verificarCamposObrigatorios()) {
-                        $('#btnSalvarPedido').prop('disabled', false);
-                    } else {
-                        $('#btnSalvarPedido').prop('disabled', true);
-                    }
-                });
-
-                // Handler para clique no botão de salvar pedido
-                $('#btnSalvarPedido').on('click', function (event) {
-                    event.preventDefault(); // Evita que o formulário seja enviado diretamente
-
-                    if (!verificarCamposObrigatorios()) {
-                        alert("Por favor, selecione cliente, fornecedor, transportadora e forma de pagamento antes de salvar o pedido.");
-                        return;
-                    }
-
-                    // Se todos os campos obrigatórios estiverem selecionados, então envie o formulário
-                    $('#formSalvarPedido').submit();
-                });
-            });
-
-            $(document).ready(function () {
-                // Adicione esta parte para lidar com a resposta após o pedido ser salvo
-                $('#formSalvarPedido').submit(function (event) {
-                    event.preventDefault(); // Impede o envio direto do formulário
-
-                    // Serializa os dados do formulário
-                    var formData = $(this).serialize();
-
-                    $.post($(this).attr('action'), formData)
-                        .done(function (response) {
-                            if (response.success) {
-                                // Atualiza a tabela de produtos com os produtos retornados
-                                $('#produto-table').html(response);
-                                $('#produtosModal').modal('show');
-                            } else {
-                                alert("Falha ao salvar o pedido.");
-                            }
-                        })
-                        .fail(function () {
-                            alert("Erro de comunicação com o servidor.");
-                        });
-                });
-            });
+            $('#tabelaDeProdutos').DataTable({
+                "responsive": true, "lengthChange": true, "autoWidth": false
+            });            
         </script>
     }
 </body>

@@ -1,0 +1,62 @@
+﻿@using CamposRepresentacoes.Models;
+@using System.Globalization;
+@model List<CamposRepresentacoes.Models.Produto>
+
+@if(Model?.Count > 0)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Lista de Produtos</h3>
+                </div>
+                <div class="card-body">
+                    <div id="produto-table">
+                        <table class="table table-bordered table-striped" id="tabelaDeProdutos">
+                            <thead>
+                                <tr>
+                                    <th>Codigo</th>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Preço</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>                                
+                                @foreach (var produto in Model)
+                                {
+                                    <tr>
+                                        <td>@produto.Codigo</td>
+                                        <td>@produto.Nome</td>
+                                        <td>@produto.Descricao</td>
+                                        <td>@produto.Preco</td>
+                                        <td>
+                                            <form method="post" asp-page-handler="Adicionar" asp-route-id="@produto.Id">
+                                                <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (Model?.Count == 0)
+{
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p class="m-0 text-center text-muted"><i class="fas fa-info-circle mr-2"></i>Não foram encontrados resultados para sua pesquisa.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+

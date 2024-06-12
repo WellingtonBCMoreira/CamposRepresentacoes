@@ -49,27 +49,42 @@ namespace CamposRepresentacoes.Pages.Pedidos
                 return new JsonResult(new { success = false });
             }
 
-            var produtos = _produtosService.ObterProdutoPorFornecedor(pedido.IdFornecedor);
+            return new JsonResult(new { success = true, pedidoId = pedido.Id });
+                                    
+        }
 
-            var listaDeProdutos = produtos.Select(p => new
+        [HttpGet]
+        public IActionResult OnGetBuscar(Guid idFornecedor)
+        {
+            Produtos = _produtosService.ObterProdutoPorFornecedor(idFornecedor);
+
+            //Produtos.Select(p => new
+            //{
+            //    ProdutoId = p.Id,
+            //    Codigo = p.Codigo,
+            //    Nome = p.Nome,
+            //    Descricao = p.Descricao,
+            //    Preco = p.Preco,
+            //}).ToList();
+            return Page();                       
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult OnPostBuscarProdutos(string termo, Guid idFornecedor)
+        {
+            Produtos = _produtosService.BuscarProdutos(termo, idFornecedor);
+
+            var listaDeProdutos = Produtos.Select(p => new
             {
                 ProdutoId = p.Id,
                 Codigo = p.Codigo,
                 Nome = p.Nome,
                 Descricao = p.Descricao,
                 Preco = p.Preco,
-            });
+            }).ToList();
 
-            return Partial("_ProdutosTablePartial", listaDeProdutos);
-                        
-        }
-
-        [HttpPost]
-        public IActionResult OnPostBuscarProdutos(string termo, Guid idFornecedor)
-        {
-            var produtos = _produtosService.BuscarProdutos(termo, idFornecedor);
-
-            return Partial("_ProdutosTablePartial", produtos);
+            return new JsonResult(listaDeProdutos);
         }
 
         [HttpPost]
