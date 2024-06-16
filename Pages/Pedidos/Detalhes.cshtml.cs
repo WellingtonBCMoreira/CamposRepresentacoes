@@ -9,11 +9,14 @@ namespace CamposRepresentacoes.Pages.Pedidos
     public class DetalhesModel : PageModel
     {
         private readonly IPedidosService _pedidosService;
+        private readonly IProdutosService _produtosService;
 
-        public DetalhesModel(IPedidosService pedidosService)
+        public DetalhesModel(IPedidosService pedidosService, IProdutosService produtosService)
         {
             _pedidosService = pedidosService;
+            _produtosService = produtosService;
         }
+
         [BindProperty]
         public Pedido Pedido { get; set; }
         public List<ItensPedido> ItensPedido { get; set; }
@@ -36,21 +39,15 @@ namespace CamposRepresentacoes.Pages.Pedidos
 
                 Pedido = JsonConvert.DeserializeObject<Pedido>(pedidoJson);
 
-                Produtos = _pedidosService.ObterProdutos(Convert.ToString(Pedido.IdFornecedor));
+                Produtos = _produtosService.ObterProdutoPorFornecedor(Pedido.IdFornecedor);
             }
             else
             {
                 Pedido = _pedidosService.ObterPedidoPorId(id);
 
-                Produtos = _pedidosService.ObterProdutos(Convert.ToString(Pedido.IdFornecedor));
+                Produtos = _produtosService.ObterProdutoPorFornecedor(Pedido.IdFornecedor);
             }
             return Page();
-        }        
-                
-        public IActionResult OnPostSalvarItemPedido(ItensPedido itensPedido)
-        {
-            _pedidosService.InserirItens(itensPedido);
-            return Page();
-        }
+        }  
     }
 }

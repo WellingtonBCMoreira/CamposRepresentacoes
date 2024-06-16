@@ -2,3 +2,177 @@
 @model CamposRepresentacoes.Pages.Pedidos.EditarModel
 @{
 }
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalhes do Pedido</title>
+    <!-- Importação de estilos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">
+    <!-- Importação de scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
+
+</head>
+<body>
+    <div class="title-container">
+        <div>
+            <h2>Informações do Pedido</h2>
+            <p><strong>Cliente:</strong>  @Model.Pedido.RazaoSocialCliente</p>
+            <p><strong>Fornecedor:</strong>  @Model.Pedido.RazaoSocialFornecedor</p>
+            <p><strong>Transportadora:</strong> @Model.Pedido.RazaoSocialTransportadora</p>
+            <p><strong>Forma de Pagamento:</strong>  @Model.Pedido.FormaPagamento</p>
+        </div>
+    </div>
+    <!--Tabela com a lista de itens do Pedido-->
+    @if (Model.ProdutosPedido != null)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-lg" id="filter">
+                    <div class="card-body p-0 bg-principal">
+                        <div class="card-header bg-principal border-0 pt-2 pb-2">
+                            <h5 class="card-title"><i class="fas fa-clipboard-list"></i> Lista de Produtos do Pedido</h5>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="pedido-table" class="table table-sm table-bordered table-striped bg-white text-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Descrição</th>
+                                        <th>Valor Unidade</th>
+                                        <th>Valor Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ProdutosPedido)
+                                    {
+                                        <tr>
+                                            <td>@item.Nome</td>
+                                            <td>@item.Descricao</td>
+                                            <td>@string.Format("{0:C}", item.ValorUnitario)</td>
+                                            <td>@string.Format("{0:C}", item.ValorTotal)</td>                                            
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td colspan="1"><strong>Total do Pedido:</strong></td>
+                                        <td>@string.Format("{0:C}", Model.Pedido.ValorTotal)</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (Model.ProdutosPedido == null)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <p class="m-0 text-center text-muted"><i class="fas fa-info-circle mr-2"></i>O pedido não possui itens!.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!--Tabela de Produtos do Forcedor-->
+    @if (Model.Produtos != null)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-lg" id="filter">
+                    <div class="card-body p-0 bg-principal">
+                        <div class="card-header bg-principal border-0 pt-2 pb-2">
+                            <h5 class="card-title"><i class="fas fa-clipboard-list"></i> Lista de Produtos Do Fornecedor</h5>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="produto-table" class="table table-sm table-bordered table-striped bg-white text-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo</th>
+                                        <th>Nome</th>
+                                        <th>Descrição</th>
+                                        <th>Preço</th>
+                                        <th style="width: 100px;">Quantidade</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var produto in Model.Produtos)
+                                    {
+                                        <tr>
+                                            <td>@produto.Codigo</td>
+                                            <td>@produto.Nome</td>
+                                            <td>@produto.Descricao</td>
+                                            <td>@string.Format("{0:C}", produto.Preco)</td>
+                                            <form id="form-@produto.Id" method="post" asp-page-handler="Adicionar">
+                                                <input type="hidden" name="ProdutoId" value="@produto.Id" />
+                                                <input type="hidden" name="PedidoId" value="@Model.Pedido.Id" />
+                                                <td>
+                                                    <input type="number" name="Quantidade" min="1" class="form-control" value="1" />
+                                                </td>
+                                                <td>
+                                                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                                                </td>
+                                            </form>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (Model.Produtos == null)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <p class="m-0 text-center text-muted"><i class="fas fa-info-circle mr-2"></i>Não foram encontrados produtos para o fornecedor!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    @section scripts {
+
+        <script>
+            $('#produto-table').DataTable({
+                "responsive": true, "lengthChange": true, "autoWidth": false,
+                "language": {
+                    "url": "/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/pt-BR.json"
+                }
+            });
+            $('#pedido-table').DataTable({
+                "responsive": true, "lengthChange": true, "autoWidth": false,
+                "language": {
+                    "url": "/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/pt-BR.json"
+                }
+            });
+        </script>
+    }
+</body>
+</html>

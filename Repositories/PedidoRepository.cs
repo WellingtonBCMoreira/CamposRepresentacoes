@@ -41,17 +41,17 @@ namespace CamposRepresentacoes.Repositories
 
                 var cliente = _context.Clientes.FirstOrDefault(x => x.Id == pPedido.IdCliente);
                 var fornecedor = _context.Fornecedores.FirstOrDefault(x => x.Id == pPedido.IdFornecedor);
+                var transportadora = _context.Transportadoras.FirstOrDefault(x => x.Id == pPedido.IdTransportadora);
 
                 pPedido.Id = Guid.NewGuid();
                 pPedido.DataEmissao = DateTime.Now;
                 pPedido.RazaoSocialCliente = cliente.RazaoSocial;
                 pPedido.RazaoSocialFornecedor = fornecedor.RazaoSocial;
+                pPedido.RazaoSocialFornecedor = transportadora.RazaoSocial;
                 pPedido.ValorTotal = 0;
                 pPedido.FormaPagamento = pPedido.FormaPagamento;
                 pPedido.QuantidadeItens = 0;
                 pPedido.Status = "Aberto";
-
-
 
                 _context.Pedidos.Add(pPedido);
                 _context.SaveChanges();
@@ -132,12 +132,13 @@ namespace CamposRepresentacoes.Repositories
             try
             {
                 var pedido = _context.Pedidos.FirstOrDefault(p => p.Id == idPedido);
+                var itens = _context.ItensPedido.Where(ip => ip.IdPedido == idPedido).ToList();
 
                 if (pedido is null) new ArgumentNullException(nameof(pedido));
 
                 pedido.Status = "Cancelado";
-
-                //_context.Pedidos.Remove(pedido);
+                _context.ItensPedido.RemoveRange(itens);
+                               
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -155,6 +156,8 @@ namespace CamposRepresentacoes.Repositories
                 _context.ItensPedido.Add(itensPedido);
                 _context.SaveChanges();
 
+                AtualizarDadosPedido(itensPedido);
+
                 return itensPedido;
             }
             catch (Exception ex)
@@ -162,7 +165,7 @@ namespace CamposRepresentacoes.Repositories
 
                 throw new Exception($"Erro ao inserir o item {itensPedido.Produto.Nome}, erro: {ex.Message}");
             }
-        }
+        }        
 
         public Pedido ObterPedidoPorId(Guid IdPedido)
         {
@@ -280,7 +283,7 @@ namespace CamposRepresentacoes.Repositories
             catch (Exception ex)
             {
 
-                throw new Exception($"Erro ao obter as Transpostadoras");
+                throw new Exception($"Erro ao obter as Transpostadoras!");
             }
         }
 
@@ -302,6 +305,30 @@ namespace CamposRepresentacoes.Repositories
                 throw ex;
             }
 
+        }
+
+        public IQueryable<ItensPedido> ObterItensPedido(Guid idPedido)
+        {
+            try
+            {
+                return _context.ItensPedido.Where(i => i.IdPedido == idPedido);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Erro ao listar os itens do Pedido!");
+            }
+        }
+
+        private void AtualizarDadosPedido(ItensPedido itensPedido)
+        {
+            var pedido = _context.Pedidos.FirstOrDefault(p => p.Id == itensPedido.IdPedido);
+            if (pedido != null)
+            {
+                pedido.QuantidadeItens += itensPedido.Quantidade;
+                pedido.ValorTotal += itensPedido.Preco;
+                _context.SaveChanges();
+            }
         }
     }
 }

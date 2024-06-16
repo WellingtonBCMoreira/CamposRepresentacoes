@@ -13,21 +13,12 @@ namespace CamposRepresentacoes.Data.Configuration
             builder.Property(p => p.Id)
                 .HasColumnName("Id")
                 .IsRequired()
-                .ValueGeneratedOnAdd();
-
-            builder.Property(p => p.DataEmissao)
-                .HasColumnName("DataEmissao")
-                .IsRequired();
+                .ValueGeneratedOnAdd();            
            
             builder.Property(p => p.ValorTotal)
                 .HasColumnName("ValorTotal")
                 .HasColumnType("decimal(18,2)")
-                .IsRequired();
-
-            builder.Property(p => p.Status)
-                .HasColumnName("Status")
-                .HasMaxLength(1)
-                .IsRequired();
+                .IsRequired();            
 
             builder.Property(p => p.FormaPagamento)
                 .HasColumnName("FormaPagamento")
@@ -40,11 +31,24 @@ namespace CamposRepresentacoes.Data.Configuration
             builder.Property(p => p.RazaoSocialFornecedor)
                 .HasColumnName("RazaoSocialFornecedor")
                 .HasMaxLength(255);
-            
+
+            builder.Property(p => p.RazaoSocialTransportadora)
+                .HasColumnName("RazaoSocialTransportadora")
+                .HasMaxLength(255);
+
             builder.Property(p => p.QuantidadeItens)
                 .HasColumnName("QuantidadeItens")
                 .IsRequired()
                 .HasColumnType("int");
+
+            builder.Property(p => p.Status)
+                .HasColumnName("Status")
+                .HasMaxLength(1)
+                .IsRequired();
+
+            builder.Property(p => p.DataEmissao)
+                .HasColumnName("DataEmissao")
+                .IsRequired();
 
             // Relacionamento com o Cliente
             builder.HasOne(p => p.Cliente)                

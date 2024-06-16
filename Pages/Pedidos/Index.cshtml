@@ -4,21 +4,10 @@
 }
 
 <html>
-<head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css">
-    <!-- DataTables -->
-    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/dist/css/adminlte.min.css">
-</head>
 <body>    
     <div class="row no-print">
         <div class="col-md-12">
-            <form method="get" id="formBusca">
+            <form method="get" id="formBusca" asp-page-handler="Buscar">
                 @Html.AntiForgeryToken()
                 <div id="filter" class="card card-filter elevation-3">
                     <div class="card-header">
@@ -35,7 +24,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="clienteId">Cliente</label>
-                                    <select id="clienteId" name="cliente.Id" class="form-control">
+                                    <select id="clienteId" name="IdCliente" class="form-control" asp-for="Pedido.IdCliente">
                                         <option value="">Todos</option>
                                         @if(Model.Clientes != null)
                                         {
@@ -50,7 +39,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="fornecedorId">Fornecedor</label>
-                                    <select id="fornecedorId" name="produto.IdFornecedor" class="form-control">
+                                    <select id="fornecedorId" name="IdFornecedor" class="form-control" asp-for="Pedido.IdFornecedor">
                                         <option value="">Todos</option>
                                         @if (Model.Fornecedores != null)
                                         {
@@ -65,10 +54,11 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="status">Status</label>
-                                    <select class="form-control" name="Pedido.Status">
+                                    <select class="form-control" name="Status" asp-for="Pedido.Status">
                                         <option value="">Ambos</option>
-                                        <option value="true">Ativo</option>
-                                        <option value="false">Inativo</option>
+                                        <option value="Aberto">Aberto</option>
+                                        <option value="Confirmado">Confirmado</option>
+                                        <option value="Cancelado">Cancelado</option>
                                     </select>
                                 </div>
                             </div>
@@ -76,7 +66,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="float-right">
-                            <a asp-page="/Pedidos/Index" class="btn btn-default elevation-1"><i class="fas fa-eraser"></i>Limpar</a>
+                            <a asp-page="/Pedidos/Index" class="btn btn-default elevation-1"><i class="fas fa-eraser"></i>Limpar</a>                            
                             <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-search"></i>Buscar</button>
                         </div>
                     </div>
@@ -111,11 +101,11 @@
                                     <td>@pedido.RazaoSocialCliente</td>
                                     <td>@pedido.RazaoSocialFornecedor</td>
                                     <td>@pedido.QuantidadeItens</td>
-                                    <td>@pedido.ValorTotal</td>
+                                    <td>@string.Format("{0:C}", pedido.ValorTotal)</td>
                                     <td>@pedido.FormaPagamento</td>
                                     <td>@pedido.Status</td>
                                     <td>
-                                        <a href="/Pedidos/Detalhes?id=@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
+                                        <a href="/Pedidos/Editar?idPedido=@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
                                         <form method="post" asp-page-handler="Excluir" asp-route-id="@pedido.Id" onsubmit="return confirm('Tem certeza que deseja excluir este pedido?')">
                                             <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
                                         </form>
@@ -133,23 +123,7 @@
     </div>
     <!-- /.row -->
 
-    @section scripts {
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>
-        <!-- Bootstrap 4 -->
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <!-- DataTables  & Plugins -->
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.min.js"></script>
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>        
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.print.min.js"></script>
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-        <!-- AdminLTE App -->
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/dist/js/adminlte.min.js"></script>
+    @section scripts {       
 
         <script>    
 

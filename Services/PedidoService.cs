@@ -57,6 +57,10 @@ namespace CamposRepresentacoes.Services
         {
             return _pedidosRepository.ObterPedidos();
         }
+        public IQueryable<ItensPedido> ObterItensPedido(Guid idPedido)
+        {
+            return _pedidosRepository.ObterItensPedido(idPedido);
+        }
 
         public IQueryable<Pedido> ObterPedidos(Pedido filtro)
         {

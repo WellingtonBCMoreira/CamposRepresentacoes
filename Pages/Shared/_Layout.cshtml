@@ -8,13 +8,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Campos Representações</title>
-
-    <!-- Google Font: Source Sans Pro -->
+    <link rel="icon" href="~/favicon.ico">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css" />
     <link rel="stylesheet" href="~/lib/adminlte/plugins/fontawesome-free/css/all.min.css">
-    <!-- Theme style -->
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/select2/css/select2.min.css"/>
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css"/>
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/toastr/toastr.min.css"/>
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/dist/css/adminlte.min.css"/>    
     <link rel="stylesheet" href="~/lib/adminlte/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.min.js" />
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true"/>
+    <link href="~/css/loading.css" rel="stylesheet" />
     @await RenderSectionAsync("Style", required: false)
 </head>
 <body class="hold-transition sidebar-mini">
@@ -35,7 +40,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- Brand Logo -->
             <a href="Index" class="brand-link">
                 <img src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/dist/img/Campos.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">AdminLTE 3</span>
+                <span class="brand-text font-weight-light"> Campos Repres</span>
             </a>
 
             <!-- Sidebar -->
@@ -236,6 +241,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- AdminLTE App -->
     <script src="~/lib/adminlte/dist/js/adminlte.min.js"></script>
     <script src="~/lib/adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+    <script src="~/lib/adminlte/plugins/fontawesome-free/css/all.css"></script>
+    <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/select2/css/select2.css"></script>
+    <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.css"></script>
+    <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/toastr/toastr.css"></script>    
+    <script src="~/lib/adminlte/dist/css/adminlte.css"></script>
+    <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="~/js/site.js"></script>
+    <a href="~/adminlte-3.2.0/adminlte-3.2.0/dist/js/adminlte.js.map">~/adminlte-3.2.0/adminlte-3.2.0/dist/js/adminlte.js.map</a>
+    <a href="~/adminlte-3.2.0/adminlte-3.2.0/dist/js/adminlte.min.js.map">~/adminlte-3.2.0/adminlte-3.2.0/dist/js/adminlte.min.js.map</a>
+    <script src="~/adminlte-3.2.0/adminlte-3.2.0/dist/js/adminlte.min.js"></script>
+    <script src="~/adminlte-3.2.0/adminlte-3.2.0/dist/js/adminlte.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

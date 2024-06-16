@@ -17,10 +17,10 @@
 <body>
     <div class="row no-print">
         <div class="container mt-5">
-            <form method="get" asp-page="/Pedidos/Cadastrar" asp-page-handler="Buscar" id="formBuscarProduto">
+            <form method="post" asp-page-handler="SalvarPedido">
                 <div>
                     <div class="card-header bg-principal border-0 pt-2 pb-2">
-                        <h5 class="card-title"><i class="fas fa-filter mr-2"></i>Filtro de Pesquisa</h5>
+                        <h5 class="card-title"><i class="fas fa-shopping-cart mr-2"></i>Cadastro de Pedido</h5>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                                 <i class="fas fa-minus text-white"></i>
@@ -33,7 +33,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="clienteSelect">Selecione o Cliente:</label>
-                                    <select class="form-control" id="clienteSelect" required>
+                                    <select class="form-control" asp-for="Pedido.IdCliente" id="clienteSelect" required>
                                         <option value="">Selecione...</option>
                                         @if (Model.Clientes != null)
                                         {
@@ -65,7 +65,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="transportadoraSelect">Selecione a Transportadora:</label>
-                                    <select class="form-control" id="transportadoraSelect" required>
+                                    <select class="form-control" asp-for="Pedido.IdTransportadora" id="transportadoraSelect" required>
                                         <option value="">Selecione...</option>
                                         @if (Model.Transportadoras != null)
                                         {
@@ -94,24 +94,13 @@
                         <div class="card-footer pt-2 pb-2">
                             <div class="float-right">
                                 <a asp-page="/Pedidos/Cadastrar" class="btn btn-default elevation-1"><i class="fas fa-eraser"></i> Limpar</a>
-                                <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-search"></i>Buscar</button>
+                                <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-save"></i> Salvar</button>
                             </div>
                         </div>
                     </div>
                 </div>                
             </form>
-        </div>
-        <partial name="_ProdutosTablePartial" model="Model.Produtos" />
+        </div>        
     </div>
-    
-    @section Scripts {       
-        
-        <script src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.js"></script>
-        <script>
-            $('#tabelaDeProdutos').DataTable({
-                "responsive": true, "lengthChange": true, "autoWidth": false
-            });            
-        </script>
-    }
 </body>
 </html>

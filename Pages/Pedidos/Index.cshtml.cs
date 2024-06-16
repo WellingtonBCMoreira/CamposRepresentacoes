@@ -21,13 +21,17 @@ namespace CamposRepresentacoes.Pages.Pedidos
         public IQueryable<Pedido> Pedidos { get; set; }
 
 
-        public void OnGet()
+        public void OnGet(Pedido? pedido)
         {
             Fornecedores = _pedidosService.ObterFornecedores();
-            Clientes = _pedidosService.ObterClientes();
-            Pedidos = _pedidosService.ObterPedidos();
+            Clientes = _pedidosService.ObterClientes();            
+            
+            if (pedido.IdCliente == Guid.Empty && pedido.IdFornecedor == Guid.Empty && string.IsNullOrEmpty(pedido.Status)) 
+                Pedidos = _pedidosService.ObterPedidos();
+            else
+                Pedidos = _pedidosService.ObterPedidos(pedido);
                      
-        }
+        }       
 
         public IActionResult OnPostExcluir(Guid id)
         {

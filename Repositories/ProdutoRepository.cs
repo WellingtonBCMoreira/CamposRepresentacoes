@@ -96,7 +96,7 @@ namespace CamposRepresentacoes.Repositories
             {
                 if (idFornecedor == null) throw new ArgumentException(nameof(idFornecedor));
 
-                return _context.Produtos.Where(p => p.IdFornecedor == idFornecedor).AsQueryable();
+                return _context.Produtos.Where(p => p.IdFornecedor == idFornecedor && p.Status == true).AsQueryable();
             }
             catch (Exception ex)
             {

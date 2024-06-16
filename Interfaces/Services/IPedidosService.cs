@@ -12,6 +12,7 @@ namespace CamposRepresentacoes.Interfaces.Services
         Pedido ObterPedidoPorId(Guid IdPedido);
         IQueryable<Pedido> ObterPedidos();
         IQueryable<Pedido> ObterPedidos(Pedido filtro);
+        IQueryable<ItensPedido> ObterItensPedido(Guid idPedido);
         Task<List<Pedido>> ObterPedidosTesteAsync();
         IQueryable<Fornecedor> ObterFornecedores();
         IQueryable<Cliente> ObterClientes();
