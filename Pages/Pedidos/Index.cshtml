@@ -4,7 +4,7 @@
 }
 
 <html>
-<body>    
+<body>
     <div class="row no-print">
         <div class="col-md-12">
             <form method="get" id="formBusca" asp-page-handler="Buscar">
@@ -26,7 +26,7 @@
                                     <label for="clienteId">Cliente</label>
                                     <select id="clienteId" name="IdCliente" class="form-control" asp-for="Pedido.IdCliente">
                                         <option value="">Todos</option>
-                                        @if(Model.Clientes != null)
+                                        @if (Model.Clientes != null)
                                         {
                                             @foreach (var cliente in Model.Clientes)
                                             {
@@ -50,7 +50,7 @@
                                         }
                                     </select>
                                 </div>
-                            </div>                                                      
+                            </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="status">Status</label>
@@ -66,66 +66,82 @@
                     </div>
                     <div class="card-footer">
                         <div class="float-right">
-                            <a asp-page="/Pedidos/Index" class="btn btn-default elevation-1"><i class="fas fa-eraser"></i>Limpar</a>                            
+                            <a asp-page="/Pedidos/Index" class="btn btn-default elevation-1"><i class="fas fa-eraser"></i>Limpar</a>
                             <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-search"></i>Buscar</button>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
-    </div>      
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Lista de Pedidos</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <table id="tabelaPedidos" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Cliente</th>
-                                <th>Fornecedor</th>
-                                <th>Qde. Itens</th>
-                                <th>Valor Total</th>
-                                <th>Forma de Pagamento</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var pedido in Model.Pedidos)
-                            {
-                                <tr>
-                                    <td>@pedido.RazaoSocialCliente</td>
-                                    <td>@pedido.RazaoSocialFornecedor</td>
-                                    <td>@pedido.QuantidadeItens</td>
-                                    <td>@string.Format("{0:C}", pedido.ValorTotal)</td>
-                                    <td>@pedido.FormaPagamento</td>
-                                    <td>@pedido.Status</td>
-                                    <td>
-                                        <a href="/Pedidos/Editar?idPedido=@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
-                                        <form method="post" asp-page-handler="Excluir" asp-route-id="@pedido.Id" onsubmit="return confirm('Tem certeza que deseja excluir este pedido?')">
-                                            <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-        </div>
-        <!-- /.col -->
     </div>
-    <!-- /.row -->
+    @if (Model.Pedidos != null)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Lista de Pedidos</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="tabelaPedidos" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Fornecedor</th>
+                                    <th>Transportadora</th>
+                                    <th>Qde. Itens</th>
+                                    <th>Valor Total</th>
+                                    <th>Forma de Pagamento</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var pedido in Model.Pedidos)
+                                {
+                                    <tr>
+                                        <td>@pedido.RazaoSocialCliente</td>
+                                        <td>@pedido.RazaoSocialFornecedor</td>
+                                        <td>@pedido.RazaoSocialTransportadora</td>
+                                        <td>@pedido.QuantidadeItens</td>
+                                        <td>@string.Format("{0:C}", pedido.ValorTotal)</td>
+                                        <td>@pedido.FormaPagamento</td>
+                                        <td>@pedido.Status</td>
+                                        <td>
+                                            <a href="/Pedidos/Editar?idPedido=@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
+                                            <form method="post" asp-page-handler="Excluir" asp-route-id="@pedido.Id" onsubmit="return confirm('Tem certeza que deseja excluir este pedido?')">
+                                                <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+    }
+    else if (Model.Pedidos == null)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <p class="m-0 text-center text-muted"><i class="fas fa-info-circle mr-2"></i>Sem pedidos para exibir!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
-    @section scripts {       
+    @section scripts {
 
-        <script>    
+        <script>
 
             var mensagemSucesso = '@MensagemAlerta.GetMensagem("MensagemExclusao")';
             if (mensagemSucesso) {

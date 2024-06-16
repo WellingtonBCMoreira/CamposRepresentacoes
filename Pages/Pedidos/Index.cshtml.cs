@@ -21,7 +21,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
         public IQueryable<Pedido> Pedidos { get; set; }
 
 
-        public void OnGet(Pedido? pedido)
+        public IActionResult OnGet(Pedido? pedido)
         {
             Fornecedores = _pedidosService.ObterFornecedores();
             Clientes = _pedidosService.ObterClientes();            
@@ -30,6 +30,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
                 Pedidos = _pedidosService.ObterPedidos();
             else
                 Pedidos = _pedidosService.ObterPedidos(pedido);
+            return Page();
                      
         }       
 

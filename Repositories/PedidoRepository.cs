@@ -47,7 +47,7 @@ namespace CamposRepresentacoes.Repositories
                 pPedido.DataEmissao = DateTime.Now;
                 pPedido.RazaoSocialCliente = cliente.RazaoSocial;
                 pPedido.RazaoSocialFornecedor = fornecedor.RazaoSocial;
-                pPedido.RazaoSocialFornecedor = transportadora.RazaoSocial;
+                pPedido.RazaoSocialTransportadora = transportadora.RazaoSocial;
                 pPedido.ValorTotal = 0;
                 pPedido.FormaPagamento = pPedido.FormaPagamento;
                 pPedido.QuantidadeItens = 0;
