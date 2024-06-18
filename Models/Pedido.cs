@@ -9,6 +9,7 @@ namespace CamposRepresentacoes.Models
         public Guid IdFornecedor { get; set; }
         public Guid IdTransportadora { get; set; }
         public DateTime DataEmissao { get; set; }
+        public DateTime DataFinalizacao { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal? ValorTotal { get; set; }

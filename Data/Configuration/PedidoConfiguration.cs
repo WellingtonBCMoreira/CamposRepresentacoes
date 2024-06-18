@@ -50,6 +50,9 @@ namespace CamposRepresentacoes.Data.Configuration
                 .HasColumnName("DataEmissao")
                 .IsRequired();
 
+            builder.Property(p => p.DataFinalizacao)
+                .HasColumnName("DataFinalizacao");                
+
             // Relacionamento com o Cliente
             builder.HasOne(p => p.Cliente)                
                 .WithMany()

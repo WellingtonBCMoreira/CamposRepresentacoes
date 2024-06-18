@@ -47,7 +47,7 @@
                                             <td>@item.Nome</td>
                                             <td>@item.Descricao</td>
                                             <td>@string.Format("{0:C}", item.ValorUnitario)</td>
-                                            <td>@string.Format("{0:C}", item.ValorTotal)</td>                                            
+                                            <td>@string.Format("{0:C}", item.ValorTotal)</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -59,6 +59,15 @@
                                     </tr>
                                 </tfoot>
                             </table>
+                            <div class="card-footer pt-2 pb-2">
+                                <div class="float-right">
+                                    <form method="post" asp-page-handler="Confirmar" onsubmit="return confirm('Tem certeza que deseja finalizar este pedido?')">
+                                        <a asp-page="/Pedidos/Index" class="btn btn-default elevation-1"><i class="fas fa-arrow-left"></i> Voltar</a>
+                                        <input type="hidden" name="idPedido" value="@Model.Pedido.Id" />
+                                        <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-save"></i> Confirmar</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -116,12 +125,12 @@
                                             <form id="form-@produto.Id" method="post" asp-page-handler="Adicionar">
                                                 <input type="hidden" name="ProdutoId" value="@produto.Id" />
                                                 <input type="hidden" name="PedidoId" value="@Model.Pedido.Id" />
-                                                <td>
-                                                    <input type="number" name="Quantidade" min="1" class="form-control" value="1" />
-                                                </td>
-                                                <td>
-                                                    <button type="submit" class="btn btn-primary">Adicionar</button>
-                                                </td>
+                                            <td>
+                                                <input type="number" name="Quantidade" min="1" class="form-control" value="1" />
+                                            </td>
+                                            <td>
+                                                <button type="submit" class="btn btn-primary">Adicionar</button>
+                                            </td>
                                             </form>
 
                                         </tr>

@@ -6,5 +6,6 @@
         public string Descricao { get; set; }
         public decimal ValorUnitario { get; set; }
         public decimal ValorTotal { get; set; }
+        public int TotalProduto { get; set; }
     }
 }

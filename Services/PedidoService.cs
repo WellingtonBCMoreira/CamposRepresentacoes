@@ -86,5 +86,10 @@ namespace CamposRepresentacoes.Services
         {
             _pedidosRepository.DeletarItemPedido(id);
         }
+
+        public void ConfirmarPedido(Guid idPedido)
+        {
+            _pedidosRepository.ConfirmarPedido(idPedido);
+        }
     }
 }

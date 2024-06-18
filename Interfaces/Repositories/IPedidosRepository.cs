@@ -19,5 +19,6 @@ namespace CamposRepresentacoes.Interfaces.Repositories
         IQueryable<Transportadora> ObterTransportadoras();
         IQueryable<Produto> ObterProdutos(string idFornecedor);
         void DeletarItemPedido(string id);
+        void ConfirmarPedido(Guid idPedido);
     }
 }

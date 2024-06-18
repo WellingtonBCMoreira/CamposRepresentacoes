@@ -34,6 +34,11 @@ namespace CamposRepresentacoes.Data.Configuration
             builder.Property(ip => ip.Preco)
                 .HasColumnName("Preco");
 
+            builder.Property(ip => ip.Status)
+                .HasColumnName("Status")
+                .HasMaxLength(1)
+                .IsRequired();
+
             //Relacionamentos
             builder.HasOne(ip => ip.Pedido)
                 .WithMany()

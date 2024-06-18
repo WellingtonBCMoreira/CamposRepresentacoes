@@ -28,7 +28,8 @@ namespace CamposRepresentacoes.Pages.Pedidos
         public Cliente Cliente { get; set; }
         public Transportadora Transportadora { get; set; }
         public List<ProdutosPedido> ProdutosPedido { get; set; } 
-        public IQueryable<Produto> Produtos { get; set; }        
+        public IQueryable<Produto> Produtos { get; set; }     
+        
         public void OnGet(Guid idPedido)
         {
             ProdutosPedido = new List<ProdutosPedido>();
@@ -92,5 +93,12 @@ namespace CamposRepresentacoes.Pages.Pedidos
             _pedidoService.InserirItens(itensPedido);
             return Page();
         }
+
+        public IActionResult OnPostConfirmar(Guid idPedido)
+        { 
+            _pedidoService.ConfirmarPedido(idPedido);
+
+            return RedirectToPage("/Pedidos/Detalhes", new { idPedido = idPedido });
+        }        
     }
 }

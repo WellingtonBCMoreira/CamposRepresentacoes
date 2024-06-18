@@ -153,6 +153,8 @@ namespace CamposRepresentacoes.Repositories
             {
                 if (itensPedido is null) new ArgumentNullException(nameof(itensPedido));
 
+                itensPedido.Status = "Aberto";
+
                 _context.ItensPedido.Add(itensPedido);
                 _context.SaveChanges();
 
@@ -328,6 +330,32 @@ namespace CamposRepresentacoes.Repositories
                 pedido.QuantidadeItens += itensPedido.Quantidade;
                 pedido.ValorTotal += itensPedido.Preco;
                 _context.SaveChanges();
+            }
+        }
+
+        public void ConfirmarPedido(Guid idPedido)
+        {
+            try
+            {
+                var pedido = _context.Pedidos.FirstOrDefault(p => p.Id == idPedido);
+                
+                if (pedido != null)
+                {
+                    pedido.Status = "Confirmado";
+                
+                    var itensPedido = _context.ItensPedido.Where(ip => ip.IdPedido == idPedido);
+                    foreach(var itens in itensPedido)
+                    {
+                        itens.Status = "Confirmado";
+                    }
+                    _context.SaveChanges();
+                }                
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Erro ao confirmar o pedido! Erro: {ex.Message}");
             }
         }
     }

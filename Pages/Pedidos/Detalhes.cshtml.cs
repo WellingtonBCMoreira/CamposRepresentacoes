@@ -19,35 +19,60 @@ namespace CamposRepresentacoes.Pages.Pedidos
 
         [BindProperty]
         public Pedido Pedido { get; set; }
-        public List<ItensPedido> ItensPedido { get; set; }
-        public ItensPedido ItemPedido { get; set; }
+        public IQueryable<ItensPedido> ItensPedido { get; set; }
+        public List<ProdutosPedido> ProdutosPedido { get; set; }
 
         [BindProperty]
         public string Confirmacao { get; set; }
-
-        public IQueryable<Fornecedor> Fornecedores { get; set; }
-        public IQueryable<Cliente> Clientes { get; set; }
-        public IQueryable<Transportadora> Transportadoras { get; set; }
-        public IQueryable<Produto> Produtos { get; set; }
-        public IQueryable<Pedido> Pedidos { get; set; }
-        public string ItensPedidoJson { get; set; }
-        public IActionResult OnGet(Guid id)
+        
+        public IActionResult OnGet(Guid idPedido)
         {
+            ProdutosPedido = new List<ProdutosPedido>();
             if (TempData.ContainsKey("Pedido"))
             {
                 string pedidoJson = TempData["Pedido"] as string;
 
-                Pedido = JsonConvert.DeserializeObject<Pedido>(pedidoJson);
-
-                Produtos = _produtosService.ObterProdutoPorFornecedor(Pedido.IdFornecedor);
+                Pedido = JsonConvert.DeserializeObject<Pedido>(pedidoJson);                
             }
             else
             {
-                Pedido = _pedidosService.ObterPedidoPorId(id);
-
-                Produtos = _produtosService.ObterProdutoPorFornecedor(Pedido.IdFornecedor);
+                Pedido = _pedidosService.ObterPedidoPorId(idPedido);                
             }
+
+            ItensPedido = _pedidosService.ObterItensPedido(idPedido);
+
+            if (ItensPedido.Count() > 0)
+            {
+                foreach (var item in ItensPedido)
+                {
+                    Produto produto = _produtosService.ObterProdutoPorId(id: Convert.ToString(item.IdProduto));
+
+                    var prodPedido = new ProdutosPedido
+                    {
+                        Nome = produto.Nome,
+                        Descricao = produto.Descricao,
+                        ValorUnitario = produto.Preco,
+                        ValorTotal = Convert.ToDecimal(produto.Preco * item.Quantidade),
+                        TotalProduto = item.Quantidade,
+                    };
+                    ProdutosPedido.Add(prodPedido);
+                }
+            }
+
             return Page();
-        }  
+        } 
+        
+        public IActionResult OnPostGerarPdf(Guid idPedido)
+        {
+            byte[] pdfBytes = GerarPdfDoPedido(idPedido); // Método fictício para gerar o PDF
+
+            return File(pdfBytes, "application/pdf", "Pedido.pdf");
+
+        }
+
+        private byte[] GerarPdfDoPedido(Guid idPedido)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
