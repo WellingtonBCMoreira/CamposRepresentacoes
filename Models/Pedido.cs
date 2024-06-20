@@ -18,6 +18,7 @@ namespace CamposRepresentacoes.Models
         public string RazaoSocialCliente { get; set; }
         public string RazaoSocialFornecedor { get; set; }
         public string RazaoSocialTransportadora { get; set; }
+        public string Observacao { get; set; }
         public int QuantidadeItens { get; set; }
 
         // Relacionamentos

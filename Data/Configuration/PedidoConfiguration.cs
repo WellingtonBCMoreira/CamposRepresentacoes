@@ -51,7 +51,11 @@ namespace CamposRepresentacoes.Data.Configuration
                 .IsRequired();
 
             builder.Property(p => p.DataFinalizacao)
-                .HasColumnName("DataFinalizacao");                
+                .HasColumnName("DataFinalizacao");
+            
+            builder.Property(p => p.Observacao)
+                .HasColumnName("Observacao")
+                .HasMaxLength(255);
 
             // Relacionamento com o Cliente
             builder.HasOne(p => p.Cliente)                

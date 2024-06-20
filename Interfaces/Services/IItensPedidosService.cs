@@ -6,7 +6,7 @@ namespace CamposRepresentacoes.Interfaces.Services
     {
         ItensPedido CadastrarItensPedido(ItensPedido itens);
         void AlterarItemPedido(ItensPedido itens);
-        void DeletarItemPedido(Guid idItem);
+        void DeletarItemPedido(Guid idPedido, Guid idItem);
         IQueryable<ItensPedido> ObterDetalheDoPedido(ItensPedido idPedido);
     }
 }

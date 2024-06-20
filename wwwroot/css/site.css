@@ -7,7 +7,16 @@ html {
     font-size: 16px;
   }
 }
+@media print {
+    .print-header {
+        display: block;
+    }
+}
 
+/* Ocultar o cabeçalho padrão em outras visualizações */
+.print-header {
+    display: none;
+}
 html {
   position: relative;
   min-height: 100%;
@@ -15,4 +24,14 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+.discount-input {
+    text-align: right;
+}
+
+.input-group-text {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-left: none;
 }

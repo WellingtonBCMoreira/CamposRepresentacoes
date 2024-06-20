@@ -10,9 +10,13 @@
         <div>
             <h2>Informações do Pedido</h2>
             <p><strong>Cliente:</strong>  @Model.Pedido.RazaoSocialCliente</p>
+            <p><strong>Endereço:</strong> @($"{Model.Cliente.Rua}, {Model.Cliente.Numero}, {Model.Cliente.Bairro}, {Model.Cliente.Cidade}")</p>            
+            <p><strong>CEP:</strong>  @Model.Cliente.CEP</p>
+            <p><strong>CGC:</strong>  @Model.Cliente.CNPJ</p>
+            <p><strong>Cliente:</strong>  @Model.Cliente.Telefone</p>
             <p><strong>Fornecedor:</strong>  @Model.Pedido.RazaoSocialFornecedor</p>
             <p><strong>Transportadora:</strong> @Model.Pedido.RazaoSocialTransportadora</p>
-            <p><strong>Forma de Pagamento:</strong>  @Model.Pedido.FormaPagamento</p>
+            <p><strong>Prazo:</strong>  @Model.Pedido.FormaPagamento</p>
         </div>
     </div>
     <!--Tabela com a lista de itens do Pedido-->
@@ -34,27 +38,44 @@
                             <table id="pedido-table" class="table table-sm table-bordered table-striped bg-white text-sm">
                                 <thead>
                                     <tr>
-                                        <th>Nome</th>
+                                        <th>Código</th>
                                         <th>Descrição</th>
                                         <th>Valor Unidade</th>
                                         <th>Valor Total</th>
+                                        <th>Quantidade</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var item in Model.ProdutosPedido)
                                     {
                                         <tr>
-                                            <td>@item.Nome</td>
+                                            <td>@item.Codigo</td>
                                             <td>@item.Descricao</td>
                                             <td>@string.Format("{0:C}", item.ValorUnitario)</td>
                                             <td>@string.Format("{0:C}", item.ValorTotal)</td>
+                                            <td>@item.TotalProduto</td>
+                                            <form id="form-@item.IdProduto" method="post" asp-page-handler="DeletarItem">
+                                                <input type="hidden" name="idProduto" value="@item.IdProduto" />
+                                                <input type="hidden" name="idPedido" value="@Model.Pedido.Id" />
+                                                @if(Model.Pedido.Status == "Confirmado")
+                                                {
+                                                    <td></td>
+                                                }
+                                                else
+                                                {
+                                                    <td>
+                                                        <button type="submit" class="btn btn-danger btn-sm">Deletar</button>
+                                                    </td>                                                    
+                                                }
+                                            </form>
                                         </tr>
                                     }
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="2"></td>
-                                        <td colspan="1"><strong>Total do Pedido:</strong></td>
+                                        <td colspan="3"></td>
+                                        <td colspan="2"><strong>Total do Pedido:</strong></td>
                                         <td>@string.Format("{0:C}", Model.Pedido.ValorTotal)</td>
                                     </tr>
                                 </tfoot>
@@ -64,7 +85,18 @@
                                     <form method="post" asp-page-handler="Confirmar" onsubmit="return confirm('Tem certeza que deseja finalizar este pedido?')">
                                         <a asp-page="/Pedidos/Index" class="btn btn-default elevation-1"><i class="fas fa-arrow-left"></i> Voltar</a>
                                         <input type="hidden" name="idPedido" value="@Model.Pedido.Id" />
-                                        <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-save"></i> Confirmar</button>
+                                        @if(Model.Pedido.Status == "Confirmado")
+                                        {
+                                            
+                                        }
+                                        else
+                                        {
+                                            <div class="form-group">
+                                                <label for="observacao">Observação</label>
+                                                <textarea id="observacao" name="observacao" class="form-control"></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-save"></i> Confirmar</button>                                            
+                                        }
                                     </form>
                                 </div>
                             </div>
@@ -110,8 +142,9 @@
                                         <th>Nome</th>
                                         <th>Descrição</th>
                                         <th>Preço</th>
-                                        <th style="width: 100px;">Quantidade</th>
-                                        <th>Ações</th>
+                                        <th style="width: 100px;">Quantidade</th>                                        
+                                        <th style="width: 100px;">Desconto (%)</th>                                        
+                                        <th style="width: 100px;">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -122,15 +155,44 @@
                                             <td>@produto.Nome</td>
                                             <td>@produto.Descricao</td>
                                             <td>@string.Format("{0:C}", produto.Preco)</td>
-                                            <form id="form-@produto.Id" method="post" asp-page-handler="Adicionar">
+                                            <form id="form-@produto.Id" method="post" asp-page="/Pedidos/Editar" asp-page-handler="Adicionar">
                                                 <input type="hidden" name="ProdutoId" value="@produto.Id" />
                                                 <input type="hidden" name="PedidoId" value="@Model.Pedido.Id" />
-                                            <td>
-                                                <input type="number" name="Quantidade" min="1" class="form-control" value="1" />
-                                            </td>
-                                            <td>
-                                                <button type="submit" class="btn btn-primary">Adicionar</button>
-                                            </td>
+                                                
+                                                @if (Model.Pedido.Status == "Confirmado")
+                                                {
+                                                    <td>
+                                                        <input type="number" name="Quantidade" min="1" class="form-control" value="1" disabled/>
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-group">
+                                                            <input type="text" name="Desconto" min="0" step="0.01" class="form-control discount-input" value="0" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">%</span>
+                                                            </div>
+                                                        </div>
+                                                        @* <input type="text" name="Desconto" class="form-control discount-input" placeholder="0,01" disabled/> *@
+                                                    </td>
+                                                    <td></td>
+                                                }
+                                                else
+                                                {
+                                                    <td>
+                                                        <input type="number" name="Quantidade" min="1" class="form-control" value="1" />
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-group">
+                                                            <input type="text" name="Desconto" min="0" step="0.01" class="form-control discount-input" value="0" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">%</span>
+                                                            </div>
+                                                        </div>
+                                                        @* <input type="text" name="Desconto" class="form-control discount-input" placeholder="0,01"/> *@
+                                                    </td>
+                                                    <td>
+                                                        <button type="submit" class="btn btn-primary">Adicionar</button>
+                                                    </td>
+                                                }                                               
                                             </form>
 
                                         </tr>
@@ -172,6 +234,11 @@
                     "url": "/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/pt-BR.json"
                 }
             });
+
+            var mensagemSucesso = '@MensagemAlerta.GetMensagem("MensagemExclusao")';
+            if (mensagemSucesso) {
+                alert(mensagemSucesso);                
+            }            
         </script>
     }
 </body>

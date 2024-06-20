@@ -2,6 +2,7 @@
 using CamposRepresentacoes.Interfaces.Repositories;
 using CamposRepresentacoes.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.Transactions;
 
 namespace CamposRepresentacoes.Repositories
@@ -289,22 +290,24 @@ namespace CamposRepresentacoes.Repositories
             }
         }
 
-        public void DeletarItemPedido(string id)
+        public void DeletarItemPedido(Guid idPedido, Guid id)
         {
             try
             {
-                if (id is null) new ArgumentNullException(nameof(id));
+                if (id == Guid.Empty ) new ArgumentNullException(nameof(id));
 
-                Guid idItem = Guid.Parse(id);
+                var item = _context.ItensPedido.FirstOrDefault(i => i.IdProduto == id && i.IdPedido == idPedido);
 
-                _context.Remove(idItem);
+                _context.ItensPedido.Remove(item);
 
                 _context.SaveChanges();
+
+                ExcluirItem(item);
             }
             catch (Exception ex)
             {
 
-                throw ex;
+                throw new Exception($"Erro ao tentar deletar o item. Erro: {ex.Message}");
             }
 
         }
@@ -322,18 +325,7 @@ namespace CamposRepresentacoes.Repositories
             }
         }
 
-        private void AtualizarDadosPedido(ItensPedido itensPedido)
-        {
-            var pedido = _context.Pedidos.FirstOrDefault(p => p.Id == itensPedido.IdPedido);
-            if (pedido != null)
-            {
-                pedido.QuantidadeItens += itensPedido.Quantidade;
-                pedido.ValorTotal += itensPedido.Preco;
-                _context.SaveChanges();
-            }
-        }
-
-        public void ConfirmarPedido(Guid idPedido)
+        public void ConfirmarPedido(Guid idPedido, string observacao)
         {
             try
             {
@@ -342,6 +334,7 @@ namespace CamposRepresentacoes.Repositories
                 if (pedido != null)
                 {
                     pedido.Status = "Confirmado";
+                    pedido.Observacao = observacao;
                 
                     var itensPedido = _context.ItensPedido.Where(ip => ip.IdPedido == idPedido);
                     foreach(var itens in itensPedido)
@@ -356,6 +349,32 @@ namespace CamposRepresentacoes.Repositories
             {
 
                 throw new Exception($"Erro ao confirmar o pedido! Erro: {ex.Message}");
+            }
+        }
+        private void AtualizarDadosPedido(ItensPedido itensPedido)
+        {
+            var pedido = _context.Pedidos.FirstOrDefault(p => p.Id == itensPedido.IdPedido);
+            if (pedido != null)
+            {
+                var valorTotal = itensPedido.Preco * itensPedido.Quantidade;
+
+                pedido.QuantidadeItens += itensPedido.Quantidade;
+                pedido.ValorTotal += itensPedido.Preco;
+                _context.SaveChanges();
+            }
+        }
+        private void ExcluirItem(ItensPedido itensPedido)
+        {
+            var pedido = _context.Pedidos.FirstOrDefault(p => p.Id == itensPedido.IdPedido);
+
+            if (pedido != null)
+            {
+                var valorTotal = itensPedido.Preco * itensPedido.Quantidade;
+                
+                pedido.QuantidadeItens -= itensPedido.Quantidade;
+                pedido.ValorTotal -= valorTotal;
+
+                _context.SaveChanges();
             }
         }
     }

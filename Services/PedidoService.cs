@@ -82,14 +82,14 @@ namespace CamposRepresentacoes.Services
             return _pedidosRepository.ObterTransportadoras();
         }
 
-        public void DeletarItemPedido(string id)
+        public void DeletarItemPedido(Guid idPedido, Guid id)
         {
-            _pedidosRepository.DeletarItemPedido(id);
+            _pedidosRepository.DeletarItemPedido(idPedido,id);
         }
 
-        public void ConfirmarPedido(Guid idPedido)
+        public void ConfirmarPedido(Guid idPedido, string observacao)
         {
-            _pedidosRepository.ConfirmarPedido(idPedido);
+            _pedidosRepository.ConfirmarPedido(idPedido, observacao);
         }
     }
 }

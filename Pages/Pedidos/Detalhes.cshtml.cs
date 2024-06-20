@@ -10,17 +10,20 @@ namespace CamposRepresentacoes.Pages.Pedidos
     {
         private readonly IPedidosService _pedidosService;
         private readonly IProdutosService _produtosService;
+        private readonly IClientesService _clientesService;
 
-        public DetalhesModel(IPedidosService pedidosService, IProdutosService produtosService)
+        public DetalhesModel(IPedidosService pedidosService, IProdutosService produtosService, IClientesService clientesService)
         {
             _pedidosService = pedidosService;
             _produtosService = produtosService;
+            _clientesService = clientesService;
         }
 
         [BindProperty]
         public Pedido Pedido { get; set; }
         public IQueryable<ItensPedido> ItensPedido { get; set; }
         public List<ProdutosPedido> ProdutosPedido { get; set; }
+        public Cliente Cliente { get; set; }
 
         [BindProperty]
         public string Confirmacao { get; set; }
@@ -41,6 +44,8 @@ namespace CamposRepresentacoes.Pages.Pedidos
 
             ItensPedido = _pedidosService.ObterItensPedido(idPedido);
 
+            Cliente = _clientesService.ObterClientePeloId(Convert.ToString( Pedido.IdCliente));
+
             if (ItensPedido.Count() > 0)
             {
                 foreach (var item in ItensPedido)
@@ -49,8 +54,8 @@ namespace CamposRepresentacoes.Pages.Pedidos
 
                     var prodPedido = new ProdutosPedido
                     {
+                        Codigo = produto.Codigo,
                         Nome = produto.Nome,
-                        Descricao = produto.Descricao,
                         ValorUnitario = produto.Preco,
                         ValorTotal = Convert.ToDecimal(produto.Preco * item.Quantidade),
                         TotalProduto = item.Quantidade,
@@ -61,18 +66,5 @@ namespace CamposRepresentacoes.Pages.Pedidos
 
             return Page();
         } 
-        
-        public IActionResult OnPostGerarPdf(Guid idPedido)
-        {
-            byte[] pdfBytes = GerarPdfDoPedido(idPedido); // Método fictício para gerar o PDF
-
-            return File(pdfBytes, "application/pdf", "Pedido.pdf");
-
-        }
-
-        private byte[] GerarPdfDoPedido(Guid idPedido)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

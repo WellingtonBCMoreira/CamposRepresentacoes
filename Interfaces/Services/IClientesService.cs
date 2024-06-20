@@ -7,7 +7,7 @@ namespace CamposRepresentacoes.Interfaces.Services
         Cliente CadastrarCliente(Cliente cliente);
         void AlterarCliente(Cliente cliente);
         void AtivarDesativarCliente(Guid clienteId, bool status);
-        Cliente ObterClientePeloId(string cnpj);
+        Cliente ObterClientePeloId(string id);
         IQueryable<Cliente> ObterClientes();
         IQueryable<Cliente> ObterClientes(Cliente filtro);
         Task<List<Cliente>> ObterClientesAsync();

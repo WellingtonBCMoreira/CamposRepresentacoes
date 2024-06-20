@@ -72,11 +72,11 @@ namespace CamposRepresentacoes.Repositories
         {
             try
             {
-                if (id is null) new ArgumentNullException(nameof(id));
+                if (string.IsNullOrEmpty(id)) new ArgumentNullException(nameof(id));
 
-                Guid idCliente = Guid.Parse(id);
+                var idClient = Guid.Parse(id);
 
-                return _context.Clientes.Where(c => c.Id == idCliente).FirstOrDefault();
+                return _context.Clientes.Where(c => c.Id == idClient).FirstOrDefault();
 
             }
             catch (Exception ex)
