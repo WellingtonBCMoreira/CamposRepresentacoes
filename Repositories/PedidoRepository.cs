@@ -330,27 +330,32 @@ namespace CamposRepresentacoes.Repositories
             try
             {
                 var pedido = _context.Pedidos.FirstOrDefault(p => p.Id == idPedido);
-                
+
                 if (pedido != null)
                 {
                     pedido.Status = "Confirmado";
                     pedido.Observacao = observacao;
-                
+
                     var itensPedido = _context.ItensPedido.Where(ip => ip.IdPedido == idPedido);
-                    foreach(var itens in itensPedido)
+                    foreach (var itens in itensPedido)
                     {
                         itens.Status = "Confirmado";
                     }
-                    _context.SaveChanges();
-                }                
 
+                    // Calcular o total do pedido convertendo os preços para double antes de somar
+                    var totalPedido = itensPedido.Sum(ip => (double)ip.Preco);
+                    pedido.ValorTotal = (decimal)totalPedido;
+
+                    _context.SaveChanges();
+                }
             }
             catch (Exception ex)
             {
-
                 throw new Exception($"Erro ao confirmar o pedido! Erro: {ex.Message}");
             }
         }
+
+
         private void AtualizarDadosPedido(ItensPedido itensPedido)
         {
             var pedido = _context.Pedidos.FirstOrDefault(p => p.Id == itensPedido.IdPedido);

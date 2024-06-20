@@ -11,12 +11,14 @@ namespace CamposRepresentacoes.Pages.Pedidos
         private readonly IPedidosService _pedidosService;
         private readonly IProdutosService _produtosService;
         private readonly IClientesService _clientesService;
+        private readonly ITransportadorasService _transportadorasService;
 
-        public DetalhesModel(IPedidosService pedidosService, IProdutosService produtosService, IClientesService clientesService)
+        public DetalhesModel(IPedidosService pedidosService, IProdutosService produtosService, IClientesService clientesService, ITransportadorasService transportadorasService)
         {
             _pedidosService = pedidosService;
             _produtosService = produtosService;
             _clientesService = clientesService;
+            _transportadorasService = transportadorasService;
         }
 
         [BindProperty]
@@ -24,6 +26,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
         public IQueryable<ItensPedido> ItensPedido { get; set; }
         public List<ProdutosPedido> ProdutosPedido { get; set; }
         public Cliente Cliente { get; set; }
+        public Transportadora Transportadora { get; set; }
 
         [BindProperty]
         public string Confirmacao { get; set; }
@@ -45,6 +48,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
             ItensPedido = _pedidosService.ObterItensPedido(idPedido);
 
             Cliente = _clientesService.ObterClientePeloId(Convert.ToString( Pedido.IdCliente));
+            Transportadora = _transportadorasService.ObterTransportadoraPeloId(Convert.ToString(Pedido.IdTransportadora));
 
             if (ItensPedido.Count() > 0)
             {

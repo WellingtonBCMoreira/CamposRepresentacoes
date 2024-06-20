@@ -13,58 +13,101 @@
 </head>
 <body>
     <div class="container-fluid mt-4" style="margin-top: 100px">
-        <div class="card shadow-lg">
-            <div class="title-container">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <img src="@logoBase64" alt="Logo" class="img-fluid" style="max-width: 200px;">
-                    </div>
-                    <h2 class="text-center mb-4"><strong>Informações do Pedido</strong></h2>
-                    <p><strong>Cliente:</strong> @Model.Pedido.RazaoSocialCliente</p>
-                    <p><strong>Fornecedor:</strong> @Model.Pedido.RazaoSocialFornecedor</p>
-                    <p><strong>Transportadora:</strong> FP</p>
-                    <p><strong>Prazo:</strong> 30/60/90</p>
-                    <p><strong>Observação :</strong> Gisele, Já é cliente. 20% com NF</p>
-                </div>
-            </div>
-            <div class="card-body p-0 bg-principal">
-                <div class="row mt-2 no-print">
-                    <div class="col-10">
-                        <a class="btn btn-default btn-sm float-right elevation-1" onclick="window.print();"><i class="fas fa-print"></i> Imprimir</a>
-                        <a asp-area="Pedidos" asp-page="/Pedidos/Index" class="btn btn-default btn-sm float-right mr-2 elevation-1"><i class="fas fa-chevron-left"></i> Voltar</a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table id="pedido-table" class="table table-sm table-bordered table-striped bg-white text-sm">
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Descrição</th>
-                                <th>Valor Unitário</th>
-                                <th>Quantidade</th>
-                                <th>Valor Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.ProdutosPedido)
+        @if (Model.ProdutosPedido != null)
+        {
+            <div class="card shadow-lg">
+                <div class="title-container">
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            @if (Model.Pedido.RazaoSocialFornecedor.Contains("MEGAVILLE INDUSTRIA"))
                             {
-                                <tr>
-                                    <td>@item.Codigo</td>
-                                    <td>@item.Nome</td>
-                                    <td>@string.Format("{0:C}", item.ValorUnitario)</td>
-                                    <td>@item.TotalProduto</td>
-                                    <td>@string.Format("{0:C}", item.ValorTotal)</td>
-                                </tr>
+                                <img src="@logoBase64" alt="Logo" class="img-fluid" style="max-width: 200px;">
                             }
-                            <tr>
-                                <td colspan="4" class="text-right"><strong>Total do Pedido:</strong></td>
-                                <td>@string.Format("{0:C}", Model.Pedido.ValorTotal)</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        </div>
+                        <h2 class="text-center mb-4"><strong>Informações do Pedido</strong></h2>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Cliente:</strong>  @Model.Cliente.RazaoSocial</p>
+                                    <p><strong>Email:</strong>  @Model.Cliente.Email</p>
+                                    <p><strong>Endereço:</strong> @($"{Model.Cliente.Rua}, {Model.Cliente.Numero}, {Model.Cliente.Bairro}, {Model.Cliente.Cidade} - BA ")</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>CEP:</strong>  @Model.Cliente.CEP</p>
+                                    <p><strong>CGC:</strong>  @Model.Cliente.CNPJ</p>
+                                    <p><strong>Insc. Estadual:</strong>@Model.Cliente.Complemento</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Telefone:</strong>  @Model.Cliente.Telefone</p>
+                                    <p><strong>Fornecedor:</strong>  @Model.Pedido.RazaoSocialFornecedor</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Transportadora:</strong> @Model.Transportadora.RazaoSocial</p>
+                                    <p><strong>Telefone Transportadora:</strong>  @Model.Transportadora.Telefone</p>
+                                    <p><strong>Prazo:</strong>  @Model.Pedido.FormaPagamento</p>
+                                </div>
+                            </div>
+                            <p><strong>Observação :</strong> @Model.Pedido.Observacao</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0 bg-principal">
+                    <div class="row mt-2 no-print">
+                        <div class="col-10">
+                            <a class="btn btn-default btn-sm float-right elevation-1" onclick="window.print();"><i class="fas fa-print"></i> Imprimir</a>
+                            <a asp-area="Pedidos" asp-page="/Pedidos/Index" class="btn btn-default btn-sm float-right mr-2 elevation-1"><i class="fas fa-chevron-left"></i> Voltar</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="pedido-table" class="table table-sm table-bordered table-striped bg-white text-sm">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descrição</th>
+                                    <th>Valor Unitário</th>
+                                    <th>Quantidade</th>
+                                    <th>Valor Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ProdutosPedido)
+                                {
+                                    <tr>
+                                        <td>@item.Codigo</td>
+                                        <td>@item.Nome</td>
+                                        <td>@string.Format("{0:C}", item.ValorUnitario)</td>
+                                        <td>@item.TotalProduto</td>
+                                        <td>@string.Format("{0:C}", item.ValorTotal)</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td colspan="4" class="text-right"><strong>Total do Pedido:</strong></td>
+                                    <td>@string.Format("{0:C}", Model.Pedido.ValorTotal)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p><strong>Representante: </strong>Julio Campos</p>
                 </div>
             </div>
-        </div>
+        }
+        else if (Model.Pedido == null)
+        {
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <p class="m-0 text-center text-muted"><i class="fas fa-info-circle mr-2"></i>Não foram encontrados resultados para sua pesquisa.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
 
+    </div>
 </body>
 </html>

@@ -5,6 +5,7 @@ using CamposRepresentacoes.Repositories;
 using CamposRepresentacoes.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -33,6 +34,14 @@ builder.Services.AddScoped<ITransportadorasRepository, TransportadoraRepository>
 
 builder.Services.AddScoped<IPedidosService, PedidoService>();
 builder.Services.AddScoped<IPedidosRepository, PedidoRepository>();
+
+builder.Services.AddTransient<IEmailService, EmailService>();
+
+builder.Services.Configure<RazorViewEngineOptions>(options =>
+{
+    options.ViewLocationFormats.Add("/Pages/{1}/{0}.cshtml");
+    options.ViewLocationFormats.Add("/Pages/Shared/{0}.cshtml");
+});
 
 var app = builder.Build();
 

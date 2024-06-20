@@ -21,10 +21,11 @@ namespace CamposRepresentacoes.Pages.Pedidos
         private readonly IPedidosService _pedidosService;
         private readonly IProdutosService _produtosService;
         private readonly IClientesService _clientesService;
+        private readonly ITransportadorasService _transportadorasService;
 
         public EnvioEmailModel(IEmailService emailService, IRazorViewEngine razorViewEngine, 
             ITempDataProvider tempDataProvider, IServiceProvider serviceProvider,
-            IPedidosService pedidosService, IProdutosService produtosService, IClientesService clientesService)
+            IPedidosService pedidosService, IProdutosService produtosService, IClientesService clientesService, ITransportadorasService transportadorasService)
         {
             _emailService = emailService;
             _razorViewEngine = razorViewEngine;
@@ -33,6 +34,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
             _pedidosService = pedidosService;
             _produtosService = produtosService;
             _clientesService = clientesService;
+            _transportadorasService = transportadorasService;
         }
 
         [BindProperty]
@@ -40,6 +42,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
         public IQueryable<ItensPedido> ItensPedido { get; set; }
         public List<ProdutosPedido> ProdutosPedido { get; set; }
         public Cliente Cliente { get; set; }
+        public Transportadora Transportadora { get; set; }
 
         public async Task<IActionResult> OnGet(Guid idPedido, string email)
         {
@@ -58,6 +61,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
             ItensPedido = _pedidosService.ObterItensPedido(idPedido);
 
             Cliente = _clientesService.ObterClientePeloId(Convert.ToString(Pedido.IdCliente));
+            Transportadora = _transportadorasService.ObterTransportadoraPeloId(Convert.ToString(Pedido.IdTransportadora));
 
             if (ItensPedido.Count() > 0)
             {
@@ -76,8 +80,15 @@ namespace CamposRepresentacoes.Pages.Pedidos
                     ProdutosPedido.Add(prodPedido);
                 }
             }
+            var viewModel = new PedidoViewModel
+            {
+                Pedido = Pedido,
+                ProdutosPedido = ProdutosPedido,
+                Cliente = Cliente,
+                Transportadora = Transportadora
+            };
 
-            var emailContent = await RenderViewToStringAsync("EmailTemplates/OrderEmail", Pedido);
+            var emailContent = await RenderViewToStringAsync("Pedidos/EnvioEmail", viewModel);
             await _emailService.SendEmailAsync("cliente@example.com", "Seu Pedido", emailContent);
 
             return Page();
@@ -91,7 +102,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
             {
                 var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
 
-                if (viewResult.View == null)
+                if (!viewResult.Success)
                 {
                     throw new ArgumentNullException($"View {viewName} not found.");
                 }
@@ -108,5 +119,6 @@ namespace CamposRepresentacoes.Pages.Pedidos
                 return sw.ToString();
             }
         }
+
     }
 }
