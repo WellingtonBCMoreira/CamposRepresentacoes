@@ -9,7 +9,6 @@ namespace CamposRepresentacoes.Interfaces.Services
         void AtivarDesativarCliente(Guid clienteId, bool status);
         Cliente ObterClientePeloId(string id);
         IQueryable<Cliente> ObterClientes();
-        IQueryable<Cliente> ObterClientes(Cliente filtro);
-        Task<List<Cliente>> ObterClientesAsync();
+        IQueryable<Cliente> ObterClientes(Cliente filtro);        
     }
 }

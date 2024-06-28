@@ -1,15 +1,44 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
+
 @media print {
     .print-header {
         display: block;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .col-md-6, .col-md-3, .col-md-4, .col-md-12 {
+        flex: 1 1 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+
+    .form-control[readonly] {
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+        display: block;
+        width: 100%;
+        padding: .375rem .75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
     }
 }
 
@@ -17,13 +46,14 @@ html {
 .print-header {
     display: none;
 }
+
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 .discount-input {

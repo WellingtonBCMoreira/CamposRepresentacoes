@@ -56,6 +56,10 @@ namespace CamposRepresentacoes.Data.Configuration
                 .HasColumnName("Telefone")
                 .HasMaxLength(14);
 
+            builder.Property(f => f.Celular)
+                .HasColumnName("Celular")
+                .HasMaxLength(14);
+
             builder.Property(f => f.Status)
                 .HasColumnName("Ativo")
                 .IsRequired();

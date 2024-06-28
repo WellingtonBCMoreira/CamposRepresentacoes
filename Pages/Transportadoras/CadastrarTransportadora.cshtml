@@ -2,114 +2,160 @@
 @model CamposRepresentacoes.Pages.Transportadoras.CadastrarTransportadoraModel
 @{
 }
-
+<!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    
 </head>
 <body>
-    <h2> Cadastrar Transportadora</h2>
-    <div class="row">
-        <div class="col-sm-6">
-            <form method="post">
-                <div class="form-group">
-                    <label for="razaoSocial">Razão Social:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-building"></i></span>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card shadow p-4">
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <h2><strong>Cadastrar Transportadora</strong></h2>
                         </div>
-                        <input type="text" name="Transportadora.RazaoSocial" class="form-control" asp-for="Transportadora.RazaoSocial" required />
+                        <form method="post" class="needs-validation" novalidate>
+                            <div class="form-row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="razaoSocial">Razão Social:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-building"></i></span>
+                                        </div>
+                                        <input type="text" name="Transportadora.RazaoSocial" class="form-control" asp-for="Transportadora.RazaoSocial" required />
+                                        <div class="invalid-feedback">
+                                            Este campo é obrigatório.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="cnpj">CNPJ:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" data-inputmask='"mask": "99.999.999/9999-99"' data-mask name="Transportadora.CNPJ"
+                                               asp-for="Transportadora.CNPJ" required />
+                                        <div class="invalid-feedback">
+                                            Este campo é obrigatório.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-9 mb-3">
+                                    <label for="email">Email:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        </div>
+                                        <input type="email" name="Transportadora.Email" class="form-control" asp-for="Transportadora.Email" placeholder="Email" required />
+                                        <div class="invalid-feedback">
+                                            Este campo é obrigatório.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="telefone">Telefone com DDD:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" data-inputmask='"mask": "(99) 9999-9999"' data-mask name="Transportadora.Telefone"
+                                               asp-for="Transportadora.Telefone" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="celular">Celular com DDD:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="bi bi-phone-fill"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" data-inputmask='"mask": "(99) 99999-9999"' data-mask name="Transportadora.Celular"
+                                               asp-for="Transportadora.Celular" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="cep">CEP:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" data-inputmask='"mask": "99999-999"' data-mask name="Transportadora.CEP"
+                                               asp-for="Transportadora.CEP" required onchange="buscarEnderecoPorCEP(this.value)" />
+                                        <div class="invalid-feedback">
+                                            Este campo é obrigatório.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    <label for="rua">Rua:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-road"></i></span>
+                                        </div>
+                                        <input type="text" name="Transportadora.Rua" class="form-control" asp-for="Transportadora.Rua" required />
+                                        <div class="invalid-feedback">
+                                            Este campo é obrigatório.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="bairro">Bairro:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                        </div>
+                                        <input type="text" name="Transportadora.Bairro" class="form-control" asp-for="Transportadora.Bairro" required />
+                                        <div class="invalid-feedback">
+                                            Este campo é obrigatório.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    <label for="Cidade">Cidade:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-city"></i></span>
+                                        </div>
+                                        <input type="text" name="Transportadora.Cidade" class="form-control" asp-for="Transportadora.Cidade" required />
+                                        <div class="invalid-feedback">
+                                            Este campo é obrigatório.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label for="numero">Número:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-sort-numeric-up"></i></span>
+                                        </div>
+                                        <input type="number" name="Transportadora.Numero" class="form-control" asp-for="Transportadora.Numero" required />
+                                        <div class="invalid-feedback">
+                                            Este campo é obrigatório.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                    <label for="Complemento">Complemento:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                                        </div>
+                                        <input type="text" name="Transportadora.Complemento" class="form-control" asp-for="Transportadora.Complemento" />
+                                    </div>
+                                </div>                                
+                            </div>
+                            <div class="col-md-12">
+                                <div class="text-center d-flex justify-content-center">
+                                    <a class="btn btn-danger mr-2" href="/Transportadoraes/Index">Cancelar</a>
+                                    <button type="submit" class="btn btn-primary ml-2">Salvar</button>
+                                </div>
+                            </div>                            
+                        </form>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="cnpj">CNPJ:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                        </div>
-                        <input type="text" class="form-control" data-inputmask='"mask": "99.999.999/9999-99"' data-mask name="Transportadora.CNPJ"
-                               asp-for="Transportadora.CNPJ" required />
-                    </div>
-                </div>
-                <div class="input-group mb-3">
-                    <label for="email">Email:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                        </div>
-                        <input type="email" name="Transportadora.Email" class="form-control" asp-for="Transportadora.Email" placeholder="Email" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="cep">CEP:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                        </div>
-                        <input type="text" class="form-control" data-inputmask='"mask": "99999-999"' data-mask name="Transportadora.CEP"
-                               asp-for="Transportadora.CEP" required onchange="buscarEnderecoPorCEP(this.value)" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="rua">Rua:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-road"></i></span>
-                        </div>
-                        <input type="text" name="Transportadora.Rua" class="form-control" asp-for="Transportadora.Rua" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="bairro">Bairro:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                        </div>
-                        <input type="text" name="Transportadora.Bairro" class="form-control" asp-for="Transportadora.Bairro" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="Cidade">Cidade:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-city"></i></span>
-                        </div>
-                        <input type="text" name="Transportadora.Cidade" class="form-control" asp-for="Transportadora.Cidade" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="numero">Número:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-sort-numeric-up"></i></span>
-                        </div>
-                        <input type="number" name="Transportadora.Numero" class="form-control" asp-for="Transportadora.Numero" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="Complemento">Complemento:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                        </div>
-                        <input type="text" name="Transportadora.Complemento" class="form-control" asp-for="Transportadora.Complemento" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="telefone">Telefone com DDD:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                        </div>
-                        <input type="text" class="form-control" data-inputmask='"mask": "(99) 99999-9999"' data-mask name="Transportadora.Telefone"
-                               asp-for="Transportadora.Telefone" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <a class="btn btn-danger" href="/Transportadoraes/Index">Voltar</a>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 

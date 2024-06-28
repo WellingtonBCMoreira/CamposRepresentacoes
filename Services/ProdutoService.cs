@@ -52,5 +52,9 @@ namespace CamposRepresentacoes.Services
         {
             return _produtosRepository.BuscarProdutos(descricao, idFornecedor);
         }
+        public Produto ObterProduto(string id, Guid idFornecedor) 
+        { 
+            return _produtosRepository.ObterProduto(id, idFornecedor);
+        }
     }
 }

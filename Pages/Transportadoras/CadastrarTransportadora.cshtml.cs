@@ -25,7 +25,7 @@ namespace CamposRepresentacoes.Pages.Transportadoras
         {
             _transportadorasService.CadastrarTransportadora(Transportadora);
 
-            MensagemAlerta.SetMensagem("CadastroRealizado", "Fornecer cadastro com socesso :)");
+            MensagemAlerta.SetMensagem("CadastroRealizado", "Transportadora cadastrada com socesso :)");
 
             return Page();
 

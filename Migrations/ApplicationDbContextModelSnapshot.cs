@@ -42,6 +42,12 @@ namespace CamposRepresentacoes.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("CNPJ");
 
+                    b.Property<string>("Celular")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Celular");
+
                     b.Property<string>("Cidade")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -58,8 +64,15 @@ namespace CamposRepresentacoes.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("Email");
 
-                    b.Property<int>("Numero")
-                        .HasColumnType("INTEGER")
+                    b.Property<string>("InscricaoEstadual")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("InscricaoEstadual");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
                         .HasColumnName("Numero");
 
                     b.Property<string>("RazaoSocial")
@@ -115,6 +128,12 @@ namespace CamposRepresentacoes.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("CNPJ");
 
+                    b.Property<string>("Celular")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Celular");
+
                     b.Property<string>("Cidade")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -131,8 +150,9 @@ namespace CamposRepresentacoes.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("Email");
 
-                    b.Property<int>("Numero")
-                        .HasColumnType("INTEGER")
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
                         .HasColumnName("Numero");
 
                     b.Property<string>("RazaoSocial")
@@ -243,7 +263,6 @@ namespace CamposRepresentacoes.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Observacao")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("TEXT")
                         .HasColumnName("Observacao");
@@ -366,6 +385,12 @@ namespace CamposRepresentacoes.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("CNPJ");
 
+                    b.Property<string>("Celular")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Celular");
+
                     b.Property<string>("Cidade")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -382,8 +407,9 @@ namespace CamposRepresentacoes.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("Email");
 
-                    b.Property<int>("Numero")
-                        .HasColumnType("INTEGER")
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
                         .HasColumnName("Numero");
 
                     b.Property<string>("RazaoSocial")

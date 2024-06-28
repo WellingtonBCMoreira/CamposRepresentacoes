@@ -53,6 +53,7 @@ namespace CamposRepresentacoes.Repositories
                 pPedido.FormaPagamento = pPedido.FormaPagamento;
                 pPedido.QuantidadeItens = 0;
                 pPedido.Status = "Aberto";
+                pPedido.Observacao = string.Empty;
 
                 _context.Pedidos.Add(pPedido);
                 _context.SaveChanges();

@@ -26,10 +26,16 @@ namespace CamposRepresentacoes.Pages.Produtos
 
         public IActionResult OnPost() 
         {
-            _produtosService.CadastrarProduto(Produto);
+            var produto = _produtosService.ObterProduto(Produto.Codigo, Produto.IdFornecedor);
 
-            MensagemAlerta.SetMensagem("CadastroRealizado", "Produto cadastrado com sucesso!");
-                
+            if(produto is null)
+            {
+                _produtosService.CadastrarProduto(Produto);
+                MensagemAlerta.SetMensagem("CadastroRealizado", "Produto cadastrado com sucesso!");            
+            }
+            else
+                MensagemAlerta.SetMensagem("ProdutoExistente", $"Produto de codigo {Produto.Codigo} jah cadastrado anteriormente, utilize a tela para editar!");
+
             return RedirectToPage();          
             
         }

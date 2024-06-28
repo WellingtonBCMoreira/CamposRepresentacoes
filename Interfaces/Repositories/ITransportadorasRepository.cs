@@ -9,7 +9,6 @@ namespace CamposRepresentacoes.Interfaces.Repositories
         void AtivarDesativarTransportadora(Guid transportadoraId, bool status);
         Transportadora ObterTransportadoraPeloId(string id);
         IQueryable<Transportadora> ObterTransportadoras();
-        IQueryable<Transportadora> ObterTransportadoras(Transportadora filtro);
-        Task<List<Transportadora>> ObterTransportadorasAsync();
+        IQueryable<Transportadora> ObterTransportadoras(Transportadora filtro);        
     }
 }

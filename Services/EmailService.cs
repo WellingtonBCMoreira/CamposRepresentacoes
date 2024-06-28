@@ -13,7 +13,7 @@ namespace CamposRepresentacoes.Services
             _configuration = configuration;
         }
 
-        public async Task SendEmailAsync(string toEmail, string subject, string message)
+        public async Task SendEmailAsync(string toEmail, string subject, string message, string nomeCliente, byte[] attachment = null)
         {
             var emailSettings = _configuration.GetSection("EmailSettings").Get<EmailSettings>();
 
@@ -29,17 +29,31 @@ namespace CamposRepresentacoes.Services
                 From = new MailAddress(emailSettings.SenderEmail, emailSettings.SenderName),
                 Subject = subject,
                 Body = message,
-                IsBodyHtml = true,
+                IsBodyHtml = true,                
             };
 
             mailMessage.To.Add(toEmail);
+            //mailMessage.CC.Add("juliocamposrepresentante@gmail.com");
+            //mailMessage.CC.Add("hemilainecampos@gmail.com");
 
-            await smtpClient.SendMailAsync(mailMessage);
+            if (attachment != null && attachment.Length > 0)
+            {
+                using (var stream = new MemoryStream(attachment))
+                {
+                    mailMessage.Attachments.Add(new Attachment(stream, "Pedido_" + nomeCliente + ".pdf", "application/pdf"));
+                    await smtpClient.SendMailAsync(mailMessage);
+                }
+            }
+            else
+            {
+                await smtpClient.SendMailAsync(mailMessage);
+            }
         }
     }
 }
 
-    public class EmailSettings
+
+public class EmailSettings
     {
         public string SmtpServer { get; set; }
         public int SmtpPort { get; set; }

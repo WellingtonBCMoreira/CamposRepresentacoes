@@ -31,12 +31,7 @@ namespace CamposRepresentacoes.Services
         public IQueryable<Transportadora> ObterTransportadoras(Transportadora filtro)
         {
             return _transportadorasRepository.ObterTransportadoras(filtro);
-        }
-
-        public Task<List<Transportadora>> ObterTransportadorasAsync()
-        {
-            return _transportadorasRepository.ObterTransportadorasAsync();
-        }
+        }       
 
         public IQueryable<Transportadora> ObterTranspostadoras()
         {

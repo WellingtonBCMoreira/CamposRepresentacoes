@@ -20,11 +20,11 @@ namespace CamposRepresentacoes.Repositories
                 if(produto is null) throw new ArgumentNullException(nameof(produto));
 
                 var consultaProd = _context.Produtos.Find(produto.Id) ?? throw new ArgumentException($"Produto com ID {produto.Id} não encontrado na base de dados.");
-                
-                var preco = produto.Preco2.Replace("R$ ", "").Replace(".", "");
-                produto.Preco = decimal.Parse(preco, System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
+
+                var preco = produto.Preco2.Replace("R$ ", "").Replace(",", ".");
+                produto.Preco = decimal.Parse(preco, System.Globalization.CultureInfo.InvariantCulture);
                 produto.DataCadastro = DateTime.Now;
-                
+
                 _context.Entry(consultaProd).CurrentValues.SetValues(produto);
                 _context.SaveChanges();
             }
@@ -40,17 +40,38 @@ namespace CamposRepresentacoes.Repositories
             {
                 if (produto is null) throw new ArgumentNullException(nameof (produto));
 
-                produto.Id = Guid.NewGuid();
-                produto.Status = true;
-                produto.DataCadastro = DateTime.Now;
-                
-                if(!string.IsNullOrEmpty(produto.Preco2))
-                {
-                    var preco = produto.Preco2.Replace("R$ ", "").Replace(".", "");
-                    produto.Preco = decimal.Parse(preco, System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
-                }                
+                var produtoCadastro = _context.Produtos.FirstOrDefault(c => c.Codigo == produto.Codigo & c.IdFornecedor == produto.IdFornecedor);
 
-                _context.Produtos.Add(produto);
+                if (produtoCadastro == null)
+                {
+                    produto.Id = Guid.NewGuid();
+                    produto.Status = true;
+                    produto.DataCadastro = DateTime.Now;
+
+                    if (!string.IsNullOrEmpty(produto.Preco2))
+                    {
+                        var preco = produto.Preco2.Replace("R$ ", "").Replace(",", ".");
+                        produto.Preco = decimal.Parse(preco, System.Globalization.CultureInfo.InvariantCulture);
+                    }
+
+                    _context.Produtos.Add(produto);
+                }
+                else
+                {
+                    produtoCadastro.Nome = produto.Nome;
+                    produtoCadastro.Descricao = produto.Descricao;
+                    produtoCadastro.Preco = produto.Preco;
+                    produtoCadastro.DataCadastro = DateTime.Now;
+
+                    if (!string.IsNullOrEmpty(produto.Preco2))
+                    {
+                        var preco = produto.Preco2.Replace("R$ ", "").Replace(".", ",");
+                        produtoCadastro.Preco = decimal.Parse(preco, System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
+                    }
+
+                    _context.Produtos.Update(produtoCadastro);
+                }
+
                 _context.SaveChanges();
                 return produto;
 
@@ -107,7 +128,7 @@ namespace CamposRepresentacoes.Repositories
         {
             try
             {
-                if(string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
+                if(string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));                
 
                 Guid idProduto = Guid.Parse(id);
 
@@ -202,6 +223,21 @@ namespace CamposRepresentacoes.Repositories
             {
 
                 throw new Exception($"Erro na função BuscarProdutos: {ex.Message}",ex);
+            }
+        }
+
+        public Produto ObterProduto(string codigo, Guid idFornecedor)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(codigo)) throw new ArgumentNullException(nameof(codigo));
+
+                return _context.Produtos.Where(p => p.Codigo == codigo && p.IdFornecedor == idFornecedor).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Erro ao Obter o Produto: {ex.Message}"); ;
             }
         }
     }

@@ -43,10 +43,5 @@ namespace CamposRepresentacoes.Services
         {
             return _clientesRepository.ObterClientes(filtro);
         }
-
-        public Task<List<Cliente>> ObterClientesAsync()
-        {
-            return _clientesRepository.ObterClientesAsync();
-        }
     }
 }

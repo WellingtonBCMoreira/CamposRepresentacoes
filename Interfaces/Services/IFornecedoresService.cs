@@ -9,7 +9,6 @@ namespace CamposRepresentacoes.Interfaces.Services
         void AtivarDesativarFornecedor(Guid fornecedorId, bool status);
         Fornecedor ObterFornecedorPorId(string id);
         IQueryable<Fornecedor> ObterFornecedores();
-        IQueryable<Fornecedor> ObterFornecedores(Fornecedor filtro);
-        Task<List<Fornecedor>> ObterFornecedoresAsync();
+        IQueryable<Fornecedor> ObterFornecedores(Fornecedor filtro);        
     }
 }

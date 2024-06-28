@@ -24,6 +24,11 @@ namespace CamposRepresentacoes.Data.Configuration
                 .HasMaxLength(14)
                 .IsRequired();
 
+            builder.Property(c => c.InscricaoEstadual)
+                .HasColumnName("InscricaoEstadual")
+                .HasMaxLength(14)
+                .IsRequired();
+
             builder.Property(c => c.Rua)
                 .HasColumnName("Rua")
                 .HasMaxLength(50);
@@ -50,6 +55,10 @@ namespace CamposRepresentacoes.Data.Configuration
 
             builder.Property(c => c.Telefone)
                 .HasColumnName("Telefone")
+                .HasMaxLength(14);
+
+            builder.Property(c => c.Celular)
+                .HasColumnName("Celular")
                 .HasMaxLength(14);
 
             builder.Property(c => c.Status)

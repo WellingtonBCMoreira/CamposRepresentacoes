@@ -14,5 +14,6 @@ namespace CamposRepresentacoes.Interfaces.Services
         Task<List<Produto>> ObterProdutosDeTesteAsync();
         IQueryable<Produto> ObterProdutoPorFornecedor(Guid idFornecedor);
         IQueryable<Produto> BuscarProdutos(string descricao, Guid idFornecedor);
+        Produto ObterProduto(string id, Guid idFornecedor);
     }
 }

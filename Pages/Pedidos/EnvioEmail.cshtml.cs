@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace CamposRepresentacoes.Pages.Pedidos
 {
@@ -22,10 +23,13 @@ namespace CamposRepresentacoes.Pages.Pedidos
         private readonly IProdutosService _produtosService;
         private readonly IClientesService _clientesService;
         private readonly ITransportadorasService _transportadorasService;
+        private readonly PDFService _pdfService;
+
 
         public EnvioEmailModel(IEmailService emailService, IRazorViewEngine razorViewEngine, 
             ITempDataProvider tempDataProvider, IServiceProvider serviceProvider,
-            IPedidosService pedidosService, IProdutosService produtosService, IClientesService clientesService, ITransportadorasService transportadorasService)
+            IPedidosService pedidosService, IProdutosService produtosService, IClientesService clientesService, 
+            ITransportadorasService transportadorasService, PDFService pdfService)
         {
             _emailService = emailService;
             _razorViewEngine = razorViewEngine;
@@ -35,6 +39,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
             _produtosService = produtosService;
             _clientesService = clientesService;
             _transportadorasService = transportadorasService;
+            _pdfService = pdfService;
         }
 
         [BindProperty]
@@ -50,7 +55,6 @@ namespace CamposRepresentacoes.Pages.Pedidos
             if (TempData.ContainsKey("Pedido"))
             {
                 string pedidoJson = TempData["Pedido"] as string;
-
                 Pedido = JsonConvert.DeserializeObject<Pedido>(pedidoJson);
             }
             else
@@ -67,7 +71,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
             {
                 foreach (var item in ItensPedido)
                 {
-                    Produto produto = _produtosService.ObterProdutoPorId(id: Convert.ToString(item.IdProduto));
+                    Produto produto = _produtosService.ObterProdutoPorId(Convert.ToString(item.IdProduto));
 
                     var prodPedido = new ProdutosPedido
                     {
@@ -80,6 +84,7 @@ namespace CamposRepresentacoes.Pages.Pedidos
                     ProdutosPedido.Add(prodPedido);
                 }
             }
+
             var viewModel = new PedidoViewModel
             {
                 Pedido = Pedido,
@@ -88,19 +93,53 @@ namespace CamposRepresentacoes.Pages.Pedidos
                 Transportadora = Transportadora
             };
 
-            var emailContent = await RenderViewToStringAsync("Pedidos/EnvioEmail", viewModel);
-            await _emailService.SendEmailAsync("cliente@example.com", "Seu Pedido", emailContent);
+            var emailContent = await RenderViewToStringAsync("/Pages/Shared/_PedidoEmailPartial.cshtml", viewModel);
 
-            return Page();
+            string bodyEmail = BodyEmail();
+            string nomeCliente = Cliente.RazaoSocial.Split(' ')[0];
+
+            var pdfBytes = _pdfService.ConvertToPdf(emailContent);
+
+            await _emailService.SendEmailAsync(email, "Seu Pedido", bodyEmail, nomeCliente, pdfBytes);
+
+            TempData["EmailEnviado"] = "Email enviado com sucesso!";
+
+            //MensagemAlerta.SetMensagem("EmailEnviado", "Email enviado com sucesso!");
+
+            return RedirectToPage("/Pedidos/Detalhes", new { idPedido });
         }
+
+        private string BodyEmail()
+        {
+            var htmlBody = new StringBuilder();
+            htmlBody.AppendLine("<html>");
+            htmlBody.AppendLine("<body>");
+            htmlBody.AppendLine($"<p style='font-weight: bold;'>Prezado(a) {Cliente.RazaoSocial},</p>");
+            htmlBody.AppendLine("<p>O seu pedido está em anexo.</p>");
+            htmlBody.AppendLine("<p>Atenciosamente,</p>");
+            htmlBody.AppendLine("<p style='font-weight: bold;'>Att, Julio Campos</p>");
+            htmlBody.AppendLine("</body>");
+            htmlBody.AppendLine("</html>");
+            
+            return htmlBody.ToString();
+        }
+
         private async Task<string> RenderViewToStringAsync(string viewName, object model)
         {
             var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
-            var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+            var routeData = new RouteData();
+            var actionDescriptor = new ActionDescriptor();
+
+            // Ensure the ActionContext has a router associated with it
+            var actionContext = new ActionContext(httpContext, routeData, actionDescriptor)
+            {
+                // Add this line to fix the routing issue
+                RouteData = new RouteData()
+            };
 
             using (var sw = new StringWriter())
             {
-                var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
+                var viewResult = _razorViewEngine.GetView("", viewName, false);
 
                 if (!viewResult.Success)
                 {

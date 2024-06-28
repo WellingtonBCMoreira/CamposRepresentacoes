@@ -38,11 +38,6 @@ namespace CamposRepresentacoes.Services
             return _fornecedoresRepository.ObterFornecedores(filtro);
         }
 
-        public Task<List<Fornecedor>> ObterFornecedoresAsync()
-        {
-            return _fornecedoresRepository.ObterFornecedoresAsync();
-        }
-
         public Fornecedor ObterFornecedorPorId(string cnpj)
         {
             return _fornecedoresRepository.ObterFornecedorPorId(cnpj);

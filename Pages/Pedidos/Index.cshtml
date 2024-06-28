@@ -126,7 +126,8 @@
                                             else
                                             {
                                                 <div class="d-flex">
-                                                    <a href="/Pedidos/Editar?idPedido=@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
+                                                    <a href="/Pedidos/Detalhes?idPedido=@pedido.Id" class="btn btn-info btn-sm">Detalhes</a>
+                                                    <a href="/Pedidos/Editar?idPedido=@pedido.Id" class="btn btn-primary btn-sm ml-2">Editar</a>
                                                     <form method="post" asp-page-handler="Excluir" asp-route-id="@pedido.Id" onsubmit="return confirm('Tem certeza que deseja excluir este pedido?')" style="display:inline">
                                                         <button type="submit" class="btn btn-danger btn-sm ml-2">Excluir</button>
                                                     </form>
