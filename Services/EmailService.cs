@@ -33,8 +33,7 @@ namespace CamposRepresentacoes.Services
             };
 
             mailMessage.To.Add(toEmail);
-            //mailMessage.CC.Add("juliocamposrepresentante@gmail.com");
-            //mailMessage.CC.Add("hemilainecampos@gmail.com");
+            mailMessage.CC.Add("juliocamposrepresentante@gmail.com");            
 
             if (attachment != null && attachment.Length > 0)
             {

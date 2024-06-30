@@ -20,59 +20,31 @@
                         <div class="text-center mb-4">
                             <h2><strong>Informações do Pedido</strong></h2>
                         </div>
-                        <div class="form-row">
-                            <div class="col-md-6 mb-3">
-                                <label for="cliente"><strong>Cliente:</strong></label>
-                                <input type="text" class="form-control" id="cliente" value="@Model.Cliente.RazaoSocial" readonly>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Cliente:</strong>  @Model.Cliente.RazaoSocial</p>
+                                    <p><strong>Email:</strong>  @Model.Cliente.Email</p>
+                                    <p><strong>Endereço:</strong> @($"{Model.Cliente.Rua}, {Model.Cliente.Numero}, {Model.Cliente.Bairro}, {Model.Cliente.Cidade} - BA ")</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>CEP:</strong>  @Model.Cliente.CEP</p>
+                                    <p><strong>CGC:</strong>  @Model.Cliente.CNPJ</p>
+                                    <p><strong>Insc. Estadual:</strong>@Model.Cliente.InscricaoEstadual</p>
+                                </div>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="cnpj"><strong>CNPJ:</strong></label>
-                                <input type="text" class="form-control" id="cnpj" value="@Model.Cliente.CNPJ" readonly>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Telefone:</strong>  @Model.Cliente.Telefone</p>
+                                    <p><strong>Fornecedor:</strong>  @Model.Pedido.RazaoSocialFornecedor</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Transportadora:</strong> @Model.Transportadora.RazaoSocial</p>
+                                    <p><strong>Telefone Transportadora:</strong>  @Model.Transportadora.Telefone</p>
+                                    <p><strong>Prazo:</strong>  @Model.Pedido.FormaPagamento</p>
+                                </div>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="inscricaoEstadual"><strong>Insc. Estadual:</strong></label>
-                                <input type="text" class="form-control" id="inscricaoEstadual" value="@Model.Cliente.InscricaoEstadual" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="email"><strong>Email:</strong></label>
-                                <input type="text" class="form-control" id="email" value="@Model.Cliente.Email" readonly>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="telefone"><strong>Telefone:</strong></label>
-                                <input type="text" class="form-control" id="telefone" value="@Model.Cliente.Telefone" readonly>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="celular"><strong>Celular:</strong></label>
-                                <input type="text" class="form-control" id="celular" value="@Model.Cliente.Celular" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="endereco"><strong>Endereço:</strong></label>
-                                <input type="text" class="form-control" id="endereco" value="@($"{Model.Cliente.Rua}, {Model.Cliente.Numero}, {Model.Cliente.Bairro}, {Model.Cliente.Cidade} - BA")" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="cep"><strong>CEP:</strong></label>
-                                <input type="text" class="form-control" id="cep" value="@Model.Cliente.CEP" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="fornecedor"><strong>Fornecedor:</strong></label>
-                                <input type="text" class="form-control" id="fornecedor" value="@Model.Pedido.RazaoSocialFornecedor" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="transportadora"><strong>Transportadora:</strong></label>
-                                <input type="text" class="form-control" id="transportadora" value="@Model.Transportadora.RazaoSocial" readonly>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="telefoneTransportadora"><strong>Telefone Transportadora:</strong></label>
-                                <input type="text" class="form-control" id="telefoneTransportadora" value="@Model.Transportadora.Telefone" readonly>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="prazo"><strong>Prazo:</strong></label>
-                                <input type="text" class="form-control" id="prazo" value="@Model.Pedido.FormaPagamento" readonly>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="observacao"><strong>Observação :</strong></label>
-                                <textarea class="form-control" id="observacao" rows="3" readonly>@Model.Pedido.Observacao</textarea>
-                            </div>
+                            <p><strong>Observação :</strong> @Model.Pedido.Observacao</p>
                         </div>
                     </div>
                 </div>
