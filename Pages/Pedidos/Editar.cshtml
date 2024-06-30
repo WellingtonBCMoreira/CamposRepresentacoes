@@ -8,15 +8,48 @@
 <body>
     <div class="title-container">
         <div>
-            <h2>Informações do Pedido</h2>
-            <p><strong>Cliente:</strong>  @Model.Pedido.RazaoSocialCliente</p>
-            <p><strong>Endereço:</strong> @($"{Model.Cliente.Rua}, {Model.Cliente.Numero}, {Model.Cliente.Bairro}, {Model.Cliente.Cidade}")</p>            
-            <p><strong>CEP:</strong>  @Model.Cliente.CEP</p>
-            <p><strong>CGC:</strong>  @Model.Cliente.CNPJ</p>
-            <p><strong>Cliente:</strong>  @Model.Cliente.Telefone</p>
-            <p><strong>Fornecedor:</strong>  @Model.Pedido.RazaoSocialFornecedor</p>
-            <p><strong>Transportadora:</strong> @Model.Pedido.RazaoSocialTransportadora</p>
-            <p><strong>Prazo:</strong>  @Model.Pedido.FormaPagamento</p>
+            <div class="text-center mb-2">
+                <h2><strong>Informações do Pedido</strong></h2>
+            </div>   
+            <div class="col-md-12">
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cliente"><strong>Cliente:</strong></label>
+                            <input type="text" class="form-control" id="cliente" value="@Model.Pedido.RazaoSocialCliente" readonly>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="cnpj"><strong>CNPJ:</strong></label>
+                            <input type="text" class="form-control" id="cnpj" value="@Model.Cliente.CNPJ" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="endereco"><strong>Endereço:</strong></label>
+                            <input type="text" class="form-control" id="endereco" value="@($"{Model.Cliente.Rua}, {Model.Cliente.Numero}, {Model.Cliente.Bairro}, {Model.Cliente.Cidade} - BA")" readonly>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="cep"><strong>CEP:</strong></label>
+                            <input type="text" class="form-control" id="cep" value="@Model.Cliente.CEP" readonly>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="telefone"><strong>Telefone:</strong></label>
+                            <input type="text" class="form-control" id="cep" value="@Model.Cliente.Telefone" readonly>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="fornecedor"><strong>Fornecedor:</strong></label>
+                            <input type="text" class="form-control" id="cep" value="@Model.Pedido.RazaoSocialFornecedor" readonly>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="transportadora"><strong>Transportadora:</strong></label>
+                            <input type="text" class="form-control" id="cep" value="@Model.Pedido.RazaoSocialTransportadora" readonly>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="prazo"><strong>Prazo:</strong></label>
+                            <input type="text" class="form-control" id="cep" value="@Model.Pedido.FormaPagamento" readonly>
+                        </div>
+                    </div>                    
+                </div>                
+            </div>
+            
         </div>
     </div>
     <!--Tabela com a lista de itens do Pedido-->
@@ -27,7 +60,9 @@
                 <div class="card shadow-lg" id="filter">
                     <div class="card-body p-0 bg-principal">
                         <div class="card-header bg-principal border-0 pt-2 pb-2">
-                            <h5 class="card-title"><i class="fas fa-clipboard-list"></i> Lista de Produtos do Pedido</h5>
+                            <div class="text-center mb-2">
+                                <h2><strong>Itens do Pedido</strong></h2>
+                            </div>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                                     <i class="fas fa-minus text-white"></i>
@@ -83,19 +118,24 @@
                             <div class="card-footer pt-2 pb-2">
                                 <div class="float-right">
                                     <form method="post" asp-page-handler="Confirmar" onsubmit="return confirm('Tem certeza que deseja finalizar este pedido?')">
-                                        <a asp-page="/Pedidos/Index" class="btn btn-default elevation-1"><i class="fas fa-arrow-left"></i> Voltar</a>
+                                        
                                         <input type="hidden" name="idPedido" value="@Model.Pedido.Id" />
-                                        @if(Model.Pedido.Status == "Confirmado")
+                                        @if (Model.Pedido.Status == "Confirmado")
                                         {
+                                            <input type="hidden" name="observacao" value="@Model.Pedido.Observacao" />
                                             
+                                            <a asp-page="/Pedidos/Index" class="btn btn-default elevation-1"><i class="fas fa-arrow-left"></i> Voltar</a>
                                         }
                                         else
                                         {
                                             <div class="form-group">
                                                 <label for="observacao">Observação</label>
-                                                <textarea id="observacao" name="observacao" class="form-control"></textarea>
+                                                <textarea id="observacao" name="observacao" class="form-control">@Model.Pedido.Observacao</textarea>
                                             </div>
-                                            <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-save"></i> Confirmar</button>                                            
+                                            <div>
+                                                <a asp-page="/Pedidos/Index" class="btn btn-default elevation-1"><i class="fas fa-arrow-left"></i> Voltar</a>
+                                                <button type="submit" class="btn btn-info elevation-1"><i class="fas fa-save"></i> Confirmar</button>
+                                            </div>
                                         }
                                     </form>
                                 </div>
@@ -127,7 +167,9 @@
                 <div class="card shadow-lg" id="filter">
                     <div class="card-body p-0 bg-principal">
                         <div class="card-header bg-principal border-0 pt-2 pb-2">
-                            <h5 class="card-title"><i class="fas fa-clipboard-list"></i> Lista de Produtos Do Fornecedor</h5>
+                            <div class="text-center mb-4">
+                                <h2><strong>Lista de Produtos Do Fornecedor</strong></h2>
+                            </div>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                                     <i class="fas fa-minus text-white"></i>

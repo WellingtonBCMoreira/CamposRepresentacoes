@@ -22,6 +22,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 
 builder.Services.AddRazorPages();
+builder.Services.AddSession();
 builder.Services.AddServerSideBlazor();
 
 // Add services for your custom services and repositories
@@ -75,6 +76,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 // Migrate the database
 using (var scope = app.Services.CreateScope())

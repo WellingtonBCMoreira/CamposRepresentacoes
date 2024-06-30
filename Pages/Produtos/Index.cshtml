@@ -2,12 +2,13 @@
 @model CamposRepresentacoes.Pages.Produtos.IndexModel
 @{
 }
-<html lang="pt-br">
 
+<!DOCTYPE html>
+<html>
+    
 <body>
     <div class="row no-print">
         <div class="col-md-12">
-            @* <h2>Buscar Produtos</h2> *@
             <form method="get" id="formBusca">
                 @Html.AntiForgeryToken()
                 <div id="filter" class="card card-filter elevation-3">
@@ -78,10 +79,18 @@
                 <div id="tabelaProdutosContainer" style="display: none;">
                     <div class="col-md-12">
                         <div class="card">
+                            <div class="card-header bg-principal border-0 pt-2 pb-2">
+                                <h5 class="text-center mb-4"><i class="fas fa-clipboard-list"></i> Lista de Produtos Do Fornecedor</h5>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus text-white"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <!-- Formulário para Desativar Produtos -->
                             <form method="post" asp-page-handler="DesativarProduto" onsubmit="return prepararIdsProdutos()">
                                 <div class="card-body">
-                                    <table id="tabelaProdutos" class="table table-bordered table-hover">
+                                    <table id="tabelaProdutos" class="table table-sm table-bordered table-striped bg-white text-sm">
                                         <thead>
                                             <tr>
                                                 <th>Codigo</th>
@@ -103,8 +112,8 @@
                                         <!-- Campo oculto para armazenar os IDs dos produtos selecionados -->
                                         <input type="hidden" name="idsProdutosSelecionados" id="idsProdutosSelecionados">
                                         <button type="submit" id="salvarAlteracoes" class="btn btn-success">Salvar Alterações</button>
-                                    </div>                                    
-                                </div>                                
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -132,7 +141,7 @@
                                             }
                                         }
                                     </select>
-                                </div>                                                            
+                                </div>
                                 <div class="form-group">
                                     <div class="input-group mt-6">
                                         <div class="custom-file">
@@ -143,65 +152,109 @@
                                             <button type="submit" class="btn btn-primary" onclick="return validarFornecedor()">Upload Planilha</button>
                                         </div>
                                     </div>
-                                </div>                                
+                                </div>
                             </div>
                         </form>
-                    </div>                    
+                    </div>
                 </div>
             </div>
         </div>
-    </section>    
+    </section>
 
-    @if (ViewData.ContainsKey("ProdutosComErro") && ViewData["ProdutosComErro"] != null && ((List<dynamic>)ViewData["ProdutosComErro"]).Any())
+    @if (Model.ProdutosComErro.Any() || Model.ProdutosImportados.Any())
     {
-        <div class="row mt-3">
-            <div class="col-sm-12">
-                <h3>Produtos com Erro</h3>
-
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th>Nome</th>
-                            <th>Descrição</th>
-                            <th>Preço</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var produtoErro in ViewData["ProdutosComErro"] as List<dynamic>)
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow p-4">
+                        @if (Model.ProdutosComErro != null && Model.ProdutosComErro.Any())
                         {
-                            <tr>
-                                <td>@produtoErro.Status</td>
-                                <td>@produtoErro.Nome</td>
-                                <td>@produtoErro.Descricao</td>
-                                <td>@produtoErro.Preco</td>
-                            </tr>
+                            <div class="row mt-3">
+                                <div class="col-sm-12">
+                                    <div class="text-center mb-4">
+                                        <h3 style="color: red"><strong>Produtos com Erro</strong></h3>
+                                    </div>
+
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Status</th>
+                                                <th>Código</th>
+                                                <th>Nome</th>
+                                                <th>Descrição</th>
+                                                <th>Preço</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var produtoErro in Model.ProdutosComErro)
+                                            {
+                                                <tr>
+                                                    <td class="table-danger">@produtoErro.Status</td>
+                                                    <td class="@(produtoErro.Codigo == "Falta o código" ? "table-danger" : "")">@produtoErro.Codigo</td>
+                                                    <td class="@(produtoErro.Nome == "Falta nome" ? "table-danger" : "")">@produtoErro.Nome</td>
+                                                    <td class="@(produtoErro.Descricao == "Falta a descrição" ? "table-danger" : "")">@produtoErro.Descricao</td>
+                                                    <td class="@((produtoErro.Preco <= 0) ? "table-danger" : "")">@produtoErro.Preco.ToString("C")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    }
-    else if (ViewData.ContainsKey("ProdutosImportados") && ViewData["ProdutosImportados"] != null && ((List<dynamic>)ViewData["ProdutosImportados"]).Any())
-    {
-        <div class="row mt-3">
-            <div class="col-sm-12">
-                <h3>Todos os produtos foram importados com sucesso!</h3>
+                        @if (Model.ProdutosImportados != null && Model.ProdutosImportados.Any())
+                        {
+                            <div class="row mt-3">
+                                <div class="col-sm-12">
+                                    <div class="text-center mb-4">
+                                        <h3 style="color: green"><strong>Produtos Importados</strong></h3>
+                                    </div>
+                                    <table class="table table-success table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Status</th>
+                                                <th>Código</th>
+                                                <th>Nome</th>
+                                                <th>Descrição</th>
+                                                <th>Preço</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var produto in Model.ProdutosImportados)
+                                            {
+                                                <tr>
+                                                    <td>@produto.Status</td>
+                                                    <td>@produto.Codigo</td>
+                                                    <td>@produto.Nome</td>
+                                                    <td>@produto.Descricao</td>
+                                                    <td>@string.Format("{0:C}", @produto.Preco)</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     }
 
-    @section scripts {      
-        <script>
-            $('#tabelaProdutos').DataTable({
-                "responsive": true, "lengthChange": true, "autoWidth": false,
-                "language": {
-                    "url": "/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/pt-BR.json"
-                }
-            });
-        </script>
+
+    @section scripts {
+        
         <script>
             $(document).ready(function () {
+                $('#tabelaProdutos').DataTable({
+                    "responsive": true,
+                    "lengthChange": true,
+                    "autoWidth": false,
+                    "language": {
+                        "url": "/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/pt-BR.json"
+                    },
+                    "searching": true // Habilita a funcionalidade de busca
+                });
+
                 $('#formBusca').submit(function (event) {
                     event.preventDefault();
                     buscarProdutos();
@@ -247,6 +300,20 @@
 
                                 $('#tabelaProdutos tbody').append(row);
                             });
+
+                            if ($.fn.DataTable.isDataTable('#tabelaProdutos')) {
+                                $('#tabelaProdutos').DataTable().destroy();
+                            }
+
+                            $('#tabelaProdutos').DataTable({
+                                "responsive": true,
+                                "lengthChange": true,
+                                "autoWidth": false,
+                                "language": {
+                                    "url": "/AdminLTE-3.2.0/AdminLTE-3.2.0/plugins/datatables/pt-BR.json"
+                                },
+                                "searching": true // Garante que a busca esteja habilitada
+                            });
                         } else {
                             // Exibe uma mensagem se não houver dados
                             $('#tabelaProdutos tbody').html('<tr><td colspan="6">Nenhum produto encontrado!</td></tr>');
@@ -272,7 +339,7 @@
             function validarFornecedor() {
                 var fornecedorDropdown = document.getElementById("fornecedorId");
                 var fornecedorId = fornecedorDropdown.value;
-                
+
                 var arquivoInput = document.getElementById('fileInput');
                 if (fornecedorId === '0') {
                     alert('Selecione um fornecedor antes de fazer o upload!');
@@ -323,7 +390,7 @@
                 }
 
                 return null;
-            }            
+            }
 
         </script>
     }

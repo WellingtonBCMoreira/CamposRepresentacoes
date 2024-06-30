@@ -33,6 +33,9 @@ namespace CamposRepresentacoes.Pages.Produtos
         [BindProperty]
         public Guid FornecedorId { get; set; }
 
+        public List<ProdutosComErro> ProdutosComErro { get; set; } = new();
+        public List<ProdutosImportados> ProdutosImportados { get; set; } = new();
+
         public IActionResult OnGet()
         { 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -56,6 +59,23 @@ namespace CamposRepresentacoes.Pages.Produtos
 
             Fornecedores = _produtosService.ObterFornecedores();
             
+            var produtosImportadosSession = HttpContext.Session.GetString("ProdutosImportados");
+            var produtosComErroSession = HttpContext.Session.GetString("ProdutosComErro");
+
+            if (!string.IsNullOrEmpty(produtosImportadosSession))
+            {
+                ProdutosImportados = JsonConvert.DeserializeObject<List<ProdutosImportados>>(produtosImportadosSession);
+            }
+
+            if (!string.IsNullOrEmpty(produtosComErroSession))
+            {
+                ProdutosComErro = JsonConvert.DeserializeObject<List<ProdutosComErro>>(produtosComErroSession);
+            }
+
+            // Limpar a sessão após carregar os dados
+            HttpContext.Session.Remove("ProdutosImportados");
+            HttpContext.Session.Remove("ProdutosComErro");
+
             return Page();
         }
 
@@ -65,9 +85,7 @@ namespace CamposRepresentacoes.Pages.Produtos
             if (ArquivoUpload != null && ArquivoUpload.Length > 0)
             {
                 if (Path.GetExtension(ArquivoUpload.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
-                {
-                    var dadosImportados = new List<object>();
-                    var dadosImportadosComErro = new List<object>();
+                {                   
 
                     using (var stream = new MemoryStream())
                     {
@@ -107,30 +125,35 @@ namespace CamposRepresentacoes.Pages.Produtos
 
                                     var isValid = ValidarProduto(produto);
 
-                                    var produtoItem = new
-                                    {
-                                        Status = isValid ? "Importado" : "Não importado",
-                                        Codigo = produto.Codigo,
-                                        Nome = produto.Nome,
-                                        Descricao = produto.Descricao,
-                                        Preco = produto.Preco
-                                    };
-
                                     if (isValid)
                                     {
                                         _produtosService.CadastrarProduto(produto);
-                                        dadosImportados.Add(produtoItem);
+                                        ProdutosImportados.Add(new ProdutosImportados
+                                        { 
+                                            Status = "Importado",
+                                            Codigo= produto.Codigo,
+                                            Nome= produto.Nome,
+                                            Descricao= produto.Descricao,
+                                            Preco= produto.Preco,
+                                        });
                                     }
                                     else
-                                    {
-                                        dadosImportadosComErro.Add(produtoItem);
+                                    {                                        
+                                        ProdutosComErro.Add(new ProdutosComErro
+                                        {
+                                            Status = "Não Importado",
+                                            Codigo = produto.Codigo,
+                                            Nome = produto.Nome,
+                                            Descricao = produto.Descricao,
+                                            Preco = produto.Preco
+                                        });
                                     }
                                 }
                             }
                         }
                     }
-                    ViewData["ProdutosComErro"] = dadosImportadosComErro;
-                    ViewData["ProdutosImportados"] = dadosImportados;
+                    HttpContext.Session.SetString("ProdutosImportados", JsonConvert.SerializeObject(ProdutosImportados));
+                    HttpContext.Session.SetString("ProdutosComErro", JsonConvert.SerializeObject(ProdutosComErro));
                 }
             }
             return RedirectToPage();
@@ -156,13 +179,24 @@ namespace CamposRepresentacoes.Pages.Produtos
         private bool ValidarProduto(Produto produto)
         {
             if (string.IsNullOrEmpty(produto.Codigo))
-                return false;
+            {
+                produto.Codigo = "Falta o código";
+                return false; 
+            }                
             if (string.IsNullOrEmpty(produto.Nome))
+            {
+                produto.Nome = "Falta nome";
                 return false;
+            }
             if (string.IsNullOrEmpty(produto.Descricao))
+            {
+                produto.Descricao = "Falta a descrição";
                 return false;
+            }
             if (produto.Preco <= 0)
+            {                
                 return false;
+            }
 
             return true;
         }
