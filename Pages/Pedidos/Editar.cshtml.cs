@@ -1,12 +1,14 @@
 using CamposRepresentacoes.Interfaces.Services;
 using CamposRepresentacoes.Models;
 using CamposRepresentacoes.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 
 namespace CamposRepresentacoes.Pages.Pedidos
 {
+    [Authorize]
     public class EditarModel : PageModel
     {
         private readonly IPedidosService _pedidoService;

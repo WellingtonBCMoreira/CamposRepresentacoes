@@ -1,0 +1,80 @@
+﻿@page
+@model RegisterModel
+@{
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-6">
+                <div class="card shadow p-4">
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <h2><strong>Cadastro de novo usuário</strong></h2>
+                        </div>
+                        <form method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="text-danger">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="text" asp-for="Input.UserName" class="form-control" placeholder="Nome de Usuário" />
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-user"></span>
+                                    </div>
+                                </div>
+                                <span class="text-danger">@Html.ValidationMessageFor(m => m.Input.UserName)</span>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="text" asp-for="Input.Email" class="form-control" placeholder="E-mail" />
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-envelope"></span>
+                                    </div>
+                                </div>
+                                <span class="text-danger">@Html.ValidationMessageFor(m => m.Input.Email)</span>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="password" asp-for="Input.Password" class="form-control" placeholder="Senha" />
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                                <span class="text-danger">@Html.ValidationMessageFor(m => m.Input.Password)</span>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="password" asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirmar Senha" />
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                                <span class="text-danger">@Html.ValidationMessageFor(m => m.Input.ConfirmPassword)</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="icheck-primary">
+                                        <input type="checkbox" id="agreeTerms" name="terms" value="agree">
+                                        <label for="agreeTerms">
+                                            Eu concordo com os <a href="#">termos</a>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

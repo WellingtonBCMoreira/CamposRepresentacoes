@@ -1,6 +1,7 @@
 using CamposRepresentacoes.Interfaces.Services;
 using CamposRepresentacoes.Models;
 using CamposRepresentacoes.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -13,6 +14,7 @@ using System.Text;
 
 namespace CamposRepresentacoes.Pages.Pedidos
 {
+    [Authorize]
     public class EnvioEmailModel : PageModel
     {
         private readonly IEmailService _emailService;

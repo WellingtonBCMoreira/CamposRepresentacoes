@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <link rel="icon" href="~/favicon.ico">
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/login.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/plugins/toastr/toastr.min.css">
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div>
+        @RenderBody();
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/plugins/toastr/toastr.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <text>
+                $(document).ready(function () {
+                    toastr.error('@Html.Raw(string.Join("<br/>", ViewData.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)))');
+                });
+            </text>
+        }
+    </script>
+</body>
+</html>

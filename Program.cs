@@ -5,13 +5,13 @@ using CamposRepresentacoes.Repositories;
 using CamposRepresentacoes.Services;
 using DinkToPdf.Contracts;
 using DinkToPdf;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using CamposRepresentacoes.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Globalization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,9 +21,32 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 
-builder.Services.AddRazorPages();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+    options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login";
+        options.AccessDeniedPath = "/Account/AcessoNegado";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ActiveUser", policy =>
+        policy.Requirements.Add(new ActiveUserRequirement()));
+});
+
+builder.Services.AddScoped<IAuthorizationHandler, ActiveUserHandler>();
+
 builder.Services.AddSession();
 builder.Services.AddServerSideBlazor();
+
+builder.Services.AddRazorPages();
+builder.Services.AddControllers();
 
 // Add services for your custom services and repositories
 builder.Services.AddScoped<IProdutosService, ProdutoService>();
@@ -54,19 +77,12 @@ builder.Services.Configure<RazorViewEngineOptions>(options =>
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 builder.Services.AddTransient<PDFService>();
 
-// Add controllers with views and enable runtime compilation
-builder.Services.AddControllersWithViews();
-
-// Add Endpoint Routing
-builder.Services.AddRouting();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -75,6 +91,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
@@ -97,6 +114,10 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapRazorPages();
+var cultureInfo = new CultureInfo("pt-BR");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
 app.MapControllers();
 
 app.Run();

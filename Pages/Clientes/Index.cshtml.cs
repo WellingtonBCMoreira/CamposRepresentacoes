@@ -1,6 +1,7 @@
 using CamposRepresentacoes.Interfaces.Services;
 using CamposRepresentacoes.Models;
 using CamposRepresentacoes.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -8,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CamposRepresentacoes.Pages.Clientes
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly IClientesService _clientesService;

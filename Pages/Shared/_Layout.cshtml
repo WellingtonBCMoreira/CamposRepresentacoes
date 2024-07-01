@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using CamposRepresentacoes.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
@@ -56,7 +61,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <img src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/dist/img/avatar.png" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="/Index" class="d-block">Julio Campos</a>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            var user = await UserManager.GetUserAsync(User);
+                            <a href="/Index" class="d-block">@user.UserName</a>
+                        }
+                        else
+                        {
+                            <a href="/Account/Login" class="d-block">Login</a>
+                        }
                     </div>
                 </div>
                 <!-- Sidebar Menu -->
@@ -64,6 +77,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
+                        <li class="nav-item">
+                            <a asp-page="/Account/Register" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    Cadastrar Usuario
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>                            
+                        </li>
                         <li class="nav-item">
                             <a asp-page="/Pedidos/Index" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
@@ -192,6 +214,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <div class="content-header">
+                <!-- Breadcrumb -->
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
@@ -200,8 +223,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item">
-                                    <a href="Index">Home</a></li>
+                                    <a href="/Index">Home</a>
+                                </li>
                                 <li class="breadcrumb-item active">Página Inicial</li>
+                                <li class="breadcrumb-item">
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <a href="#" data-toggle="modal" data-target="#logoutModal">Sair</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="/Account/Login">Login</a>
+                                    }
+                                </li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -237,6 +271,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <strong>Desenvolvido por: Well Tech; 2024 </strong> All rights reserved.
         </footer>
     </div>
+    
     <!-- ./wrapper -->
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->
@@ -255,59 +290,38 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="~/js/site.js"></script>    
     <script src="~/adminlte-3.2.0/adminlte-3.2.0/dist/js/adminlte.min.js"></script>
     <script src="~/adminlte-3.2.0/adminlte-3.2.0/dist/js/adminlte.js"></script>
+    @* OPTIONAL: Logout Modal *@
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirmar Logout</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Tem certeza que deseja sair?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a class="btn btn-primary" href="/Account/Login">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#logoutButton').click(function () {
+                // Realiza o logout via AJAX ou diretamente no navegador
+                $.post('/Account/Logout', function () {
+                    // Após o logout, redireciona para a página de login
+                    window.location.href = '/Account/Login';
+                });
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-
-@* <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CamposRepresentacoes</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CamposRepresentacoes.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">CamposRepresentacoes</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - CamposRepresentacoes - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html> *@

@@ -3,5 +3,6 @@
     public interface IEmailService
     {
         Task SendEmailAsync(string toEmail, string subject, string message, string nomeCliente,byte[] attachment = null);
+        Task SendEmail(string toEmail, string subject, string message, string nomeCliente,byte[] attachment = null);
     }
 }

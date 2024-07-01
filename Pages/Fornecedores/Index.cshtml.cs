@@ -1,11 +1,13 @@
 using CamposRepresentacoes.Interfaces.Services;
 using CamposRepresentacoes.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 
 namespace CamposRepresentacoes.Pages.Fornecedores
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly IFornecedoresService _fornecedoresService;

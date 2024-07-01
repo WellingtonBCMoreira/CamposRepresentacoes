@@ -1,10 +1,12 @@
 using CamposRepresentacoes.Interfaces.Services;
 using CamposRepresentacoes.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CamposRepresentacoes.Pages.Produtos
 {
+    [Authorize]
     public class EditarProdutoModel : PageModel
     {
         private readonly IProdutosService _produtosService;

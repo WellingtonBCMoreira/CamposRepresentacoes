@@ -2,6 +2,7 @@ using CamposRepresentacoes.Interfaces.Services;
 using CamposRepresentacoes.Models;
 using CamposRepresentacoes.Pages.Fornecedores;
 using ExcelDataReader;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Primitives;
@@ -14,6 +15,7 @@ using System.Text.Json.Serialization;
 
 namespace CamposRepresentacoes.Pages.Produtos
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly IProdutosService _produtosService;

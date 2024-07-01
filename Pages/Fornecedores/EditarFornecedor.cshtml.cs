@@ -1,10 +1,12 @@
 using CamposRepresentacoes.Interfaces.Services;
 using CamposRepresentacoes.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CamposRepresentacoes.Pages.Fornecedores
-{    
+{
+    [Authorize]
     public class EditarFornecedorModel : PageModel
     {
         private readonly IFornecedoresService _fornecedoresService;

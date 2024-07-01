@@ -1,10 +1,12 @@
 using CamposRepresentacoes.Interfaces.Services;
 using CamposRepresentacoes.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CamposRepresentacoes.Pages.Pedidos
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly IPedidosService _pedidosService;

@@ -1,0 +1,41 @@
+﻿@page
+@model LoginModel
+@{
+    Layout = "_LayoutLogin";    
+}
+<style>
+    .login-area {
+        height: 100vh; /* Define a altura do contêiner para ocupar toda a altura da viewport */
+        overflow: hidden; /* Oculta a barra de rolagem caso haja */
+    }
+</style>
+<div class="row login-area">
+    <div class="d-none d-md-block col-md-8 login-banner">
+        <hgroup>
+            <h1 class="title">@Model.Titulo</h1>
+            <h3 class="subtitle">@Model.Subtitulo</h3>
+        </hgroup>
+    </div>
+    <div class="col-sm-12 col-md-4 login">
+        <div class="col-xs-10 col-sm-10 col-md-8 col-lg-9 m-auto">
+            <div class="text-center">
+                <img src="~/AdminLTE-3.2.0/AdminLTE-3.2.0/dist/img/Campos.png" alt="logo FIEB" class="image-responsive">
+                <p class="mt-5 mb-5 text-muted"><small>Informe seu Email e Senha para acessar</small></p>
+            </div>
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <input type="text" asp-for="Email" class="form-control shadow-none mb-4" placeholder="E-mail" autocomplete="on" />
+                </div>
+                <div class="form-group">
+                    <input type="password" asp-for="Password" class="form-control shadow-none mb-4" placeholder="Senha" autocomplete="on" />
+
+                </div>
+                <button type="submit" class="btn mt-4">Acessar</button>
+            </form>
+            <div class="text-center mt-3">
+                <a asp-page="/Account/ForgotPassword">Esqueceu a Senha?</a>
+            </div>
+        </div>
+    </div>
+</div>
